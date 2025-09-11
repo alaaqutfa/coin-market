@@ -33,7 +33,7 @@ class ProductController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $productData = $request->only(['barcode', 'name', 'description', 'price', 'quantity']);
+        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
 
         // معالجة الصورة بدون Intervention
         if ($request->hasFile('image')) {
@@ -67,7 +67,7 @@ class ProductController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $productData = $request->only(['barcode', 'name', 'description', 'price', 'quantity']);
+        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
 
         if ($request->hasFile('image')) {
             // حذف الصورة القديمة إذا كانت موجودة

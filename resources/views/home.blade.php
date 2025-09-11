@@ -31,6 +31,9 @@
                         Price
                     </th>
                     <th scope="col" class="px-6 py-3">
+                        Weight
+                    </th>
+                    <th scope="col" class="px-6 py-3">
                         Action
                     </th>
                 </tr>
@@ -47,6 +50,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{ $product->price }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ $product->weight }}
                             </td>
                             <td class="px-6 py-4">
                                 <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>

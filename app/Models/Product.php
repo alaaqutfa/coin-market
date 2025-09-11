@@ -14,6 +14,7 @@ class Product extends Model
         'name',
         'price',
         'quantity',
+        'weight',
         'image_path',
         'social_media_urls'
     ];
