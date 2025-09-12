@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductBarcodeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +19,31 @@ class ProductController extends Controller
     {
         $products = Product::paginate(20);
         return view('home', compact('products'));
+    }
+
+    public function filter(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->barcode) {
+            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        }
+
+        if ($request->name) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        if ($request->price) {
+            $query->where('price', $request->price);
+        }
+
+        if ($request->weight) {
+            $query->where('weight', $request->weight);
+        }
+
+        $products = $query->paginate(20);
+
+        return view('partials.products-table', compact('products'))->render();
     }
 
     public function store(Request $request)
@@ -43,7 +69,18 @@ class ProductController extends Controller
 
         $product = Product::create($productData);
 
+        // ProductBarcodeLog::createTemporaryNotification(
+        //     $product->name . ' ' . $product->price . '/' . $product->weight . ' added successfolly',
+        //     $request->note,
+        //     1
+        // );
+
         return response()->json($product, 201);
+    }
+
+    public function trackProductBarcodeLog()
+    {
+
     }
 
     public function show($id)

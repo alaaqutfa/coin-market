@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use APP\Models\ProductBarcodeLog;
 
 class Product extends Model
 {
@@ -23,4 +25,9 @@ class Product extends Model
         'social_media_urls' => 'array',
         'price' => 'decimal:2'
     ];
+
+    public function barcodeLogs(): HasMany
+    {
+        return $this->hasMany(ProductBarcodeLog::class);
+    }
 }

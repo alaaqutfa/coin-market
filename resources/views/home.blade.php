@@ -12,59 +12,55 @@
     <!-- Styles / Scripts -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
 
 
     <div class="container mx-auto my-8 relative overflow-x-auto shadow-md sm:rounded-lg">
+
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
                     <th scope="col" class="px-6 py-3">
-                        Barcode
+                        <div class="flex justify-center items-center flex-col gap-2">
+                            <span class="text-base">Barcode</span>
+                            <input type="text" name="barcode"
+                                class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Name
+                        <div class="flex justify-center items-center flex-col gap-2">
+                            <span class="text-base">Name</span>
+                            <input type="text" name="name"
+                                class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Price
+                        <div class="flex justify-center items-center flex-col gap-2">
+                            <span class="text-base">Price</span>
+                            <input type="text" name="price"
+                                class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Weight
+                        <div class="flex justify-center items-center flex-col gap-2">
+                            <span class="text-base">Weight</span>
+                            <input type="text" name="weight"
+                                class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        </div>
                     </th>
                     <th scope="col" class="px-6 py-3">
-                        Action
+                        <div class="flex justify-center items-center flex-col gap-2">
+                            <span class="text-base">Action</span>
+                        </div>
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="products-table-body">
                 @if (count($products) > 0)
-                    @foreach ($products as $product)
-                        <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                {{ $product->barcode }}
-                            </th>
-                            <td class="px-6 py-4">
-                                {{ $product->name }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $product->price }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ $product->weight }}
-                            </td>
-                            <td class="px-6 py-4">
-                                <a href="#" class="font-medium text-blue-600 hover:underline">Edit</a>
-                                <a href="https://www.google.com/search?q={{ $product->barcode." ".$product->name." high quality png image" }}" class="font-medium text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Discover</a>
-                            </td>
-                        </tr>
-                    @endforeach
-                    <tr>
-                        <td colspan="5" class="px-6 py-4">
-                            {{ $products->links() }}
-                        </td>
-                    </tr>
+                    @include('partials.products-table', ['products' => $products])
                 @else
                     <tr>
                         <td colspan="5">
@@ -79,6 +75,28 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $(".filter-input").on("keyup change", function() {
+                let data = {
+                    barcode: $("input[name='barcode']").val(),
+                    name: $("input[name='name']").val(),
+                    price: $("input[name='price']").val(),
+                    weight: $("input[name='weight']").val(),
+                };
+
+                $.ajax({
+                    url: "{{ route('products.filter') }}",
+                    type: "GET",
+                    data: data,
+                    success: function(response) {
+                        $("#products-table-body").html(response);
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>
