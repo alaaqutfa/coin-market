@@ -59,10 +59,17 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td colspan="5" class="px-6 py-4">
+                            {{ $products->links() }}
+                        </td>
+                    </tr>
                 @else
                     <tr>
-                        <td colspan="3">
-                            No items found
+                        <td colspan="5">
+                            <center>
+                                No items found
+                            </center>
                         </td>
                     </tr>
                 @endif
