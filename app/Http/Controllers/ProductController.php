@@ -10,13 +10,13 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::paginate(20);
+        $products = Product::paginate(50);
         return response()->json($products);
     }
 
     public function home()
     {
-        $products = Product::latest()->paginate(20);
+        $products = Product::latest()->paginate(50);
         return view('home', compact('products'));
     }
 
@@ -54,7 +54,7 @@ class ProductController extends Controller
 
         // فلترة تاريخ اليوم
         elseif ($request->date_today) {
-            $query->whereDate('created_at', today());
+            $query->whereDate('created_at', $request->date_from);
         }
 
         // فلترة تاريخ البارحة
@@ -71,7 +71,7 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $products = $query->latest()->paginate(20);
+        $products = $query->latest()->paginate(50);
 
         return view('partials.products-table', compact('products'))->render();
     }
