@@ -127,6 +127,26 @@
         .auto-refresh-btn {
             transition: all 0.3s;
         }
+
+        .new-product-indicator {
+            background-color: #10B981;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 
@@ -148,7 +168,7 @@
             </h2>
 
             <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- حقل البарكود -->
+                <!-- حقل الباركود -->
                 <div>
                     <label class="block mb-2 text-sm font-medium">البحث بالباركود</label>
                     <div class="relative">
@@ -267,7 +287,7 @@
                 <div class="flex items-center space-x-4">
                     <button id="autoRefreshToggle" class="auto-refresh-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center">
                         <i class="fas fa-pause ml-2"></i>
-                        إيقاف التحديث
+                        <span id="autoRefreshText">إيقاف التحديث</span>
                     </button>
                     <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
                         <i class="fas fa-boxes ml-2"></i>
@@ -357,8 +377,8 @@
         // تعريف المتغيرات العالمية
         let autoRefreshEnabled = true;
         let autoRefreshInterval = null;
-        let previousProductsCount = {{ $products->total() }};
         let productIds = new Set();
+        let lastUpdateTime = new Date().getTime();
 
         // تهيئة معرفات المنتجات الحالية
         @foreach($products as $product)
@@ -366,9 +386,9 @@
         @endforeach
 
         // تعريف الدالة في النطاق العام
-        window.applyFilters = function(isTimeOut) {
+        window.applyFilters = function(isAutoRefresh) {
             // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
-            if(!isTimeOut) {
+            if(!isAutoRefresh) {
                 $('#loadingOverlay').css('display', 'flex');
             }
 
@@ -379,7 +399,8 @@
                 weight: $("input[name='weight']").val(),
                 date_from: $("input[name='date_from']").val(),
                 date_to: $("input[name='date_to']").val(),
-                page: {{ $products->currentPage() }}
+                page: {{ $products->currentPage() }},
+                _token: '{{ csrf_token() }}'
             };
 
             $.ajax({
@@ -398,21 +419,28 @@
                     let newCount = tempDiv.find('tr[data-id]').length;
                     $("#products-count").text(newCount);
 
-                    // التحقق من وجود منتجات جديدة
-                    if (isTimeOut && autoRefreshEnabled) {
+                    // التحقق من وجود منتجات جديدة في حالة التحديث التلقائي
+                    if (isAutoRefresh && autoRefreshEnabled) {
                         checkForNewProducts(response);
                     }
 
                     // إعادة تهيئة الحقول القابلة للتعديل
                     initEditableFields();
 
+                    // تحديث وقت آخر تحديث
+                    lastUpdateTime = new Date().getTime();
+
                     // إخفاء مؤشر التحميل
                     $('#loadingOverlay').hide();
                 },
-                error: function() {
+                error: function(xhr, status, error) {
                     // إخفاء مؤشر التحميل في حالة الخطأ
                     $('#loadingOverlay').hide();
-                    console.log('حدث خطأ أثناء جلب البيانات');
+                    console.error('حدث خطأ أثناء جلب البيانات:', error);
+
+                    if (isAutoRefresh) {
+                        showToast('فشل في التحديث التلقائي', 'error');
+                    }
                 }
             });
         };
@@ -431,12 +459,21 @@
                 // إذا كان المنتج غير موجود في المجموعة السابقة، فهو منتج جديد
                 if (!productIds.has(productId)) {
                     newProductsCount++;
+                    // تمييز المنتج الجديد
+                    $(this).addClass('bg-green-50');
+                    $(this).find('td:first').prepend('<span class="new-product-indicator">!</span>');
                 }
             });
 
             // إذا كان هناك منتجات جديدة، عرض إشعار
             if (newProductsCount > 0) {
                 showNewProductsNotification(newProductsCount);
+
+                // تحديث زر التحديث التلقائي للإشارة إلى وجود تحديثات جديدة
+                $('#autoRefreshToggle').addClass('bg-green-500');
+                setTimeout(() => {
+                    $('#autoRefreshToggle').removeClass('bg-green-500');
+                }, 2000);
             }
 
             // تحديث مجموعة معرفات المنتجات
@@ -534,42 +571,17 @@
             autoRefreshEnabled = !autoRefreshEnabled;
 
             if (autoRefreshEnabled) {
-                $('#autoRefreshToggle').html('<i class="fas fa-pause ml-2"></i> إيقاف التحديث');
+                $('#autoRefreshToggle').html('<i class="fas fa-pause ml-2"></i> <span id="autoRefreshText">إيقاف التحديث</span>');
+                $('#autoRefreshToggle').removeClass('bg-gray-500').addClass('bg-blue-500');
                 showToast('تم تشغيل التحديث التلقائي', 'success');
             } else {
-                $('#autoRefreshToggle').html('<i class="fas fa-play ml-2"></i> تشغيل التحديث');
+                $('#autoRefreshToggle').html('<i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>');
+                $('#autoRefreshToggle').removeClass('bg-blue-500').addClass('bg-gray-500');
                 showToast('تم إيقاف التحديث التلقائي', 'info');
             }
         }
 
-        $(document).ready(function() {
-            // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
-            initEditableFields();
-
-            // فلترة أثناء الكتابة
-            $(".filter-input").on("keyup change", function() {
-                applyFilters(false);
-            });
-
-            // منع إعادة تحميل الصفحة عند submit
-            $("#filter-form").on("submit", function(e) {
-                e.preventDefault();
-                applyFilters(false);
-            });
-
-            // إعداد التحديث التلقائي
-            autoRefreshInterval = setInterval(() => {
-                if (autoRefreshEnabled) {
-                    applyFilters(true);
-                }
-            }, 2000);
-
-            // إعداد حدث النقر على زر التحديث التلقائي
-            toggleAutoRefresh();
-            $('#autoRefreshToggle').click(toggleAutoRefresh);
-        });
-
-        // تعيين الفلتر حسب التاريخ - الإصدار المصحح
+        // تعيين الفلتر حسب التاريخ
         function setDateFilter(type) {
             const today = new Date();
             let fromDate = new Date();
@@ -582,7 +594,7 @@
                     toDate.setHours(23, 59, 59, 999);
                     break;
                 case 'yesterday':
-                    // من بداية البارحة إلى نهايتها - التصحيح هنا
+                    // من بداية البارحة إلى نهايتها
                     fromDate.setDate(today.getDate() - 1);
                     fromDate.setHours(0, 0, 0, 0);
                     toDate.setDate(today.getDate() - 1);
@@ -590,7 +602,7 @@
                     break;
                 case 'week':
                     // من بداية الأسبوع إلى اليوم
-                    fromDate.setDate(today.getDate() - 6); // 7 أيام بما فيها اليوم
+                    fromDate.setDate(today.getDate() - 7);
                     fromDate.setHours(0, 0, 0, 0);
                     toDate.setHours(23, 59, 59, 999);
                     break;
@@ -625,6 +637,32 @@
             // تطبيق الفلترة تلقائياً
             applyFilters(false);
         }
+
+        $(document).ready(function() {
+            // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
+            initEditableFields();
+
+            // فلترة أثناء الكتابة
+            $(".filter-input").on("keyup change", function() {
+                applyFilters(false);
+            });
+
+            // منع إعادة تحميل الصفحة عند submit
+            $("#filter-form").on("submit", function(e) {
+                e.preventDefault();
+                applyFilters(false);
+            });
+
+            // إعداد التحديث التلقائي كل 5 ثوان
+            autoRefreshInterval = setInterval(() => {
+                if (autoRefreshEnabled) {
+                    applyFilters(true);
+                }
+            }, 5000);
+
+            // إعداد حدث النقر على زر التحديث التلقائي
+            $('#autoRefreshToggle').click(toggleAutoRefresh);
+        });
     </script>
 </body>
 

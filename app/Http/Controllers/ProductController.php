@@ -47,26 +47,34 @@ class ProductController extends Controller
         // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
         if ($request->date_from && $request->date_to) {
             $query->whereBetween('created_at', [
-                $request->date_from,
-                $request->date_to,
+                $request->date_from . ' 00:00:00',
+                $request->date_to . ' 23:59:59',
             ]);
         }
 
         // فلترة تاريخ اليوم
-        elseif ($request->date_today) {
-            $query->whereDate('created_at', $request->date_from);
+        elseif ($request->has('date_today') && $request->date_today) {
+            $query->whereDate('created_at', today());
         }
 
         // فلترة تاريخ البارحة
-        elseif ($request->date_yesterday) {
+        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
             $query->whereDate('created_at', today()->subDay());
         }
 
         // فلترة آخر أسبوع
-        elseif ($request->date_week) {
+        elseif ($request->has('date_week') && $request->date_week) {
             $query->whereBetween('created_at', [
-                now()->subWeek(),
-                now(),
+                now()->subWeek()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة آخر شهر
+        elseif ($request->has('date_month') && $request->date_month) {
+            $query->whereBetween('created_at', [
+                now()->subMonth()->startOfDay(),
+                now()->endOfDay(),
             ]);
         }
 
