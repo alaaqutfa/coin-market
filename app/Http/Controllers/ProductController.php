@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\ProductBarcodeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -21,61 +20,61 @@ class ProductController extends Controller
         return view('home', compact('products'));
     }
 
-public function filter(Request $request)
-{
-    $query = Product::query();
+    public function filter(Request $request)
+    {
+        $query = Product::query();
 
-    // الفلترة حسب الباركود
-    if ($request->barcode) {
-        $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        // الفلترة حسب الباركود
+        if ($request->barcode) {
+            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        }
+
+        // الفلترة حسب الاسم
+        if ($request->name) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // الفلترة حسب السعر
+        if ($request->price) {
+            $query->where('price', $request->price);
+        }
+
+        // الفلترة حسب الوزن
+        if ($request->weight) {
+            $query->where('weight', $request->weight);
+        }
+
+        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
+        if ($request->date_from && $request->date_to) {
+            $query->whereBetween('created_at', [
+                $request->date_from,
+                $request->date_to,
+            ]);
+        }
+
+        // فلترة تاريخ اليوم
+        elseif ($request->date_today) {
+            $query->whereDate('created_at', today());
+        }
+
+        // فلترة تاريخ البارحة
+        elseif ($request->date_yesterday) {
+            $query->whereDate('created_at', today()->subDay());
+        }
+
+        // فلترة آخر أسبوع
+        elseif ($request->date_week) {
+            $query->whereBetween('created_at', [
+                now()->subWeek(),
+                now(),
+            ]);
+        }
+
+        // الترتيب من الأحدث إلى الأقدم
+        $products = $query->latest()->paginate(20);
+
+        return view('partials.products-table', compact('products'))->render();
     }
-
-    // الفلترة حسب الاسم
-    if ($request->name) {
-        $query->where('name', 'like', '%' . $request->name . '%');
-    }
-
-    // الفلترة حسب السعر
-    if ($request->price) {
-        $query->where('price', $request->price);
-    }
-
-    // الفلترة حسب الوزن
-    if ($request->weight) {
-        $query->where('weight', $request->weight);
-    }
-
-    // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
-    if ($request->date_from && $request->date_to) {
-        $query->whereBetween('created_at', [
-            $request->date_from,
-            $request->date_to
-        ]);
-    }
-
-    // فلترة تاريخ اليوم
-    elseif ($request->date_today) {
-        $query->whereDate('created_at', today());
-    }
-
-    // فلترة تاريخ البارحة
-    elseif ($request->date_yesterday) {
-        $query->whereDate('created_at', today()->subDay());
-    }
-
-    // فلترة آخر أسبوع
-    elseif ($request->date_week) {
-        $query->whereBetween('created_at', [
-            now()->subWeek(),
-            now()
-        ]);
-    }
-
-    // الترتيب من الأحدث إلى الأقدم
-    $products = $query->latest()->paginate(20);
-
-    return view('partials.products-table', compact('products'))->render();
-}
 
     public function store(Request $request)
     {

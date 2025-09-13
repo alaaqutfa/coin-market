@@ -20,31 +20,38 @@
             font-family: 'Tajawal', sans-serif;
             background-color: #f9fafb;
         }
+
         .filter-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
         }
+
         .table-container {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             border-radius: 12px;
             overflow: hidden;
         }
+
         .quick-filter-btn {
             transition: all 0.3s ease;
         }
+
         .quick-filter-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .pagination {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
+
         .pagination li {
             margin: 0 5px;
             display: inline-block;
         }
+
         .pagination a {
             padding: 8px 16px;
             border: 1px solid #ddd;
@@ -52,19 +59,53 @@
             color: #667eea;
             text-decoration: none;
         }
+
         .pagination a:hover {
             background-color: #667eea;
             color: white;
         }
+
         .pagination .active a {
             background-color: #667eea;
             color: white;
             border: 1px solid #667eea;
         }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
 <body class="bg-gray-50">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">نظام إدارة المنتجات</h1>
         <p class="text-center text-gray-600 mb-8">قم بتصفية المنتجات حسب المعايير المختلفة</p>
@@ -152,19 +193,24 @@
                 <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-medium">خيارات سريعة</label>
                     <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="setDateFilter('today')" class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                        <button type="button" onclick="setDateFilter('today')"
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
                             <i class="fas fa-calendar-day ml-2"></i> اليوم
                         </button>
-                        <button type="button" onclick="setDateFilter('yesterday')" class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                        <button type="button" onclick="setDateFilter('yesterday')"
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
                             <i class="fas fa-calendar-minus ml-2"></i> البارحة
                         </button>
-                        <button type="button" onclick="setDateFilter('week')" class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                        <button type="button" onclick="setDateFilter('week')"
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
                             <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
                         </button>
-                        <button type="button" onclick="setDateFilter('month')" class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                        <button type="button" onclick="setDateFilter('month')"
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
                             <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
                         </button>
-                        <button type="button" onclick="clearDateFilter()" class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                        <button type="button" onclick="clearDateFilter()"
+                            class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
                             <i class="fas fa-times ml-2"></i> مسح التواريخ
                         </button>
                     </div>
@@ -172,7 +218,8 @@
 
                 <!-- زر التصفية -->
                 <div class="flex items-end">
-                    <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center">
+                    <button type="submit"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center">
                         <i class="fas fa-filter ml-2"></i>
                         تطبيق الفلترة
                     </button>
@@ -250,7 +297,8 @@
                                     <div class="flex flex-col items-center justify-center py-8">
                                         <i class="fas fa-inbox text-4xl text-gray-400 mb-2"></i>
                                         <p class="text-gray-500 text-lg">لا توجد منتجات</p>
-                                        <p class="text-gray-400 text-sm">لم يتم العثور على أي منتجات تطابق معايير البحث</p>
+                                        <p class="text-gray-400 text-sm">لم يتم العثور على أي منتجات تطابق معايير البحث
+                                        </p>
                                     </div>
                                 </td>
                             </tr>
@@ -268,100 +316,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // فلترة أثناء الكتابة
-            $(".filter-input").on("keyup change", function() {
-                applyFilters();
-            });
-
-            // منع إعادة تحميل الصفحة عند submit
-            $("#filter-form").on("submit", function(e) {
-                e.preventDefault();
-                applyFilters();
-            });
-
-            // تطبيق الفلاتر
-            function applyFilters() {
-                let data = {
-                    barcode: $("input[name='barcode']").val(),
-                    name: $("input[name='name']").val(),
-                    price: $("input[name='price']").val(),
-                    weight: $("input[name='weight']").val(),
-                    date_from: $("input[name='date_from']").val(),
-                    date_to: $("input[name='date_to']").val(),
-                };
-
-                $.ajax({
-                    url: "{{ route('products.filter') }}",
-                    type: "GET",
-                    data: data,
-                    success: function(response) {
-                        $("#products-table-body").html(response);
-                        // تحديث عدد المنتجات
-                        let count = $(response).find('tr').length;
-                        $("#products-count").text(count);
-                    }
-                });
-            }
-        });
-
-        // تعيين الفلتر حسب التاريخ
-        function setDateFilter(type) {
-            const today = new Date();
-            let fromDate = new Date();
-            let toDate = new Date();
-
-            switch(type) {
-                case 'today':
-                    // من بداية اليوم إلى نهايته
-                    fromDate.setHours(0, 0, 0, 0);
-                    toDate.setHours(23, 59, 59, 999);
-                    break;
-                case 'yesterday':
-                    // من بداية البارحة إلى نهايتها
-                    fromDate.setDate(today.getDate() - 1);
-                    fromDate.setHours(0, 0, 0, 0);
-                    toDate.setDate(today.getDate() - 1);
-                    toDate.setHours(23, 59, 59, 999);
-                    break;
-                case 'week':
-                    // من بداية الأسبوع إلى اليوم
-                    fromDate.setDate(today.getDate() - 7);
-                    fromDate.setHours(0, 0, 0, 0);
-                    toDate.setHours(23, 59, 59, 999);
-                    break;
-                case 'month':
-                    // من بداية الشهر إلى اليوم
-                    fromDate.setDate(1);
-                    fromDate.setHours(0, 0, 0, 0);
-                    toDate.setHours(23, 59, 59, 999);
-                    break;
-            }
-
-            // تنسيق التاريخ إلى yyyy-mm-dd
-            const formatDate = (date) => {
-                return date.toISOString().split('T')[0];
-            };
-
-            $("input[name='date_from']").val(formatDate(fromDate));
-            $("input[name='date_to']").val(formatDate(toDate));
-
-            // تطبيق الفلترة تلقائياً
-            applyFilters();
-        }
-
-        // مسح فلترة التاريخ
-        function clearDateFilter() {
-            $("input[name='date_from']").val('');
-            $("input[name='date_to']").val('');
-
-            // تطبيق الفلترة تلقائياً
-            applyFilters();
-        }
-
-        // تطبيق الفلاتر (وظيفة مساعدة)
-        function applyFilters() {
-            console.log('updated');
+        // تعريف الدالة في النطاق العام
+        window.applyFilters = function() {
+            // إظهار مؤشر التحميل
+            $('#loadingOverlay').show();
 
             let data = {
                 barcode: $("input[name='barcode']").val(),
@@ -381,12 +339,92 @@
                     // تحديث عدد المنتجات
                     let count = $(response).find('tr').length;
                     $("#products-count").text(count);
+
+                    // إخفاء مؤشر التحميل
+                    $('#loadingOverlay').hide();
+                },
+                error: function() {
+                    // إخفاء مؤشر التحميل في حالة الخطأ
+                    $('#loadingOverlay').hide();
+                    alert('حدث خطأ أثناء جلب البيانات');
                 }
             });
-        }
-        setTimeout(()=>{
+        };
+
+        $(document).ready(function() {
+            // فلترة أثناء الكتابة
+            $(".filter-input").on("keyup change", function() {
+                applyFilters();
+            });
+
+            // منع إعادة تحميل الصفحة عند submit
+            $("#filter-form").on("submit", function(e) {
+                e.preventDefault();
+                applyFilters();
+            });
+        });
+
+        // تعيين الفلتر حسب التاريخ - الإصدار المصحح
+        function setDateFilter(type) {
+            const today = new Date();
+            let fromDate = new Date();
+            let toDate = new Date();
+
+            switch (type) {
+                case 'today':
+                    // من بداية اليوم إلى نهايته
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'yesterday':
+                    // من بداية البارحة إلى نهايتها - التصحيح هنا
+                    fromDate.setDate(today.getDate() - 1);
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setDate(today.getDate() - 1);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'week':
+                    // من بداية الأسبوع إلى اليوم
+                    fromDate.setDate(today.getDate() - 6); // 7 أيام بما فيها اليوم
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'month':
+                    // من بداية الشهر إلى اليوم
+                    fromDate.setDate(1);
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+            }
+
+            // تنسيق التاريخ إلى yyyy-mm-dd
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            $("input[name='date_from']").val(formatDate(fromDate));
+            $("input[name='date_to']").val(formatDate(toDate));
+
+            // تطبيق الفلترة تلقائياً
             applyFilters();
-        },1000)
+        }
+
+        // مسح فلترة التاريخ
+        function clearDateFilter() {
+            $("input[name='date_from']").val('');
+            $("input[name='date_to']").val('');
+
+            // تطبيق الفلترة تلقائياً
+            applyFilters();
+        }
+
+        // تطبيق الفلاتر بعد تحميل الصفحة مباشرة
+        setTimeout(() => {
+            applyFilters();
+        }, 100);
     </script>
 </body>
 
