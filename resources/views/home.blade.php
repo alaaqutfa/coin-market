@@ -379,6 +379,7 @@
                 weight: $("input[name='weight']").val(),
                 date_from: $("input[name='date_from']").val(),
                 date_to: $("input[name='date_to']").val(),
+                page: {{ $products->currentPage() }}
             };
 
             $.ajax({
