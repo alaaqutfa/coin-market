@@ -29,7 +29,7 @@
                 <i class="fas fa-trash"></i>
             </button>
             <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' high quality png image' }}"
-                title="{{ $product->name }} / {{ $product->price }} $" class="text-blue-600 hover:text-blue-800"
+                title="{{ $product->name }} - {{ $product->price }}$" class="text-blue-600 hover:text-blue-800"
                 target="_blank" rel="noopener noreferrer" onclick="copyTitle(this)">
                 <i class="fas fa-search"></i>
             </a>
