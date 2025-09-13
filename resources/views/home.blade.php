@@ -565,6 +565,7 @@
             }, 2000);
 
             // إعداد حدث النقر على زر التحديث التلقائي
+            toggleAutoRefresh();
             $('#autoRefreshToggle').click(toggleAutoRefresh);
         });
 
