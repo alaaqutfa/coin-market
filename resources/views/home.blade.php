@@ -361,6 +361,8 @@
 
         // تطبيق الفلاتر (وظيفة مساعدة)
         function applyFilters() {
+            console.log('updated');
+
             let data = {
                 barcode: $("input[name='barcode']").val(),
                 name: $("input[name='name']").val(),
@@ -382,6 +384,9 @@
                 }
             });
         }
+        setTimeout(()=>{
+            applyFilters();
+        },1000)
     </script>
 </body>
 
