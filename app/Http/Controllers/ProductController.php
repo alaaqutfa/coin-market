@@ -17,7 +17,7 @@ class ProductController extends Controller
 
     public function home()
     {
-        $products = Product::paginate(20);
+        $products = Product::latest()->paginate(20);
         return view('home', compact('products'));
     }
 
@@ -41,7 +41,7 @@ class ProductController extends Controller
             $query->where('weight', $request->weight);
         }
 
-        $products = $query->paginate(20);
+        $products = $query->latest()->paginate(20);
 
         return view('partials.products-table', compact('products'))->render();
     }
