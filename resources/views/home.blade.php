@@ -311,6 +311,9 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
                             <th scope="col" class="px-6 py-4">
+                                <input type="checkbox" name="" id="">
+                            </th>
+                            <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الباركود</span>
                                     <input type="text" name="barcode"

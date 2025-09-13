@@ -1,6 +1,9 @@
 @foreach ($products as $product)
     <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200" data-id="{{ $product->id }}">
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+            <input type="checkbox" name="" id="">
+        </th>
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
             {{ $product->barcode }}
         </th>
         <td class="px-6 py-4">
