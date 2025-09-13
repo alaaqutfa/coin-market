@@ -123,6 +123,10 @@
             border-color: #667eea;
             background-color: white;
         }
+
+        .auto-refresh-btn {
+            transition: all 0.3s;
+        }
     </style>
 </head>
 
@@ -144,7 +148,7 @@
             </h2>
 
             <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- حقل الباركود -->
+                <!-- حقل البарكود -->
                 <div>
                     <label class="block mb-2 text-sm font-medium">البحث بالباركود</label>
                     <div class="relative">
@@ -260,10 +264,16 @@
                     <i class="fas fa-list ml-2"></i>
                     قائمة المنتجات
                 </h2>
-                <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
-                    <i class="fas fa-boxes ml-2"></i>
-                    <span id="products-count">{{ $products->total() }}</span> منتج
-                </span>
+                <div class="flex items-center space-x-4">
+                    <button id="autoRefreshToggle" class="auto-refresh-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center">
+                        <i class="fas fa-pause ml-2"></i>
+                        إيقاف التحديث
+                    </button>
+                    <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
+                        <i class="fas fa-boxes ml-2"></i>
+                        <span id="products-count">{{ $products->total() }}</span> منتج
+                    </span>
+                </div>
             </div>
 
             <div class="relative overflow-x-auto">
@@ -344,13 +354,23 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
+        // تعريف المتغيرات العالمية
+        let autoRefreshEnabled = true;
+        let autoRefreshInterval = null;
+        let previousProductsCount = {{ $products->total() }};
+        let productIds = new Set();
+
+        // تهيئة معرفات المنتجات الحالية
+        @foreach($products as $product)
+            productIds.add({{ $product->id }});
+        @endforeach
+
         // تعريف الدالة في النطاق العام
         window.applyFilters = function(isTimeOut) {
-            // إظهار مؤشر التحميل
+            // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
             if(!isTimeOut) {
                 $('#loadingOverlay').css('display', 'flex');
             }
-
 
             let data = {
                 barcode: $("input[name='barcode']").val(),
@@ -366,10 +386,21 @@
                 type: "GET",
                 data: data,
                 success: function(response) {
+                    // حفظ عدد المنتجات الحالي قبل التحديث
+                    const currentCount = $("#products-count").text();
+
+                    // تحديث الجدول
                     $("#products-table-body").html(response);
-                    // تحديث عدد المنتجات
-                    let count = $(response).find('tr').length;
-                    $("#products-count").text(count);
+
+                    // حساب عدد المنتجات بشكل صحيح
+                    let tempDiv = $('<div>').html(response);
+                    let newCount = tempDiv.find('tr[data-id]').length;
+                    $("#products-count").text(newCount);
+
+                    // التحقق من وجود منتجات جديدة
+                    if (isTimeOut && autoRefreshEnabled) {
+                        checkForNewProducts(response);
+                    }
 
                     // إعادة تهيئة الحقول القابلة للتعديل
                     initEditableFields();
@@ -380,10 +411,54 @@
                 error: function() {
                     // إخفاء مؤشر التحميل في حالة الخطأ
                     $('#loadingOverlay').hide();
-                    alert('حدث خطأ أثناء جلب البيانات');
+                    console.log('حدث خطأ أثناء جلب البيانات');
                 }
             });
         };
+
+        // التحقق من وجود منتجات جديدة
+        function checkForNewProducts(response) {
+            const tempDiv = $('<div>').html(response);
+            const currentIds = new Set();
+            let newProductsCount = 0;
+
+            // جمع معرفات المنتجات الحالية
+            tempDiv.find('tr[data-id]').each(function() {
+                const productId = $(this).data('id');
+                currentIds.add(productId);
+
+                // إذا كان المنتج غير موجود في المجموعة السابقة، فهو منتج جديد
+                if (!productIds.has(productId)) {
+                    newProductsCount++;
+                }
+            });
+
+            // إذا كان هناك منتجات جديدة، عرض إشعار
+            if (newProductsCount > 0) {
+                showNewProductsNotification(newProductsCount);
+            }
+
+            // تحديث مجموعة معرفات المنتجات
+            productIds = currentIds;
+        }
+
+        // عرض إشعار بوجود منتجات جديدة
+        function showNewProductsNotification(count) {
+            const message = count === 1 ? 'تمت إضافة منتج جديد' : `تمت إضافة ${count} منتجات جديدة`;
+
+            Toastify({
+                text: message,
+                duration: 5000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#10B981",
+                stopOnFocus: true,
+                onClick: function() {
+                    // عند النقر على الإشعار، التمرير إلى أعلى الجدول
+                    $('html, body').animate({ scrollTop: $('.table-container').offset().top }, 500);
+                }
+            }).showToast();
+        }
 
         // تهيئة الحقول القابلة للتعديل
         function initEditableFields() {
@@ -453,6 +528,19 @@
             }).showToast();
         }
 
+        // تبديل حالة التحديث التلقائي
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+
+            if (autoRefreshEnabled) {
+                $('#autoRefreshToggle').html('<i class="fas fa-pause ml-2"></i> إيقاف التحديث');
+                showToast('تم تشغيل التحديث التلقائي', 'success');
+            } else {
+                $('#autoRefreshToggle').html('<i class="fas fa-play ml-2"></i> تشغيل التحديث');
+                showToast('تم إيقاف التحديث التلقائي', 'info');
+            }
+        }
+
         $(document).ready(function() {
             // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
             initEditableFields();
@@ -467,6 +555,16 @@
                 e.preventDefault();
                 applyFilters(false);
             });
+
+            // إعداد التحديث التلقائي
+            autoRefreshInterval = setInterval(() => {
+                if (autoRefreshEnabled) {
+                    applyFilters(true);
+                }
+            }, 2000);
+
+            // إعداد حدث النقر على زر التحديث التلقائي
+            $('#autoRefreshToggle').click(toggleAutoRefresh);
         });
 
         // تعيين الفلتر حسب التاريخ - الإصدار المصحح
@@ -525,11 +623,6 @@
             // تطبيق الفلترة تلقائياً
             applyFilters(false);
         }
-
-        // تطبيق الفلاتر بعد تحميل الصفحة مباشرة
-        setInterval(() => {
-            applyFilters(true);
-        }, 2000);
     </script>
 </body>
 

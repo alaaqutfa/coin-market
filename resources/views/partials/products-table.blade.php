@@ -32,8 +32,3 @@
         </td>
     </tr>
 @endforeach
-<tr>
-    <td colspan="6" class="px-6 py-4">
-        {{ $products->links() }}
-    </td>
-</tr>
