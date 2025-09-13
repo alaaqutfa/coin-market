@@ -143,9 +143,17 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -285,11 +293,13 @@
                     قائمة المنتجات
                 </h2>
                 <div class="flex items-center space-x-4">
-                    <button id="autoRefreshToggle" class="auto-refresh-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center">
+                    <button id="autoRefreshToggle"
+                        class="auto-refresh-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center">
                         <i class="fas fa-pause ml-2"></i>
                         <span id="autoRefreshText">إيقاف التحديث</span>
                     </button>
-                    <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
+                    <span
+                        class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
                         <i class="fas fa-boxes ml-2"></i>
                         <span id="products-count">{{ $products->total() }}</span> منتج
                     </span>
@@ -381,14 +391,14 @@
         let lastUpdateTime = new Date().getTime();
 
         // تهيئة معرفات المنتجات الحالية
-        @foreach($products as $product)
+        @foreach ($products as $product)
             productIds.add({{ $product->id }});
         @endforeach
 
         // تعريف الدالة في النطاق العام
         window.applyFilters = function(isAutoRefresh) {
             // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
-            if(!isAutoRefresh) {
+            if (!isAutoRefresh) {
                 $('#loadingOverlay').css('display', 'flex');
             }
 
@@ -493,7 +503,9 @@
                 stopOnFocus: true,
                 onClick: function() {
                     // عند النقر على الإشعار، التمرير إلى أعلى الجدول
-                    $('html, body').animate({ scrollTop: $('.table-container').offset().top }, 500);
+                    $('html, body').animate({
+                        scrollTop: $('.table-container').offset().top
+                    }, 500);
                 }
             }).showToast();
         }
@@ -571,11 +583,13 @@
             autoRefreshEnabled = !autoRefreshEnabled;
 
             if (autoRefreshEnabled) {
-                $('#autoRefreshToggle').html('<i class="fas fa-pause ml-2"></i> <span id="autoRefreshText">إيقاف التحديث</span>');
+                $('#autoRefreshToggle').html(
+                    '<i class="fas fa-pause ml-2"></i> <span id="autoRefreshText">إيقاف التحديث</span>');
                 $('#autoRefreshToggle').removeClass('bg-gray-500').addClass('bg-blue-500');
                 showToast('تم تشغيل التحديث التلقائي', 'success');
             } else {
-                $('#autoRefreshToggle').html('<i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>');
+                $('#autoRefreshToggle').html(
+                    '<i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>');
                 $('#autoRefreshToggle').removeClass('bg-blue-500').addClass('bg-gray-500');
                 showToast('تم إيقاف التحديث التلقائي', 'info');
             }
@@ -663,6 +677,20 @@
             // إعداد حدث النقر على زر التحديث التلقائي
             $('#autoRefreshToggle').click(toggleAutoRefresh);
         });
+
+
+        function copyTitle(element) {
+            const textToCopy = element.getAttribute("title");
+
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    showToast(`✅ تم نسخ النص: ${textToCopy}`, 'success');
+                })
+                .catch(err => {
+                    console.log("حدث خطأ أثناء النسخ:", err);
+                });
+            // مافي return false حتى الرابط يشتغل عادي
+        }
     </script>
 </body>
 
