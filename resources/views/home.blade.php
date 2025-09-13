@@ -97,8 +97,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .editable-field {
@@ -340,9 +345,12 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
         // تعريف الدالة في النطاق العام
-        window.applyFilters = function() {
+        window.applyFilters = function(isTimeOut) {
             // إظهار مؤشر التحميل
-            $('#loadingOverlay').show();
+            if(!isTimeOut) {
+                $('#loadingOverlay').css('display', 'flex');
+            }
+
 
             let data = {
                 barcode: $("input[name='barcode']").val(),
@@ -422,7 +430,7 @@
                 success: function(response) {
                     showToast('تم حذف المنتج بنجاح', 'success');
                     // إعادة تطبيق الفلاتر لتحديث الجدول
-                    applyFilters();
+                    applyFilters(false);
                 },
                 error: function(xhr) {
                     showToast('حدث خطأ أثناء الحذف', 'error');
@@ -451,13 +459,13 @@
 
             // فلترة أثناء الكتابة
             $(".filter-input").on("keyup change", function() {
-                applyFilters();
+                applyFilters(false);
             });
 
             // منع إعادة تحميل الصفحة عند submit
             $("#filter-form").on("submit", function(e) {
                 e.preventDefault();
-                applyFilters();
+                applyFilters(false);
             });
         });
 
@@ -506,7 +514,7 @@
             $("input[name='date_to']").val(formatDate(toDate));
 
             // تطبيق الفلترة تلقائياً
-            applyFilters();
+            applyFilters(false);
         }
 
         // مسح فلترة التاريخ
@@ -515,13 +523,13 @@
             $("input[name='date_to']").val('');
 
             // تطبيق الفلترة تلقائياً
-            applyFilters();
+            applyFilters(false);
         }
 
         // تطبيق الفلاتر بعد تحميل الصفحة مباشرة
-        setTimeout(() => {
-            applyFilters();
-        }, 100);
+        setInterval(() => {
+            applyFilters(true);
+        }, 2000);
     </script>
 </body>
 
