@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <!-- Toastify CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <style>
         body {
             font-family: 'Tajawal', sans-serif;
@@ -96,6 +99,24 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        .editable-field {
+            border: 1px dashed transparent;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .editable-field:hover {
+            border-color: #cbd5e0;
+            background-color: #f7fafc;
+        }
+
+        .editable-field:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
         }
     </style>
 </head>
@@ -314,6 +335,8 @@
         </div>
     </div>
 
+    <!-- Toastify JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
         // تعريف الدالة في النطاق العام
@@ -340,6 +363,9 @@
                     let count = $(response).find('tr').length;
                     $("#products-count").text(count);
 
+                    // إعادة تهيئة الحقول القابلة للتعديل
+                    initEditableFields();
+
                     // إخفاء مؤشر التحميل
                     $('#loadingOverlay').hide();
                 },
@@ -351,7 +377,78 @@
             });
         };
 
+        // تهيئة الحقول القابلة للتعديل
+        function initEditableFields() {
+            $('.editable-field').off('blur').on('blur', function() {
+                const field = $(this).data('field');
+                const value = $(this).text().trim();
+                const productId = $(this).closest('tr').data('id');
+
+                updateProductField(productId, field, value);
+            });
+        }
+
+        // تحديث حقل منتج
+        function updateProductField(productId, field, value) {
+            $.ajax({
+                url: `/api/products/${productId}`,
+                type: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    [field]: value
+                },
+                success: function(response) {
+                    showToast('تم تحديث المنتج بنجاح', 'success');
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء التحديث', 'error');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // حذف منتج
+        function deleteProduct(productId) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنتج؟')) {
+                return;
+            }
+
+            $.ajax({
+                url: `/api/products/${productId}`,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    showToast('تم حذف المنتج بنجاح', 'success');
+                    // إعادة تطبيق الفلاتر لتحديث الجدول
+                    applyFilters();
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء الحذف', 'error');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // عرض Toast
+        function showToast(message, type = 'success') {
+            const backgroundColor = type === 'success' ? '#10B981' : '#EF4444';
+
+            Toastify({
+                text: message,
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: backgroundColor,
+                stopOnFocus: true,
+            }).showToast();
+        }
+
         $(document).ready(function() {
+            // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
+            initEditableFields();
+
             // فلترة أثناء الكتابة
             $(".filter-input").on("keyup change", function() {
                 applyFilters();
