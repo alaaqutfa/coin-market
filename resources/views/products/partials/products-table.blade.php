@@ -12,9 +12,19 @@
         </th>
         <td class="px-6 py-4">
             <div data-field="image">
-                <img src="{{ asset('storage/' . $product->image_path) }}"
-                    onerror="this.src='{{ asset('assets/img/place-holder.png') }}'"
-                    class="w-20 h-20 object-contain rounded" />
+                @if ($product->image_path)
+                    @php
+                        $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
+                        $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
+                    @endphp
+                    <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}">
+                        <img src="{{ asset('storage/' . $product->image_path) }}"
+                            onerror="this.src='{{ asset('assets/img/place-holder.png') }}'"
+                            class="w-20 h-20 object-contain rounded cursor-pointer" title="تحميل الصورة" />
+                    </a>
+                @else
+                    <img src="{{ asset('assets/img/place-holder.png') }}" class="w-20 h-20 object-contain rounded" />
+                @endif
             </div>
         </td>
         <td class="px-6 py-4">
@@ -35,18 +45,34 @@
         <td class="px-6 py-4">
             {{ $product->created_at->format('Y-m-d') }}
         </td>
-        <td class="px-6 py-4 flex space-x-2 space-x-reverse gap-2">
-            <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-            </button>
-            <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' high quality png image' }}"
-                title="{{ $product->name }} - {{ $product->price }}$" class="text-blue-600 hover:text-blue-800"
-                target="_blank" rel="noopener noreferrer" onclick="copyTitle(this)">
-                <i class="fas fa-search"></i>
-            </a>
+        <td class="px-6 py-4">
+            <div class="flex space-x-2 space-x-reverse gap-2">
+                <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
+
+                <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' high quality png image' }}"
+                    title="{{ $product->name }} - {{ $product->price }}$" class="text-blue-600 hover:text-blue-800"
+                    target="_blank" rel="noopener noreferrer" onclick="copyTitle(this)">
+                    <i class="fas fa-search"></i>
+                </a>
+
+                <!-- زر تحميل الصورة -->
+                @if ($product->image_path)
+                    @php
+                        $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
+                        $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
+                    @endphp
+                    <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}"
+                        class="text-green-600 hover:text-green-800" title="تحميل الصورة">
+                        <i class="fas fa-download"></i>
+                    </a>
+                @endif
+            </div>
         </td>
     </tr>
 @endforeach
+
 <tr>
     <td colspan="7">
         <!-- Pagination -->
