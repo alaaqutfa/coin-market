@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,10 +15,10 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function home()
+    public function list()
     {
         $products = Product::latest()->paginate(50);
-        return view('home', compact('products'));
+        return view('products.view', compact('products'));
     }
 
     public function filter(Request $request)
@@ -82,7 +83,7 @@ class ProductController extends Controller
         $products = $query->latest()->paginate(20);
         $products->withPath(url('/'));
 
-        return view('partials.products-table', compact('products'))->render();
+        return view('products.partials.products-table', compact('products'))->render();
     }
 
     public function store(Request $request)
@@ -194,4 +195,60 @@ class ProductController extends Controller
 
         return $path;
     }
+
+    public function previewImages(Request $request)
+    {
+        $files   = $request->file('images');
+        $results = [];
+
+        foreach ($files as $file) {
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+
+            // حذف السعر من الاسم
+            $cleanName = preg_replace('/ - \d+(\.\d+)?\$/', '', $originalName);
+
+            // البحث عن المنتج
+            $product = Product::where('name', $cleanName)->first();
+
+            // حفظ مؤقت في مجلد tmp
+            $tmpPath = $file->store('tmp_products', 'public');
+
+            $results[] = [
+                'id'     => $product->id ?? null,
+                'name'   => $product->name ?? $cleanName,
+                'image'  => asset('storage/' . $tmpPath),
+                'tmp'    => $tmpPath,
+                'status' => $product ? 'matched' : 'not_found',
+            ];
+        }
+
+        return response()->json($results);
+    }
+
+    public function saveImages(Request $request)
+    {
+        $items = $request->input('items'); // array of {id, tmp}
+
+        foreach ($items as $item) {
+            $product = Product::find($item['id']);
+            if ($product && isset($item['tmp'])) {
+                $tmpPath = $item['tmp'];
+                if (Storage::disk('public')->exists($tmpPath)) {
+                    // انقل الصورة من tmp إلى مجلد products
+                    $extension = pathinfo($tmpPath, PATHINFO_EXTENSION);
+                    $newPath   = 'products/' . $product->barcode . '_' . time() . '.' . $extension;
+
+                    Storage::disk('public')->move($tmpPath, $newPath);
+
+                    $product->update([
+                        'image_path' => $newPath,
+                        'have_image' => true,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
 }

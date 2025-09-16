@@ -11,6 +11,13 @@
             {{ $product->barcode }}
         </th>
         <td class="px-6 py-4">
+            <div data-field="image">
+                <img src="{{ asset('storage/' . $product->image_path) }}"
+                    onerror="this.src='{{ asset('assets/img/place-holder.png') }}'"
+                    class="w-20 h-20 object-contain rounded" />
+            </div>
+        </td>
+        <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="name">
                 {{ $product->name }}
             </div>
