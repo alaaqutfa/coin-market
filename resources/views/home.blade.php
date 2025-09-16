@@ -420,9 +420,7 @@
         window.applyFilters = function(isAutoRefresh) {
             // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
             if (!isAutoRefresh) {
-                console.log(isAutoRefresh);
-
-                toggleUserInteraction(!isAutoRefresh);
+                // toggleUserInteraction(!isAutoRefresh);
                 $('#loadingOverlay').css('display', 'flex');
             }
 
