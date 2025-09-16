@@ -252,23 +252,23 @@
                     <label class="block mb-2 text-sm font-medium">خيارات سريعة</label>
                     <div class="flex flex-wrap gap-2">
                         <button type="button" onclick="setDateFilter('today')"
-                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                             <i class="fas fa-calendar-day ml-2"></i> اليوم
                         </button>
                         <button type="button" onclick="setDateFilter('yesterday')"
-                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                             <i class="fas fa-calendar-minus ml-2"></i> البارحة
                         </button>
                         <button type="button" onclick="setDateFilter('week')"
-                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                             <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
                         </button>
                         <button type="button" onclick="setDateFilter('month')"
-                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                             <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
                         </button>
                         <button type="button" onclick="clearDateFilter()"
-                            class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center">
+                            class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                             <i class="fas fa-times ml-2"></i> مسح التواريخ
                         </button>
                     </div>
@@ -277,7 +277,7 @@
                 <!-- زر التصفية -->
                 <div class="flex items-end">
                     <button type="submit"
-                        class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center">
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center  gap-2">
                         <i class="fas fa-filter ml-2"></i>
                         تطبيق الفلترة
                     </button>
@@ -294,9 +294,8 @@
                 </h2>
                 <div class="flex items-center space-x-4">
                     <button id="autoRefreshToggle"
-                        class="auto-refresh-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center">
-                        <i class="fas fa-pause ml-2"></i>
-                        <span id="autoRefreshText">إيقاف التحديث</span>
+                        class="auto-refresh-btn bg-gray-500 hover:bg-blue-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center gap-2">
+                        <i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>
                     </button>
                     <span
                         class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center">
@@ -362,7 +361,7 @@
                             @include('partials.products-table', ['products' => $products])
                         @else
                             <tr>
-                                <td colspan="6" class="px-6 py-4 text-center">
+                                <td colspan="7" class="px-6 py-4 text-center">
                                     <div class="flex flex-col items-center justify-center py-8">
                                         <i class="fas fa-inbox text-4xl text-gray-400 mb-2"></i>
                                         <p class="text-gray-500 text-lg">لا توجد منتجات</p>
@@ -376,10 +375,7 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
-            <div class="p-4 border-t">
-                {{ $products->links() }}
-            </div>
+
         </div>
     </div>
 
@@ -388,7 +384,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
         // تعريف المتغيرات العالمية
-        let autoRefreshEnabled = true;
+        let autoRefreshEnabled = false;
         let autoRefreshInterval = null;
         let productIds = new Set();
         let lastUpdateTime = new Date().getTime();
@@ -397,11 +393,36 @@
         @foreach ($products as $product)
             productIds.add({{ $product->id }});
         @endforeach
+        function toggleUserInteraction(disable) {
+            if (disable) {
+                // تعطيل الحقول القابلة للتعديل
+                $('.editable-field')
+                    .attr('contenteditable', 'false')
+                    .addClass('opacity-50 cursor-not-allowed');
 
+                // تعطيل الفلاتر
+                $('#filter-form :input').prop('disabled', true);
+
+                // تعطيل أزرار حذف المنتج
+                $('button.delete-btn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+            } else {
+                // إعادة التمكين
+                $('.editable-field')
+                    .attr('contenteditable', 'true')
+                    .removeClass('opacity-50 cursor-not-allowed');
+
+                $('#filter-form :input').prop('disabled', false);
+                $('button.delete-btn').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+            }
+        }
         // تعريف الدالة في النطاق العام
         window.applyFilters = function(isAutoRefresh) {
             // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
             if (!isAutoRefresh) {
+                console.log(isAutoRefresh);
+
+                toggleUserInteraction(!isAutoRefresh);
                 $('#loadingOverlay').css('display', 'flex');
             }
 
@@ -449,7 +470,7 @@
                 error: function(xhr, status, error) {
                     // إخفاء مؤشر التحميل في حالة الخطأ
                     $('#loadingOverlay').hide();
-                    console.error('حدث خطأ أثناء جلب البيانات:', error);
+                    console.log('حدث خطأ أثناء جلب البيانات:', error);
 
                     if (isAutoRefresh) {
                         showToast('فشل في التحديث التلقائي', 'error');
@@ -538,7 +559,7 @@
                 },
                 error: function(xhr) {
                     showToast('حدث خطأ أثناء التحديث', 'error');
-                    console.error(xhr.responseText);
+                    console.log(xhr.responseText);
                 }
             });
         }
@@ -562,7 +583,7 @@
                 },
                 error: function(xhr) {
                     showToast('حدث خطأ أثناء الحذف', 'error');
-                    console.error(xhr.responseText);
+                    console.log(xhr.responseText);
                 }
             });
         }

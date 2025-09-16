@@ -36,3 +36,11 @@
         </td>
     </tr>
 @endforeach
+<tr>
+    <td colspan="7">
+        <!-- Pagination -->
+        <div class="p-4 border-t">
+            {{ $products->links() }}
+        </div>
+    </td>
+</tr>
