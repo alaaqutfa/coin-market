@@ -181,7 +181,7 @@
 
 
         <!-- جدول المنتجات -->
-        <div class="nav-item table-container bg-white rounded-lg">
+        <div class="nav-item products-list table-container bg-white rounded-lg">
 
             <!-- بطاقة الفلترة -->
             <div class="filter-section p-6 mb-8 text-white">
