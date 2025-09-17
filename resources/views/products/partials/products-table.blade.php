@@ -17,8 +17,8 @@
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
                         $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
                     @endphp
-                    <a href="{{ asset($product->image_path) }}" download="{{ $downloadName }}">
-                        <img src="{{ asset($product->image_path) }}"
+                    <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}">
+                        <img src="{{ asset('storage/' . $product->image_path) }}"
                             onerror="this.src='{{ asset('assets/img/place-holder.png') }}'"
                             class="w-20 h-20 object-contain rounded cursor-pointer" title="تحميل الصورة" />
                     </a>
@@ -63,7 +63,7 @@
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
                         $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
                     @endphp
-                    <a href="{{ asset($product->image_path) }}" download="{{ $downloadName }}"
+                    <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}"
                         class="text-green-600 hover:text-green-800" title="تحميل الصورة">
                         <i class="fas fa-download"></i>
                     </a>

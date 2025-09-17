@@ -214,7 +214,7 @@ class ProductController extends Controller
 
             // حفظ مؤقت في مجلد public/tmp_products
             $tmpName = uniqid() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('tmp_products'), $tmpName);
+            $file->move(public_path('storage/tmp_products'), $tmpName);
 
             $results[] = [
                 'id'     => $product->id ?? null,
@@ -235,18 +235,18 @@ class ProductController extends Controller
         foreach ($items as $item) {
             $product = Product::find($item['id']);
             if ($product && isset($item['tmp'])) {
-                $tmpPath = public_path('tmp_products/' . $item['tmp']);
+                $tmpPath = public_path('storage/tmp_products/' . $item['tmp']);
                 if (file_exists($tmpPath)) {
                     $extension = pathinfo($tmpPath, PATHINFO_EXTENSION);
 
                     // اسم الصورة = اسم المنتج + السعر
                     $safeName = Str::slug($product->name . '-' . $product->price, '_');
                     $newName  = $safeName . '.' . $extension;
-                    $newPath  = public_path('products/' . $newName);
+                    $newPath  = public_path('storage/products/' . $newName);
 
                     // إنشاء مجلد products إذا مش موجود
-                    if (!file_exists(public_path('products'))) {
-                        mkdir(public_path('products'), 0777, true);
+                    if (!file_exists(public_path('storage/products'))) {
+                        mkdir(public_path('storage/products'), 0777, true);
                     }
 
                     // نقل الملف
