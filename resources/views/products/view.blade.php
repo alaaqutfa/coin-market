@@ -447,6 +447,7 @@
 
                 // رفع للمعاينة
                 $('#previewForm').on('submit', function(e) {
+                    $('#loadingOverlay').show();
                     e.preventDefault();
                     let formData = new FormData(this);
 
@@ -492,6 +493,7 @@
                     `);
                             });
                             $('#saveImages').removeClass('hidden');
+                            $('#loadingOverlay').hide();
                         }
                     });
                 });
@@ -505,6 +507,7 @@
 
                 // حفظ نهائي
                 $('#saveImages').on('click', function() {
+                    $('#loadingOverlay').show();
                     $.ajax({
                         url: "{{ route('products.save.images') }}",
                         type: "POST",
@@ -514,6 +517,7 @@
                         },
                         success: function(res) {
                             showToast('تم الحفظ بنجاح ✅');
+                            $('#loadingOverlay').hide();
                         }
                     });
                 });
