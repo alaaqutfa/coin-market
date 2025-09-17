@@ -218,7 +218,7 @@ class ProductController extends Controller
             $results[] = [
                 'id'     => $product->id ?? null,
                 'name'   => $product->name ?? $cleanName,
-                'image'  => asset('tmp_products/' . $tmpName),
+                'image'  => asset('storage/tmp_products/' . $tmpName),
                 'tmp'    => $tmpName,
                 'status' => $product ? 'matched' : 'not_found',
             ];
