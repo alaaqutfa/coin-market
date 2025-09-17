@@ -12,7 +12,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::paginate(50);
+        $products = Product::whereNotNull('image_path')->paginate(50);
         return response()->json($products);
     }
 
