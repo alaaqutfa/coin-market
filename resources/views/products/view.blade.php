@@ -305,7 +305,7 @@
                     <i class="fas fa-list ml-2"></i>
                     قائمة المنتجات
                 </h2>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4 gap-2">
                     <button id="autoRefreshToggle"
                         class="auto-refresh-btn bg-gray-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-4 rounded-lg flex justify-center items-center gap-2">
                         <i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>
