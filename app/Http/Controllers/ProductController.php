@@ -6,6 +6,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+
 
 class ProductController extends Controller
 {
@@ -204,20 +206,21 @@ class ProductController extends Controller
         foreach ($files as $file) {
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
-            // حذف السعر من الاسم
+            // حذف السعر من الاسم لو موجود
             $cleanName = preg_replace('/ - \d+(\.\d+)?\$/', '', $originalName);
 
             // البحث عن المنتج
             $product = Product::where('name', $cleanName)->first();
 
-            // حفظ مؤقت في مجلد tmp
-            $tmpPath = $file->store('tmp_products', 'public');
+            // حفظ مؤقت في مجلد public/tmp_products
+            $tmpName = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('tmp_products'), $tmpName);
 
             $results[] = [
                 'id'     => $product->id ?? null,
                 'name'   => $product->name ?? $cleanName,
-                'image'  => asset('storage/' . $tmpPath),
-                'tmp'    => $tmpPath,
+                'image'  => asset('tmp_products/' . $tmpName),
+                'tmp'    => $tmpName,
                 'status' => $product ? 'matched' : 'not_found',
             ];
         }
@@ -232,16 +235,26 @@ class ProductController extends Controller
         foreach ($items as $item) {
             $product = Product::find($item['id']);
             if ($product && isset($item['tmp'])) {
-                $tmpPath = $item['tmp'];
-                if (Storage::disk('public')->exists($tmpPath)) {
-                    // انقل الصورة من tmp إلى مجلد products
+                $tmpPath = public_path('tmp_products/' . $item['tmp']);
+                if (file_exists($tmpPath)) {
                     $extension = pathinfo($tmpPath, PATHINFO_EXTENSION);
-                    $newPath   = 'products/' . $product->barcode . '_' . time() . '.' . $extension;
 
-                    Storage::disk('public')->move($tmpPath, $newPath);
+                    // اسم الصورة = اسم المنتج + السعر
+                    $safeName = Str::slug($product->name . '-' . $product->price, '_');
+                    $newName  = $safeName . '.' . $extension;
+                    $newPath  = public_path('products/' . $newName);
 
+                    // إنشاء مجلد products إذا مش موجود
+                    if (!file_exists(public_path('products'))) {
+                        mkdir(public_path('products'), 0777, true);
+                    }
+
+                    // نقل الملف
+                    rename($tmpPath, $newPath);
+
+                    // تحديث المنتج
                     $product->update([
-                        'image_path' => $newPath,
+                        'image_path' => 'products/' . $newName,
                         'have_image' => true,
                     ]);
                 }
