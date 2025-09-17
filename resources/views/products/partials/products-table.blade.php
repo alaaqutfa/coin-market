@@ -73,7 +73,7 @@
     </tr>
 @endforeach
 
-<tr>
+<tr dir="ltr">
     <td colspan="7">
         <!-- Pagination -->
         <div class="p-4 border-t">
