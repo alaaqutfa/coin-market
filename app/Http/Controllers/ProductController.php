@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-
 class ProductController extends Controller
 {
     public function index()
@@ -245,7 +244,7 @@ class ProductController extends Controller
                     $newPath  = public_path('storage/products/' . $newName);
 
                     // إنشاء مجلد products إذا مش موجود
-                    if (!file_exists(public_path('storage/products'))) {
+                    if (! file_exists(public_path('storage/products'))) {
                         mkdir(public_path('storage/products'), 0777, true);
                     }
 
