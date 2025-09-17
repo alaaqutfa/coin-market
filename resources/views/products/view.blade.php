@@ -447,7 +447,7 @@
 
                 // رفع للمعاينة
                 $('#previewForm').on('submit', function(e) {
-                    $('#loadingOverlay').show();
+                    $('#loadingOverlay').css('display', 'flex');
                     e.preventDefault();
                     let formData = new FormData(this);
 
@@ -507,7 +507,7 @@
 
                 // حفظ نهائي
                 $('#saveImages').on('click', function() {
-                    $('#loadingOverlay').show();
+                    $('#loadingOverlay').css('display', 'flex');
                     $.ajax({
                         url: "{{ route('products.save.images') }}",
                         type: "POST",
