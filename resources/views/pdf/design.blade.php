@@ -37,9 +37,14 @@
         }
 
         .products {
-            display: grid;
+            @if (count($products) < 4)
+                display: flex;
+            @else
+                display: grid;
+            @endif
             flex-wrap: wrap;
             justify-content: center;
+            align-items: center
             gap: 5rem;
         }
 
@@ -122,7 +127,7 @@
         </div>
     </div>
     <div class="w-full flex justify-center items-center">
-        <div class="products grid @if(count($products) > 4) grid-cols-3 @else grid-cols-2 @endif grid-rows-2">
+        <div class="products grid @if (count($products) > 4) grid-cols-3 @else grid-cols-2 @endif grid-rows-2">
             @foreach ($products as $product)
                 <div class="relative w-full max-w-sm rounded-lg shadow-sm">
                     <a href="#" class="flex justify-center items-center">
