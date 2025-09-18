@@ -129,7 +129,7 @@
                         <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
                             alt="product image" />
                     </a>
-                    <div class="price-shape pt-2 px-5 pb-5">
+                    <div class="price-shape pt-2 pr-4 pl-5 pb-5">
                         <a href="#">
                             <h5 class="price-text-xl line-clamp-2 font-semibold tracking-tight text-gray-900">
                                 {{ $product->name }}
