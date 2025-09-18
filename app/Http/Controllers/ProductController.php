@@ -261,7 +261,6 @@ class ProductController extends Controller
                     // تحديث المنتج
                     $product->update([
                         'image_path' => 'products/' . $newName,
-                        'have_image' => true,
                     ]);
                 }
             }

@@ -68,7 +68,7 @@
             background: url('{{ asset('assets/img/price-shape.png') }}') no-repeat center center;
             background-size: contain;
             position: absolute;
-            left: 0%;
+            left: -20%;
             bottom: -20%;
             display: flex;
             justify-content: space-between;
@@ -121,32 +121,33 @@
             <img src="{{ asset('assets/img/design-shape.png') }}" alt="">
         </div>
     </div>
-
-    <div class="products grid grid-cols-3 grid-rows-2">
-        @foreach ($products as $product)
-            <div class="relative w-full max-w-sm rounded-lg shadow-sm">
-                <a href="#" class="flex justify-center items-center">
-                    <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
-                        alt="product image" />
-                </a>
-                <div class="price-shape pt-2 px-5 pb-5">
-                    <a href="#">
-                        <h5 class="price-text-xl line-clamp-2 font-semibold tracking-tight text-gray-900">
-                            {{ $product->name }}
-                        </h5>
+    <div class="w-full flex justify-center items-center">
+        <div class="products grid grid-cols-3 grid-rows-2">
+            @foreach ($products as $product)
+                <div class="relative w-full max-w-sm rounded-lg shadow-sm">
+                    <a href="#" class="flex justify-center items-center">
+                        <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
+                            alt="product image" />
                     </a>
-                    <div class="flex items-end justify-between gap-2">
-                        <span style="width: 90px;height: 25px;background: var(--primary);color:var(--secondary);"
-                            class="font-black text-xl text-center rounded-lg">
-                            {{ $product->price }}$
-                        </span>
-                        <a href="#" style="color: var(--secondary);" class="font-black text-xl text-center">
-                            {{ $product->weight }}
+                    <div class="price-shape pt-2 px-5 pb-5">
+                        <a href="#">
+                            <h5 class="price-text-xl line-clamp-2 font-semibold tracking-tight text-gray-900">
+                                {{ $product->name }}
+                            </h5>
                         </a>
+                        <div class="flex items-end justify-between gap-2">
+                            <span style="width: 90px;height: 25px;background: var(--primary);color:var(--secondary);"
+                                class="font-black text-xl text-center rounded-lg">
+                                {{ $product->price }}$
+                            </span>
+                            <a href="#" style="color: var(--secondary);" class="font-black text-xl text-center">
+                                {{ $product->weight }}
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
+            @endforeach
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>\
