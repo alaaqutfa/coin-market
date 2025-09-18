@@ -140,7 +140,7 @@
                                 class="font-black text-xl text-center rounded-lg">
                                 {{ $product->price }}$
                             </span>
-                            <a href="#" style="color: var(--secondary);" class="font-black text-xl text-center">
+                            <a href="#" style="color: var(--secondary);" class="font-black text-lg text-center">
                                 {{ $product->weight }}
                             </a>
                         </div>
