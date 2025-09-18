@@ -218,17 +218,20 @@ class ProductController extends Controller
             // البحث عن المنتج
             $product = Product::where('name', $cleanName)->first();
 
-            // حفظ مؤقت في مجلد public/tmp_products
-            $tmpName = uniqid() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('storage/tmp_products'), $tmpName);
+            // فقط لو لقى المنتج يكمل
+            if ($product) {
+                // حفظ مؤقت في مجلد public/tmp_products
+                $tmpName = uniqid() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('storage/tmp_products'), $tmpName);
 
-            $results[] = [
-                'id'     => $product->id ?? null,
-                'name'   => $product->name ?? $cleanName,
-                'image'  => asset('storage/tmp_products/' . $tmpName),
-                'tmp'    => $tmpName,
-                'status' => $product ? 'matched' : 'not_found',
-            ];
+                $results[] = [
+                    'id'     => $product->id,
+                    'name'   => $product->name,
+                    'image'  => asset('storage/tmp_products/' . $tmpName),
+                    'tmp'    => $tmpName,
+                    'status' => 'matched',
+                ];
+            }
         }
 
         return response()->json($results);
