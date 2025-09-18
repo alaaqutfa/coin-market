@@ -37,7 +37,11 @@
         }
 
         .products {
-            display: grid;
+            @if(count($products) > 4)
+                display: grid;
+            @else
+                display: flex;
+            @endif
             flex-wrap: wrap;
             justify-content: center;
             gap: 5rem;
