@@ -115,7 +115,7 @@
         <div class="contact flex justify-center items-center gap-4">
             <div class="whatsapp flex justify-center items-center gap-4">
                 <i class="fa-brands fa-whatsapp" style="font-size:40px;color: #ECC631;"></i>
-                <span class="text-white font-bold" style="font-size: 30pt;">72 34 97 93</span>
+                <span class="text-white font-bold" style="font-size: 30pt;">71 34 97 93</span>
             </div>
             <div class="phone flex justify-center items-center gap-4">
                 <i class="fa-solid fa-phone" style="font-size:40px;color: #ECC631;"></i>
