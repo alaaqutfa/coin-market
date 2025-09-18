@@ -44,7 +44,7 @@
             @endif
             flex-wrap: wrap;
             justify-content: center;
-            align-items: center
+            align-items: center;
             gap: 5rem;
         }
 
