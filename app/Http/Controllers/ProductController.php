@@ -57,7 +57,7 @@ class ProductController extends Controller
         if ($request->date_from && $request->date_to) {
             $query->whereBetween('created_at', [
                 $request->date_from . ' 00:00:00',
-                $request->date_to . ' 23:59:59',
+                $request->date_to . ' 23:59:5 9',
             ]);
         }
 
