@@ -3,10 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+// use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Spatie\Browsershot\Browsershot;
 
 class ProductController extends Controller
 {
@@ -44,6 +46,11 @@ class ProductController extends Controller
         // الفلترة حسب الوزن
         if ($request->weight) {
             $query->where('weight', $request->weight);
+        }
+
+        // مع صورة
+        if ($request->have_image) {
+            $query->whereNotNull('image_path');
         }
 
         // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
@@ -261,6 +268,59 @@ class ProductController extends Controller
         }
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function exportCatalog(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $ids = json_decode($ids, true) ?? [];
+
+        if (empty($ids)) {
+            return response()->json(['error' => 'لم يتم تحديد أي منتجات'], 400);
+        }
+        // إذا كان ids نصاً مفصولاً بفواصل، حوله إلى مصفوفة
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+            $ids = array_filter($ids); // إزالة القيم الفارغة
+        }
+
+        $products = Product::whereIn('id', $ids)
+            ->whereNotNull('image_path')
+            ->get();
+
+        $html = view('pdf.design', compact('products'))->render();
+
+        Browsershot::html($html)
+            ->setNodeBinary('C:\Program Files\nodejs\node.exe')
+            ->setNpmBinary('C:\Program Files\nodejs\npm.cmd')
+            ->setChromePath('C:\Program Files\Google\Chrome\Application\chrome.exe')
+            ->windowSize(1080, 1080)
+            ->timeout(120)
+            ->noSandbox()
+            ->addChromiumArguments(['--no-sandbox', '--disable-setuid-sandbox'])
+            ->save(public_path('catalog.png'));
+
+        return response()->download(public_path('catalog.png'));
+    }
+
+    public function showCatalog(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $ids = json_decode($ids, true) ?? [];
+
+        if (empty($ids)) {
+            return response()->json(['error' => 'لم يتم تحديد أي منتجات'], 400);
+        }
+        // إذا كان ids نصاً مفصولاً بفواصل، حوله إلى مصفوفة
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+            $ids = array_filter($ids); // إزالة القيم الفارغة
+        }
+
+        $products = Product::whereIn('id', $ids)
+            ->whereNotNull('image_path')
+            ->get();
+        return view('pdf.design', compact('products'))->render();
     }
 
 }

@@ -310,6 +310,10 @@
                         class="auto-refresh-btn bg-gray-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-4 rounded-lg flex justify-center items-center gap-2">
                         <i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>
                     </button>
+                    <button onclick="showCatalog()"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                        إنشاء تصميم
+                    </button>
                     <span
                         class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex justify-center items-center gap-2">
                         <i class="fas fa-boxes ml-2"></i>
@@ -461,7 +465,7 @@
 
                 let previewData = []; // نخزن بيانات المعاينة
 
-                $('#dropzone-file').on('change', function(){
+                $('#dropzone-file').on('change', function() {
                     $('#previewForm').submit();
                 });
 
@@ -605,6 +609,7 @@
                 }
 
                 let data = {
+                    have_image: false,
                     barcode: $("input[name='barcode']").val(),
                     name: $("input[name='name']").val(),
                     price: $("input[name='price']").val(),
@@ -840,6 +845,100 @@
                 applyFilters(false);
             }
 
+            function copyTitle(element) {
+                const textToCopy = element.getAttribute("title");
+
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showToast(`✅ تم نسخ النص: ${textToCopy}`, 'success');
+                    })
+                    .catch(err => {
+                        console.log("حدث خطأ أثناء النسخ:", err);
+                    });
+                // مافي return false حتى الرابط يشتغل عادي
+            }
+
+            function exportCatalog() {
+                let ids = [];
+                $('#products-table-body input[type="checkbox"]:checked').each(function() {
+                    let tr = $(this).closest('tr');
+                    if (tr.data('id')) {
+                        ids.push(tr.data('id'));
+                    }
+                });
+
+                if (ids.length === 0) {
+                    showToast("رجاءً اختر منتجات أولاً", 'error');
+                    return;
+                }
+
+                // إنشاء نموذج وإرساله لتحميل الملف
+                let form = $('<form>', {
+                    method: 'POST',
+                    action: "{{ route('exportCatalog') }}"
+                });
+
+                // إضافة CSRF token
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: '_token',
+                    value: "{{ csrf_token() }}"
+                }));
+
+                // إضافة الـ IDs
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: 'ids',
+                    value: JSON.stringify(ids)
+                }));
+
+                // إضافة النموذج إلى الصفحة وإرساله
+                $(document.body).append(form);
+                form.submit();
+                form.remove();
+            }
+
+            function showCatalog() {
+                let ids = [];
+                $('#products-table-body input[type="checkbox"]:checked').each(function() {
+                    let tr = $(this).closest('tr');
+                    if (tr.data('id')) {
+                        ids.push(tr.data('id'));
+                    }
+                });
+
+                if (ids.length === 0) {
+                    showToast("رجاءً اختر منتجات أولاً", 'error');
+                    return;
+                }
+
+                // إنشاء نموذج وإرساله لتحميل الملف
+                let form = $('<form>', {
+                    method: 'GET',
+                    action: "{{ route('showCatalog') }}",
+                    target: '_blank'
+                });
+
+                // إضافة CSRF token
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: '_token',
+                    value: "{{ csrf_token() }}"
+                }));
+
+                // إضافة الـ IDs
+                form.append($('<input>', {
+                    type: 'hidden',
+                    name: 'ids',
+                    value: JSON.stringify(ids)
+                }));
+
+                // إضافة النموذج إلى الصفحة وإرساله
+                $(document.body).append(form);
+                form.submit();
+                form.remove();
+            }
+
             $(document).ready(function() {
                 // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
                 initEditableFields();
@@ -865,19 +964,5 @@
                 // إعداد حدث النقر على زر التحديث التلقائي
                 $('#autoRefreshToggle').click(toggleAutoRefresh);
             });
-
-
-            function copyTitle(element) {
-                const textToCopy = element.getAttribute("title");
-
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => {
-                        showToast(`✅ تم نسخ النص: ${textToCopy}`, 'success');
-                    })
-                    .catch(err => {
-                        console.log("حدث خطأ أثناء النسخ:", err);
-                    });
-                // مافي return false حتى الرابط يشتغل عادي
-            }
         </script>
     @endpush

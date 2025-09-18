@@ -5,8 +5,7 @@
         </th>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
             <button class="mx-2" title="{{ $product->name }} - {{ $product->price }}$" onclick="copyTitle(this)">
-                <i
-                    class="fas fa-copy text-base text-gray-400 hover:text-gray-800 transition-all duration-150 ease-linear"></i>
+                <i class="fas fa-copy text-base text-gray-400 hover:text-gray-800 transition-all duration-150 ease-linear"></i>
             </button>
             {{ $product->barcode }}
         </th>
