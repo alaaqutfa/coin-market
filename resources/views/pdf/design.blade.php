@@ -73,7 +73,7 @@
             background: url('{{ asset('assets/img/price-shape.png') }}') no-repeat center center;
             background-size: contain;
             position: absolute;
-            left: -20%;
+            left: 0%;
             bottom: -20%;
             display: flex;
             justify-content: space-between;
