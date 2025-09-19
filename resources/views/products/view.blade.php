@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', '')
+@section('title', 'إدارة المنتجات')
 
 @push('css')
     <style>
