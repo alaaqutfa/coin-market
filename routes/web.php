@@ -28,4 +28,5 @@ Route::get('/showCatalog', [ProductController::class, 'showCatalog'])->name('sho
 Route::prefix('api')->group(function () {
     Route::apiResource('products', ProductController::class);
     Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
+    Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
 });

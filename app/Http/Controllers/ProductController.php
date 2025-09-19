@@ -169,6 +169,36 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    public function updateByBarcode(Request $request, $barcode)
+    {
+        $product = Product::where('barcode', $barcode)->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'barcode' => 'sometimes|unique:products,barcode,' . $product->id,
+            'name'    => 'sometimes|max:255',
+            'price'   => 'sometimes|numeric|min:0',
+            'image'   => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
+
+        if ($request->hasFile('image')) {
+            if ($product->image_path && Storage::exists($product->image_path)) {
+                Storage::delete($product->image_path);
+            }
+            $imagePath                 = $this->storeImage($request->file('image'), $request->barcode);
+            $productData['image_path'] = $imagePath;
+        }
+
+        $product->update($productData);
+
+        return response()->json($product);
+    }
+
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
