@@ -22,7 +22,7 @@
                 </span>
                 <input type="number" id="employee_code" name="employee_code"
                     class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-                    placeholder="الرقم الوظيفي">
+                    placeholder="الرقم الوظيفي" required />
             </div>
 
             <!-- اسم الموظف -->
@@ -34,7 +34,7 @@
                 </span>
                 <input type="text" id="name" name="name"
                     class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-                    placeholder="الأسم الكامل">
+                    placeholder="الأسم الكامل" required />
             </div>
 
             <!-- الراتب -->
@@ -46,7 +46,7 @@
                 </span>
                 <input type="number" id="salary" name="salary"
                     class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-                    placeholder="الراتب">
+                    placeholder="الراتب" required />
             </div>
 
             <!-- البريد الإلكتروني -->
@@ -54,7 +54,7 @@
             <div class="flex">
                 <span
                     class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-e-0 border-gray-300 rounded-s-md">
-                    <i class="fa-solid fa-email text-base text-gray-500"></i>
+                    <i class="fa-solid fa-envelope text-base text-gray-500"></i>
                 </span>
                 <input type="email" id="email" name="email"
                     class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 block flex-1 min-w-0 w-full text-sm p-2.5"
@@ -94,7 +94,7 @@
                 </span>
                 <input type="password" id="password" name="password"
                     class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-                    placeholder="كلمة السر">
+                    placeholder="كلمة السر" required />
             </div>
 
             <button type="submit "
