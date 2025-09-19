@@ -86,8 +86,8 @@
         .price-text-xl {
             height: 60px;
             color: var(--primary);
-            font-size: 1.25rem;
-            line-height: 1.25rem;
+            font-size: 1.5rem;
+            line-height: 1.75rem;
             font-weight: 800;
             overflow: hidden;
             display: -webkit-box;
@@ -126,7 +126,7 @@
             <img src="{{ asset('assets/img/design-shape.png') }}" alt="">
         </div>
     </div>
-    <div class="w-full flex justify-center items-center">
+    <div class="w-full @if (count($products) <= 4) flex justify-center items-center @endif">
         <div class="products grid @if (count($products) > 4) grid-cols-3 @else grid-cols-2 @endif grid-rows-2">
             @foreach ($products as $product)
                 <div class="relative w-full max-w-sm rounded-lg shadow-sm">
@@ -142,10 +142,10 @@
                         </a>
                         <div class="flex items-end justify-between gap-2">
                             <span style="width: 90px;height: 25px;background: var(--primary);color:var(--secondary);"
-                                class="font-black text-xl text-center rounded-lg">
+                                class="font-black text-2xl text-center rounded-lg">
                                 {{ $product->price }}$
                             </span>
-                            <a href="#" style="color: var(--secondary);" class="font-black text-lg text-center">
+                            <a href="#" style="color: var(--secondary);" class="font-black text-xl text-center">
                                 {{ $product->weight }}
                             </a>
                         </div>
