@@ -52,7 +52,7 @@
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 3rem;
         }
 
         .product {
@@ -60,7 +60,7 @@
             display: flex;
             justify-content: center;
             align-items: end;
-            gap: 1rem;
+            /* gap: 1rem; */
         }
 
         .image-shape {
@@ -71,6 +71,8 @@
             align-items: center;
             flex-direction: column;
             gap: 1rem;
+            border: 5px solid var(--primary);
+            border-radius: 20px 20px 0px 20px;
         }
 
         .image-shape .product-image {
@@ -94,7 +96,7 @@
             padding: 1rem;
             color: white;
             background-color: red;
-            border-radius: 20px 0px 20px;
+            border-radius: 15px 0px 15px;
             font-size: 2rem;
             font-weight: 800;
             line-height: 2rem;
@@ -103,6 +105,8 @@
         .price-shape {
             width: 40%;
             background: #f8f8f8;
+            border-top: 5px solid var(--primary);
+            border-right: 5px solid var(--primary);
             box-shadow: 20px 10px 10px #22222280;
         }
 
