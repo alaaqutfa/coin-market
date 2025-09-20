@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('assets/img/design-bg-1.jpeg') }}') no-repeat center center;
+            /* background: url('{{ asset('assets/img/design-bg-1.jpeg') }}') no-repeat center center; */
             background-size: cover;
             padding: 20px;
             overflow: hidden;
