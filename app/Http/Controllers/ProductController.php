@@ -320,7 +320,7 @@ class ProductController extends Controller
             ->whereNotNull('image_path')
             ->get();
 
-        $html = view('pdf.design', compact('products'))->render();
+        $html = view('design.design', compact('products'))->render();
 
         Browsershot::html($html)
             ->setNodeBinary('C:\Program Files\nodejs\node.exe')
@@ -352,7 +352,7 @@ class ProductController extends Controller
         $products = Product::whereIn('id', $ids)
             ->whereNotNull('image_path')
             ->get();
-        return view('pdf.design', compact('products'))->render();
+        return view('design.design', compact('products'))->render();
     }
 
 }
