@@ -117,7 +117,7 @@
             color: var(--secondary);
             font-size: 4rem;
             font-weight: 800;
-            line-height: 3.5rem;
+            line-height: 4rem;
             text-align: justify;
         }
 
