@@ -66,6 +66,8 @@
         .image-shape {
             position: relative;
             width: 60%;
+            height: 600px;
+            padding: 2rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -77,11 +79,10 @@
 
         .image-shape .product-image {
             width: 100%;
-            max-width: 300px;
             height: 100%;
-            @if ($products->count() > 4)
+            /* @if ($products->count() > 4)
                 max-height: 400px;
-            @endif
+            @endif */
             object-fit: contain;
         }
 
