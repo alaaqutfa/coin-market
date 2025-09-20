@@ -98,7 +98,7 @@
             color: white;
             background-color: red;
             border-radius: 15px 0px 15px;
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: 800;
             line-height: 2rem;
         }
