@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'إدارة الموظفين')
+@section('title', 'إضافة موظف')
 
 @push('css')
 @endpush

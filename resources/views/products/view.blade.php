@@ -178,8 +178,6 @@
             </ul>
         </div>
 
-
-
         <!-- جدول المنتجات -->
         <div class="nav-item products-list table-container bg-white rounded-lg">
 

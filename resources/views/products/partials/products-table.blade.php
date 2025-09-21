@@ -5,7 +5,8 @@
         </th>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
             <button class="mx-2" title="{{ $product->name }} - {{ $product->price }}$" onclick="copyTitle(this)">
-                <i class="fas fa-copy text-base text-gray-400 hover:text-gray-800 transition-all duration-150 ease-linear"></i>
+                <i
+                    class="fas fa-copy text-base text-gray-400 hover:text-gray-800 transition-all duration-150 ease-linear"></i>
             </button>
             {{ $product->barcode }}
         </th>
@@ -50,7 +51,7 @@
                     <i class="fas fa-trash"></i>
                 </button>
 
-                <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' high quality png image' }}"
+                <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' ' . $product->weight . ' high quality png image' }}"
                     title="{{ $product->name }} - {{ $product->price }}$" class="text-blue-600 hover:text-blue-800"
                     target="_blank" rel="noopener noreferrer" onclick="copyTitle(this)">
                     <i class="fas fa-search"></i>

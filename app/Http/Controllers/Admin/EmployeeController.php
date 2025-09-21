@@ -10,6 +10,12 @@ use Illuminate\Validation\Rule;
 class EmployeeController extends Controller
 {
 
+    public function index()
+    {
+        $employees = Employee::latest()->get();
+        return view('employees.view',compact('employees'));
+    }
+
     public function create()
     {
         return view('employees.create');
