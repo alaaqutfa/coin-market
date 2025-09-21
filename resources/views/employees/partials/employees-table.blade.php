@@ -11,11 +11,11 @@
                 {{ $employee->name }}
             </div>
         </td>
-        <td class="px-6 py-4">
+        {{-- <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="price">
                 {{ $employee->salary }}
             </div>
-        </td>
+        </td> --}}
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="weight">
                 {{ $employee->email ?? 'لا يوجد' }}
