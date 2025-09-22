@@ -4,7 +4,8 @@
             <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
         </th>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-            <button class="mx-2" title="{{ $product->name }} {{ $product->weight }} - {{ $product->price }}$" onclick="copyTitle(this)">
+            <button class="mx-2" title="{{ $product->name }} {{ $product->weight }} - {{ $product->price }}$"
+                onclick="copyTitle(this)">
                 <i
                     class="fas fa-copy text-base text-gray-400 hover:text-gray-800 transition-all duration-150 ease-linear"></i>
             </button>
@@ -15,7 +16,8 @@
                 @if ($product->image_path)
                     @php
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
-                        $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
+                        $downloadName =
+                            $product->name . ' ' . $product->weight . ' - ' . $product->price . '$.' . $extension;
                     @endphp
                     <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}">
                         <img src="{{ asset('storage/' . $product->image_path) }}"
@@ -52,8 +54,9 @@
                 </button>
 
                 <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' ' . $product->weight . ' high quality png image' }}"
-                    title="{{ $product->name }} {{ $product->weight }} - {{ $product->price }}$" class="text-blue-600 hover:text-blue-800"
-                    target="_blank" rel="noopener noreferrer" onclick="copyTitle(this)">
+                    title="{{ $product->name }} {{ $product->weight }} - {{ $product->price }}$"
+                    class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"
+                    onclick="copyTitle(this)">
                     <i class="fas fa-search"></i>
                 </a>
 
@@ -61,7 +64,8 @@
                 @if ($product->image_path)
                     @php
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
-                        $downloadName = $product->name . ' - ' . $product->price . '$.' . $extension;
+                        $downloadName =
+                            $product->name . ' ' . $product->weight . ' - ' . $product->price . '$.' . $extension;
                     @endphp
                     <a href="{{ asset('storage/' . $product->image_path) }}" download="{{ $downloadName }}"
                         class="text-green-600 hover:text-green-800" title="تحميل الصورة">
