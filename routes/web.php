@@ -36,14 +36,17 @@ Route::prefix('api')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('/check-in', [AttendanceController::class, 'checkIn']);
-        Route::post('/check-out', [AttendanceController::class, 'checkOut']);
-        Route::get('/attendance', [AttendanceController::class, 'index']);
+        Route::post('/employee/logout', [AuthController::class, 'logout']);
+        Route::post('/employee/check-in', [AttendanceController::class, 'checkIn']);
+        Route::post('/employee/check-out', [AttendanceController::class, 'checkOut']);
+        Route::get('/employee/attendance', [AttendanceController::class, 'index']);
     });
 });
 
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
 Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-
+Route::get('/employees/{id}', [EmployeeController::class, 'show'])->name('employees.show');
+Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
 Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');

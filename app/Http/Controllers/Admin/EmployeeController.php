@@ -13,7 +13,7 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::latest()->get();
-        return view('employees.view',compact('employees'));
+        return view('employees.view', compact('employees'));
     }
 
     public function create()
@@ -21,7 +21,21 @@ class EmployeeController extends Controller
         return view('employees.create');
     }
 
-    // مولد كود وظيفي فريد (يمكن تعديله حسب رغبتك)
+    // عرض تفاصيل موظف معين
+    public function show($id)
+    {
+        $employee = Employee::findOrFail($id);
+        return view('employees.show', compact('employee'));
+    }
+
+    // عرض نموذج تعديل الموظف
+    public function edit($id)
+    {
+        $employee = Employee::findOrFail($id);
+        return view('employees.edit', compact('employee'));
+    }
+
+    // مولد كود وظيفي فريد
     private function generateUniqueEmployeeCode()
     {
         do {
@@ -60,5 +74,74 @@ class EmployeeController extends Controller
             'message'  => 'تم إنشاء الموظف',
             'employee' => $employee,
         ], 201);
+    }
+
+    // تابع تحديث بيانات الموظف
+    public function update(Request $request, $id)
+    {
+        $employee = Employee::findOrFail($id);
+
+        // قواعد التحقق الأساسية
+        $rules = [
+            'name'          => 'sometimes|required|string|max:255',
+            'employee_code' => ['sometimes', 'nullable', 'string', 'max:50', Rule::unique('employees', 'employee_code')->ignore($employee->id)],
+            'salary'        => 'sometimes|required|numeric',
+            'start_date'    => 'sometimes|required|date',
+            'email'         => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('employees', 'email')->ignore($employee->id)],
+            'phone'         => ['sometimes', 'nullable', 'string', 'max:30', Rule::unique('employees', 'phone')->ignore($employee->id)],
+            'password'      => 'sometimes|nullable|string|min:6',
+        ];
+
+        // التحقق من البيانات المرسلة فقط
+        $data = $request->validate($rules);
+
+        $updateData = [];
+
+        // إضافة الحقول المرسلة فقط
+        if (isset($data['name'])) {
+            $updateData['name'] = $data['name'];
+        }
+
+        if (isset($data['employee_code'])) {
+            $updateData['employee_code'] = $data['employee_code'];
+        }
+
+        if (isset($data['salary'])) {
+            $updateData['salary'] = $data['salary'];
+        }
+
+        if (isset($data['start_date'])) {
+            $updateData['start_date'] = $data['start_date'];
+        }
+
+        if (isset($data['email'])) {
+            $updateData['email'] = $data['email'];
+        }
+
+        if (isset($data['phone'])) {
+            $updateData['phone'] = $data['phone'];
+        }
+
+        if (! empty($data['password'])) {
+            $updateData['password'] = Hash::make($data['password']);
+        }
+
+        $employee->update($updateData);
+
+        return response()->json([
+            'message'  => 'تم تحديث بيانات الموظف',
+            'employee' => $employee,
+        ], 200);
+    }
+
+    // تابع حذف الموظف
+    public function destroy($id)
+    {
+        $employee = Employee::findOrFail($id);
+        $employee->delete();
+
+        return response()->json([
+            'message' => 'تم حذف الموظف بنجاح',
+        ], 200);
     }
 }

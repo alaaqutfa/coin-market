@@ -17,23 +17,23 @@
             </div>
         </td> --}}
         <td class="px-6 py-4">
-            <div class="editable-field" contenteditable="true" data-field="weight">
+            <div class="editable-field" contenteditable="true" data-field="email">
                 {{ $employee->email ?? 'لا يوجد' }}
             </div>
         </td>
         <td class="px-6 py-4">
-            <div class="editable-field" contenteditable="true" data-field="weight">
+            <div class="editable-field" contenteditable="true" data-field="phone">
                 {{ $employee->phone ?? 'لا يوجد' }}
             </div>
         </td>
         <td class="px-6 py-4">
-            <div class="editable-field" contenteditable="true" data-field="weight">
+            <div class="editable-field" contenteditable="true" data-field="start_date">
             {{ $employee->start_date->format('Y-m-d') }}
             </div>
         </td>
         <td class="px-6 py-4">
             <div class="flex justify-center items-center gap-2">
-                <button onclick="" class="text-red-600 hover:text-red-800">
+                <button onclick="deleteEmployee({{ $employee->id }})" class="text-red-600 hover:text-red-800">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
