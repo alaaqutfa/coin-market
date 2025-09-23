@@ -6,6 +6,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -144,4 +145,24 @@ class EmployeeController extends Controller
             'message' => 'تم حذف الموظف بنجاح',
         ], 200);
     }
+
+    public function isWorkingDay($employee, Carbon $date)
+{
+    $schedule = $employee->workSchedules()
+        ->where('day_of_week', $date->dayOfWeek) // 0-6
+        ->get();
+
+    foreach ($schedule as $rule) {
+        if (!$rule->is_alternate) {
+            return true; // دوام ثابت
+        }
+
+        // لو دوام أسبوع بعد أسبوع
+        if ($date->weekOfYear % 2 == 0) {
+            return true; // مثال: الأسابيع الزوجية
+        }
+    }
+
+    return false;
+}
 }

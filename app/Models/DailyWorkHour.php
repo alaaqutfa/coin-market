@@ -1,24 +1,25 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Employee;
+use Illuminate\Database\Eloquent\Model;
 
-class WorkSchedule extends Model
+class DailyWorkHour extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'employee_id',
-        'day_of_week',
-        'is_alternate',
-        'start_time',
-        'end_time',
-        'work_hours',
+        'date',
+        'required_hours',
+        'actual_hours',
     ];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
+    // العلاقة مع الموظف
     public function employee()
     {
         return $this->belongsTo(Employee::class);
