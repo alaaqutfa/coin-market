@@ -1,12 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Employee;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -19,7 +17,7 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'identifier' => 'required|string', // يمكن أن يكون email أو employee_code أو phone
-            'password' => 'required|string',
+            'password'   => 'required|string',
         ]);
 
         $identifier = $data['identifier'];
@@ -30,10 +28,14 @@ class AuthController extends Controller
             ->orWhere('phone', $identifier)
             ->first();
 
-        if (!$employee || !Hash::check($data['password'], $employee->password)) {
-            throw ValidationException::withMessages([
-                'identifier' => ['بيانات الدخول غير صحيحة.'],
+        if (! $employee || ! Hash::check($data['password'], $employee->password)) {
+            return response()->json([
+                'identifier' => $identifier,
+                'employee'   => $employee,
             ]);
+            // throw ValidationException::withMessages([
+            //     'identifier' => ['بيانات الدخول غير صحيحة.'],
+            // ]);
         }
 
         // أنشئ توكن (Sanctum)
@@ -41,7 +43,7 @@ class AuthController extends Controller
 
         return response()->json([
             'employee' => $employee,
-            'token' => $token,
+            'token'    => $token,
         ]);
     }
 
