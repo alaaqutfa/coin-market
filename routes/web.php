@@ -19,3 +19,9 @@ Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('e
 Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
 Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+
+Route::prefix('api')->group(function () {
+    Route::apiResource('products', ProductController::class);
+    Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
+    Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
+});
