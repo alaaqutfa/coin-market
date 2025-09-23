@@ -32,7 +32,6 @@ Route::prefix('api')->group(function () {
     Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
     Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
 
-    // Authorization: Bearer {token}
     Route::post('/login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
