@@ -14,9 +14,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee/attendance', [AttendanceController::class, 'index']);
 });
 
-// Route::apiResource('products', ProductController::class);
-// Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
-// Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
+Route::apiResource('products', ProductController::class);
+Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
+Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
 
 // route اختبار
 Route::get('/test', function () {
