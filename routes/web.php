@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Api\AttendanceController;
-use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -26,21 +24,6 @@ Route::post('/products/preview-images', [ProductController::class, 'previewImage
 Route::post('/products/save-images', [ProductController::class, 'saveImages'])->name('products.save.images');
 Route::post('/exportCatalog', [ProductController::class, 'exportCatalog'])->name('exportCatalog');
 Route::get('/showCatalog', [ProductController::class, 'showCatalog'])->name('showCatalog');
-
-Route::prefix('api')->group(function () {
-    Route::apiResource('products', ProductController::class);
-    Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
-    Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
-
-    Route::post('/login', [AuthController::class, 'login']);
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/employee/logout', [AuthController::class, 'logout']);
-        Route::post('/employee/check-in', [AttendanceController::class, 'checkIn']);
-        Route::post('/employee/check-out', [AttendanceController::class, 'checkOut']);
-        Route::get('/employee/attendance', [AttendanceController::class, 'index']);
-    });
-});
 
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
 Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
