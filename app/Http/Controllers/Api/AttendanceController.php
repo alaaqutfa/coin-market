@@ -37,7 +37,6 @@ class AttendanceController extends Controller
             return response()->json(['message' => 'الموظف غير موجود'], 422);
         }
 
-
         if ($request->barcode !== 'A123456a@') {
             return response()->json(['message' => 'الباركود غير صحيح'], 422);
         }
@@ -80,7 +79,7 @@ class AttendanceController extends Controller
     public function checkOut(Request $request)
     {
         $request->validate([
-            'employee_id' => 'required|integer', // الرقم الوظيفي
+            'employee_id' => 'required|integer',
             'note'        => 'nullable|string',
             'barcode'     => 'required|string',
             'lat'         => 'required|numeric',
@@ -91,7 +90,6 @@ class AttendanceController extends Controller
         if (!$employee) {
             return response()->json(['message' => 'الموظف غير موجود'], 422);
         }
-
 
         if ($request->barcode !== 'A123456a@') {
             return response()->json(['message' => 'الباركود غير صحيح'], 422);
@@ -147,9 +145,97 @@ class AttendanceController extends Controller
     {
         $employee = $request->user();
         $logs     = AttendanceLog::where('employee_id', $employee->id)
-            ->orderByDesc('id') // كل جلسة بشكل مستقل
+            ->orderByDesc('id')
             ->paginate(30);
 
         return response()->json($logs);
+    }
+
+    // دالة جديدة لعرض جميع حركات اليوم مع أسماء الموظفين
+    public function attendanceToday(Request $request)
+    {
+        $today = now()->toDateString();
+
+        // جلب جميع سجلات الحضور لليوم مع معلومات الموظفين
+        $logs = AttendanceLog::with('employee')
+            ->where('date', $today)
+            ->orderByDesc('check_in')
+            ->get();
+
+        // تنسيق البيانات للإرجاع
+        $formattedLogs = $logs->map(function ($log) {
+            return [
+                'id' => $log->id,
+                'employee_id' => $log->employee_id,
+                'employee_name' => $log->employee->name ?? 'غير معروف',
+                'employee_code' => $log->employee->employee_code ?? 'غير معروف',
+                'date' => $log->date,
+                'check_in' => $log->check_in,
+                'check_out' => $log->check_out,
+                'note' => $log->note,
+                'status' => $log->check_out ? 'مغادر' : 'حاضر',
+                'duration' => $log->check_out ?
+                    $this->calculateDuration($log->check_in, $log->check_out) :
+                    'لا يزال حاضراً'
+            ];
+        });
+
+        return response()->json([
+            'date' => $today,
+            'total_records' => $logs->count(),
+            'present_count' => $logs->whereNull('check_out')->count(),
+            'left_count' => $logs->whereNotNull('check_out')->count(),
+            'attendance_logs' => $formattedLogs
+        ]);
+    }
+
+    // دالة مساعدة لحساب المدة بين الدخول والخروج
+    private function calculateDuration($checkIn, $checkOut)
+    {
+        $start = \Carbon\Carbon::parse($checkIn);
+        $end = \Carbon\Carbon::parse($checkOut);
+        $duration = $start->diff($end);
+
+        return sprintf('%02d:%02d', $duration->h, $duration->i);
+    }
+
+    // إذا أردت إصدار مع pagination
+    public function attendanceTodayPaginated(Request $request)
+    {
+        $today = now()->toDateString();
+
+        $logs = AttendanceLog::with('employee')
+            ->where('date', $today)
+            ->orderByDesc('check_in')
+            ->paginate(50);
+
+        // تنسيق البيانات مع pagination
+        $formattedData = [
+            'date' => $today,
+            'total_records' => $logs->total(),
+            'present_count' => $logs->whereNull('check_out')->count(),
+            'left_count' => $logs->whereNotNull('check_out')->count(),
+            'current_page' => $logs->currentPage(),
+            'last_page' => $logs->lastPage(),
+            'per_page' => $logs->perPage(),
+            'attendance_logs' => $logs->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'employee_id' => $log->employee_id,
+                    'employee_name' => $log->employee->name ?? 'غير معروف',
+                    'employee_code' => $log->employee->employee_code ?? 'غير معروف',
+                    'date' => $log->date,
+                    'check_in' => $log->check_in,
+                    'check_out' => $log->check_out,
+                    'note' => $log->note,
+                    'status' => $log->check_out ? 'مغادر' : 'حاضر',
+                    'duration' => $log->check_out ?
+                        $this->calculateDuration($log->check_in, $log->check_out) :
+                        'لا يزال حاضراً'
+                ];
+            })
+        ];
+
+        return response()->json($formattedData);
     }
 }
