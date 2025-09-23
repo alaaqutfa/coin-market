@@ -17,6 +17,12 @@ class EmployeeController extends Controller
         return view('employees.view', compact('employees'));
     }
 
+    public function show_employee_code_list()
+    {
+        $employees = Employee::orderBy('employee_code', 'desc')->get();
+        return view('employees.employee_code_list', compact('employees'));
+    }
+
     public function create()
     {
         return view('employees.create');

@@ -16,6 +16,7 @@ Route::get('/show-catalog', [ProductController::class, 'showCatalog'])->name('sh
 
 // Routes الموظفين
 Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+Route::get('/employee_code_list', [EmployeeController::class, 'show_employee_code_list'])->name('employee_code_list');
 Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
 Route::get('/employees/{id}', [EmployeeController::class, 'show'])->name('employees.show');
 Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
