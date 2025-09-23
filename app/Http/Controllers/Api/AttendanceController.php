@@ -56,13 +56,14 @@ class AttendanceController extends Controller
                 'message' => 'لا يمكنك تسجيل دخول جديد قبل تسجيل خروج الجلسة السابقة.',
             ], 422);
         }
-
+        $time    = now()->format('H:i');
+        $newNote = "{$time} - دخول : " . ($request->note ?? '');
         // إنشاء سجل جديد لكل تسجيل دخول
         $log = AttendanceLog::create([
             'employee_id' => $employee->id,
             'date'        => $today,
             'check_in'    => now(),
-            'note'        => $request->note,
+            'note'        => $newNote,
         ]);
 
         return response()->json(['message' => 'تم تسجيل الدخول', 'log' => $log]);
@@ -106,10 +107,14 @@ class AttendanceController extends Controller
             return response()->json(['message' => 'لم يتم تسجيل الدخول اليوم بعد'], 422);
         }
 
+        $time = now()->format('H:i'); // الوقت الحالي بالساعات والدقائق
+
+        $newNote = "{$time} - خروج : " . ($request->note ?? '');
+
         // تحديث الخروج ودمج الملاحظات
         $log->update([
             'check_out' => now(),
-            'note'      => trim(($log->note ?? '') . "\n" . ($request->note ?? '')),
+            'note'      => $newNote,
         ]);
 
         $yesterdayLog = AttendanceLog::where('employee_id', $employee->id)
