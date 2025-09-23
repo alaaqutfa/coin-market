@@ -872,46 +872,6 @@
                 // مافي return false حتى الرابط يشتغل عادي
             }
 
-            function exportCatalog() {
-                let ids = [];
-                $('#products-table-body input[type="checkbox"]:checked').each(function() {
-                    let tr = $(this).closest('tr');
-                    if (tr.data('id')) {
-                        ids.push(tr.data('id'));
-                    }
-                });
-
-                if (ids.length === 0) {
-                    showToast("رجاءً اختر منتجات أولاً", 'error');
-                    return;
-                }
-
-                // إنشاء نموذج وإرساله لتحميل الملف
-                let form = $('<form>', {
-                    method: 'POST',
-                    action: "{{ route('exportCatalog') }}"
-                });
-
-                // إضافة CSRF token
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: '_token',
-                    value: "{{ csrf_token() }}"
-                }));
-
-                // إضافة الـ IDs
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: 'ids',
-                    value: JSON.stringify(ids)
-                }));
-
-                // إضافة النموذج إلى الصفحة وإرساله
-                $(document.body).append(form);
-                form.submit();
-                form.remove();
-            }
-
             function showCatalog() {
                 let ids = [];
                 $('#products-table-body input[type="checkbox"]:checked').each(function() {
