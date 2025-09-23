@@ -12,10 +12,23 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // إضافة استثناءات CSRF لمسارات API
+        // إضافة CORS middleware لجميع طلبات API
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \Illuminate\Http\Middleware\HandleCors::class, // هذا السطر مهم!
+        ]);
+
+        // إضافة alias لـ CORS إذا لم يكن موجوداً
+        $middleware->alias([
+            'cors' => \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
+
+        // إستثناءات CSRF لـ API
         $middleware->validateCsrfTokens(except: [
             'api/*',
-            'coin-market-soical-stock/backend/public/api/*'
+            'login',
+            'logout',
+            'sanctum/csrf-cookie'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
