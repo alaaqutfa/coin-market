@@ -32,7 +32,7 @@ class AttendanceController extends Controller
             'lng'         => 'required|numeric',
         ]);
 
-        $employee = Employee::find($request->employee_id);
+        $employee = Employee::where('employee_code','employee_id')->first();
         if (!$employee) {
             return response()->json(['message' => 'الموظف غير موجود'], 422);
         }
@@ -86,7 +86,7 @@ class AttendanceController extends Controller
             'lng'         => 'required|numeric',
         ]);
 
-        $employee = Employee::find($request->employee_id);
+        $employee = Employee::where('employee_code','employee_id')->first();
         if (!$employee) {
             return response()->json(['message' => 'الموظف غير موجود'], 422);
         }
