@@ -13,6 +13,13 @@ class AuthController extends Controller
         $this->middleware('auth:sanctum')->only('logout');
     }
 
+    public function tokinLogin(Request $request)
+    {
+        return response()->json([
+            'employee' => $request->user(),
+        ]);
+    }
+
     public function login(Request $request)
     {
         $data = $request->validate([

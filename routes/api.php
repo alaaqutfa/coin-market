@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 // Routes لا تتطلب مصادقة
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/tokin-login', [AuthController::class, 'tokinLogin'])->middleware('auth:sanctum');
 Route::get('/test', function () {
     return response()->json(['message' => 'API is working!', 'timestamp' => now()]);
 });
