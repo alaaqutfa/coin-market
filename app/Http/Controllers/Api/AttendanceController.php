@@ -52,7 +52,7 @@ class AttendanceController extends Controller
         $today = now()->toDateString();
 
         // التحقق من آخر سجل للموظف
-        $lastLog = AttendanceLog::where('employee_id', $request->employee_id)
+        $lastLog = AttendanceLog::where('employee_id', $employee->id)
             ->latest()
             ->first();
 
@@ -67,7 +67,7 @@ class AttendanceController extends Controller
 
         // إنشاء سجل جديد لكل تسجيل دخول
         $log = AttendanceLog::create([
-            'employee_id' => $request->employee_id,
+            'employee_id' => $employee->id,
             'date'        => $today,
             'check_in'    => now(),
             'note'        => $newNote,
@@ -104,7 +104,7 @@ class AttendanceController extends Controller
         }
 
         // البحث عن آخر سجل للموظف بدون خروج
-        $log = AttendanceLog::where('employee_id', $request->employee_id)
+        $log = AttendanceLog::where('employee_id', $employee->id)
             ->where('date', now()->toDateString())
             ->whereNull('check_out')
             ->latest()
@@ -124,7 +124,7 @@ class AttendanceController extends Controller
             'note'      => $newNote,
         ]);
 
-        $yesterdayLog = AttendanceLog::where('employee_id', $request->employee_id)
+        $yesterdayLog = AttendanceLog::where('employee_id', $employee->id)
             ->where('date', now()->subDay()->toDateString())
             ->whereNull('check_out')
             ->first();
