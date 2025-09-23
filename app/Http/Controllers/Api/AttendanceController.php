@@ -77,12 +77,12 @@ class AttendanceController extends Controller
             'lng'     => 'required|numeric',
         ]);
 
-        if ($request->barcode !== 'YOUR_BARCODE_VALUE') {
+        if ($request->barcode !== 'A123456a@') {
             return response()->json(['message' => 'الباركود غير صحيح'], 422);
         }
 
-        $companyLat = 33.5000;
-        $companyLng = 36.3000;
+        $companyLat = 33.9684253;
+        $companyLng = 35.6160169;
         $distance   = $this->haversine($companyLat, $companyLng, $request->lat, $request->lng);
 
         if ($distance > 0.1) {
