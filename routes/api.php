@@ -19,8 +19,8 @@ Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBar
 
 // Routes تتطلب مصادقة
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/employee/logout', [AuthController::class, 'logout']);
-    Route::post('/employee/check-in', [AttendanceController::class, 'checkIn']);
-    Route::post('/employee/check-out', [AttendanceController::class, 'checkOut']);
-    Route::get('/employee/attendance', [AttendanceController::class, 'index']);
 });
+Route::post('/employee/logout', [AuthController::class, 'logout']);
+Route::post('/employee/check-in', [AttendanceController::class, 'checkIn']);
+Route::post('/employee/check-out', [AttendanceController::class, 'checkOut']);
+Route::get('/employee/attendance', [AttendanceController::class, 'index']);

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttendanceLog;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
@@ -23,14 +24,19 @@ class AttendanceController extends Controller
 
     public function checkIn(Request $request)
     {
-        $employee = $request->user();
-
         $request->validate([
-            'note'    => 'nullable|string',
-            'barcode' => 'required|string',
-            'lat'     => 'required|numeric',
-            'lng'     => 'required|numeric',
+            'employee_id' => 'required|integer',
+            'note'        => 'nullable|string',
+            'barcode'     => 'required|string',
+            'lat'         => 'required|numeric',
+            'lng'         => 'required|numeric',
         ]);
+
+        $employee = Employee::find($request->employee_id);
+        if (!$employee) {
+            return response()->json(['message' => 'الموظف غير موجود'], 422);
+        }
+
 
         if ($request->barcode !== 'A123456a@') {
             return response()->json(['message' => 'الباركود غير صحيح'], 422);
@@ -47,7 +53,7 @@ class AttendanceController extends Controller
         $today = now()->toDateString();
 
         // التحقق من آخر سجل للموظف
-        $lastLog = AttendanceLog::where('employee_id', $employee->id)
+        $lastLog = AttendanceLog::where('employee_id', $request->employee_id)
             ->latest()
             ->first();
 
@@ -56,11 +62,13 @@ class AttendanceController extends Controller
                 'message' => 'لا يمكنك تسجيل دخول جديد قبل تسجيل خروج الجلسة السابقة.',
             ], 422);
         }
+
         $time    = now()->format('H:i');
         $newNote = "{$time} - دخول : " . ($request->note ?? '');
+
         // إنشاء سجل جديد لكل تسجيل دخول
         $log = AttendanceLog::create([
-            'employee_id' => $employee->id,
+            'employee_id' => $request->employee_id,
             'date'        => $today,
             'check_in'    => now(),
             'note'        => $newNote,
@@ -71,32 +79,34 @@ class AttendanceController extends Controller
 
     public function checkOut(Request $request)
     {
-        $employee = $request->user();
-
-        // التحقق من صحة البيانات
         $request->validate([
-            'note'    => 'nullable|string',
-            'barcode' => 'required|string',
-            'lat'     => 'required|numeric',
-            'lng'     => 'required|numeric',
+            'employee_id' => 'required|integer', // الرقم الوظيفي
+            'note'        => 'nullable|string',
+            'barcode'     => 'required|string',
+            'lat'         => 'required|numeric',
+            'lng'         => 'required|numeric',
         ]);
 
-        // التحقق من الباركود
+        $employee = Employee::find($request->employee_id);
+        if (!$employee) {
+            return response()->json(['message' => 'الموظف غير موجود'], 422);
+        }
+
+
         if ($request->barcode !== 'A123456a@') {
             return response()->json(['message' => 'الباركود غير صحيح'], 422);
         }
 
-        // التحقق من الموقع
         $companyLat = 33.9684253;
         $companyLng = 35.6160169;
         $distance   = $this->haversine($companyLat, $companyLng, $request->lat, $request->lng);
 
-        if ($distance > 0.1) { // خارج نطاق 100 متر
+        if ($distance > 0.1) {
             return response()->json(['message' => 'أنت لست في موقع الشركة'], 422);
         }
 
         // البحث عن آخر سجل للموظف بدون خروج
-        $log = AttendanceLog::where('employee_id', $employee->id)
+        $log = AttendanceLog::where('employee_id', $request->employee_id)
             ->where('date', now()->toDateString())
             ->whereNull('check_out')
             ->latest()
@@ -107,8 +117,7 @@ class AttendanceController extends Controller
             return response()->json(['message' => 'لم يتم تسجيل الدخول اليوم بعد'], 422);
         }
 
-        $time = now()->format('H:i'); // الوقت الحالي بالساعات والدقائق
-
+        $time    = now()->format('H:i');
         $newNote = "{$time} - خروج : " . ($request->note ?? '');
 
         // تحديث الخروج ودمج الملاحظات
@@ -117,7 +126,7 @@ class AttendanceController extends Controller
             'note'      => $newNote,
         ]);
 
-        $yesterdayLog = AttendanceLog::where('employee_id', $employee->id)
+        $yesterdayLog = AttendanceLog::where('employee_id', $request->employee_id)
             ->where('date', now()->subDay()->toDateString())
             ->whereNull('check_out')
             ->first();
