@@ -315,7 +315,7 @@
                                     ${log['check_in']}
                                 </th>
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['check_out']}
+                                    ${log['check_out'] ? log['check_out'] : 'لم يغادر بعد'}
                                 </th>
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                                     ${log['duration']}
