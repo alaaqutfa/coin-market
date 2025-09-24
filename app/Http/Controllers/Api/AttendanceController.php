@@ -442,7 +442,7 @@ class AttendanceController extends Controller
             'employee_id'              => 'required|exists:employees,id',
             'schedules'                => 'required|array',
             'schedules.*.day_of_week'  => 'required|integer|between:0,6',
-            'schedules.*.is_alternate' => 'required|boolean',
+            'schedules.*.is_alternate' => 'sometimes|boolean',
             'schedules.*.start_time'   => 'required|date_format:H:i',
             'schedules.*.end_time'     => 'required|date_format:H:i',
             'schedules.*.work_hours'   => 'required|numeric|min:0|max:24',
