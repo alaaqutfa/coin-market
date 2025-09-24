@@ -37,14 +37,15 @@
             </ul>
         </div>
 
-        <div class="nav-item attendance-log table-container bg-white rounded-lg">
+        <div class="nav-item attendance-log table-container bg-white rounded-lg" style="display: none;">
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
                     <i class="fa-solid fa-gauge ml-2"></i>
                     لوحة تحكم
                 </h2>
                 <div class="flex items-center space-x-4 gap-2">
-                    <button id="today-log" onclick="location.reload();" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    <button id="today-log" onclick="location.reload();"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
                     </button>
                 </div>
             </div>
@@ -282,11 +283,299 @@
             </div>
         </div>
 
+        <div class="nav-item schedule-work table-container bg-white rounded-lg">
+            <div class="container mx-auto px-4 py-8">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="p-4 border-b flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                            <i class="fas fa-list ml-2"></i>
+                            تحديد جدول الدوام للموظف
+                        </h2>
+                    </div>
+
+                    <form id="scheduleForm">
+                        @csrf
+
+                        <div class="mb-6">
+                            <label for="employee_id" class="block text-sm font-medium text-gray-700 mb-2">اختر
+                                الموظف:</label>
+                            <select name="employee_id" id="employee_id"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                required>
+                                <option value="">-- اختر الموظف --</option>
+                                @foreach ($employees as $employee)
+                                    <option value="{{ $employee->id }}">{{ $employee->name }}
+                                        ({{ $employee->employee_code }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="relative overflow-x-auto">
+                            <table id="schedule-container" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-4">
+                                            <input type="checkbox" name="" id=""
+                                                class="border border-gray-400 rounded" />
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">اليوم</span>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">جدول متناوب</span>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">وقت البدء</span>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">وقت الانتهاء</span>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">ساعات العمل</span>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            <div class="flex justify-center items-center flex-col gap-2">
+                                                <span class="text-base">إجراءات</span>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="schedule-rows"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-6 flex justify-between">
+                            <button type="button" id="add-row"
+                                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                                + إضافة يوم
+                            </button>
+                            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
+                                حفظ الجدول
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 
 @push('script')
     <script>
+        const daysOfWeek = [{
+                id: 0,
+                name: 'الأحد'
+            },
+            {
+                id: 1,
+                name: 'الإثنين'
+            },
+            {
+                id: 2,
+                name: 'الثلاثاء'
+            },
+            {
+                id: 3,
+                name: 'الأربعاء'
+            },
+            {
+                id: 4,
+                name: 'الخميس'
+            },
+            {
+                id: 5,
+                name: 'الجمعة'
+            },
+            {
+                id: 6,
+                name: 'السبت'
+            }
+        ];
+
+        let rowCount = 0;
+
+        function addScheduleRow() {
+            rowCount++;
+            const rowHtml = `
+                <tr id="row-${rowCount}" class="schedule-row">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <select name="schedules[${rowCount}][day_of_week]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        ${daysOfWeek.map(day => `<option value="${day.id}">${day.name}</option>`).join('')}
+                    </select>
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <div class="flex items-center justify-center">
+                        <input type="checkbox" name="schedules[${rowCount}][is_alternate]" value="1" class="h-5 w-5 border border-black rounded">
+                    </div>
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <input type="time" name="schedules[${rowCount}][start_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="09:00" max="18:00" value="00:00" required />
+                    </div>
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <input type="time" name="schedules[${rowCount}][end_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="09:00" max="18:00" value="00:00" required />
+                    </div>
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <input type="number" step="0.5" min="0" max="24" name="schedules[${rowCount}][work_hours]"
+                            class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="8" required>
+                </th>
+                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                    <button type="button" class="remove-row bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                                حذف
+                            </button>
+                        </th>
+                </tr>
+            `;
+
+            $('#schedule-rows').append(rowHtml);
+
+            // إضافة event listener لزر الحذف
+            $(`#row-${rowCount} .remove-row`).on('click', function() {
+                $(this).closest('.schedule-row').remove();
+            });
+
+            // حساب ساعات العمل تلقائياً عند تغيير وقت البدء أو النهاية
+            $(`#row-${rowCount} input[name="schedules[${rowCount}][start_time]"],
+            #row-${rowCount} input[name="schedules[${rowCount}][end_time]"]`).on('change', function() {
+                calculateWorkHours(rowCount);
+            });
+        }
+
+        function calculateWorkHours(rowId) {
+            const startTime = $(`input[name="schedules[${rowId}][start_time]"]`).val();
+            const endTime = $(`input[name="schedules[${rowId}][end_time]"]`).val();
+
+            if (startTime && endTime) {
+                const start = new Date(`2000-01-01T${startTime}`);
+                const end = new Date(`2000-01-01T${endTime}`);
+                const diff = (end - start) / (1000 * 60 * 60);
+
+                if (diff > 0) {
+                    $(`input[name="schedules[${rowId}][work_hours]"]`).val(diff.toFixed(2));
+                }
+            }
+        }
+
+        function submitScheduleForm() {
+            const employeeId = $('#employee_id').val();
+
+            if (!employeeId) {
+                alert('يرجى اختيار موظف');
+                return;
+            }
+
+            if ($('.schedule-row').length === 0) {
+                alert('يرجى إضافة أيام للجدول');
+                return;
+            }
+
+            // جمع البيانات من النموذج
+            const formData = new FormData($('#scheduleForm')[0]);
+
+            // إرسال البيانات باستخدام AJAX
+            $.ajax({
+                url: '{{ route('attendance.update.schedule') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('تم حفظ الجدول بنجاح');
+                        console.log('Success:', response);
+
+                        // إعادة تعيين النموذج إذا لزم الأمر
+                        // $('#scheduleForm')[0].reset();
+                        // $('#schedule-rows').empty();
+                        // rowCount = 0;
+                        // addScheduleRow();
+                    } else {
+                        alert('حدث خطأ: ' + (response.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('حدث خطأ أثناء الحفظ: ' + error);
+                }
+            });
+        }
+
+        // دالة إضافية: تحميل الجدول الحالي للموظف إذا كان موجوداً
+        function loadEmployeeSchedule(employeeId) {
+            if (!employeeId) return;
+            const url = `{{ route('attendance.employee.schedule') }}/${employeeId}`;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                success: function(response) {
+                    if (response.schedules && response.schedules.length > 0) {
+                        // مسح الصفوف الحالية
+                        $('#schedule-rows').empty();
+                        rowCount = 0;
+
+                        // إضافة الصفوف من البيانات المسترجعة
+                        response.schedules.forEach(function(schedule) {
+                            addScheduleRow();
+
+                            // تعبئة البيانات
+                            $(`select[name="schedules[${rowCount}][day_of_week]"]`).val(schedule
+                                .day_of_week);
+                            $(`input[name="schedules[${rowCount}][is_alternate]"]`).prop('checked',
+                                schedule.is_alternate);
+                            $(`input[name="schedules[${rowCount}][start_time]"]`).val(schedule
+                                .start_time);
+                            $(`input[name="schedules[${rowCount}][end_time]"]`).val(schedule.end_time);
+                            $(`input[name="schedules[${rowCount}][work_hours]"]`).val(schedule
+                                .work_hours);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading schedule:', error);
+                }
+            });
+        }
+
+        // اختيار موظف مختلف
+        $('#employee_id').on('change', function() {
+            const employeeId = $(this).val();
+            if (employeeId) {
+                loadEmployeeSchedule(employeeId);
+            }
+        });
+
         function attendanceToday() {
             const data = {};
             data._token = '{{ csrf_token() }}';
@@ -489,6 +778,18 @@
 
             dashboardToday();
             attendanceToday();
+
+            // إضافة صف جديد
+            $('#add-row').on('click', addScheduleRow);
+
+            // إرسال النموذج
+            $('#scheduleForm').on('submit', function(e) {
+                e.preventDefault();
+                submitScheduleForm();
+            });
+
+            // إضافة أول صف عند تحميل الصفحة
+            addScheduleRow();
         });
     </script>
 @endpush
