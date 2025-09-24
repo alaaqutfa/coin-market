@@ -171,8 +171,8 @@ class AttendanceController extends Controller
 
         $logs = AttendanceLog::with('employee')
             ->where('date', $today)
-            ->orderByDesc('created_at')
             ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
             ->get();
 
         $formattedLogs = $logs->map(function ($log) {
@@ -216,8 +216,8 @@ class AttendanceController extends Controller
 
         $logs = AttendanceLog::with('employee')
             ->where('date', $today)
-            ->orderByDesc('created_at')
             ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
             ->paginate(50);
 
         $formattedData = [
