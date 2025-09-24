@@ -222,18 +222,18 @@ class AttendanceController extends Controller
             ->orderBy('check_in')
             ->get();
 
-        $totalMinutes = 0;
+        $totalSeconds = 0;
 
         foreach ($allLogs as $log) {
             if ($log->check_in && $log->check_out) {
-                // استخدام المنطقة الزمنية الصحيحة
-                $start = Carbon::parse($log->check_in, 'Asia/Beirut');
-                $end   = Carbon::parse($log->check_out, 'Asia/Beirut');
-                $totalMinutes += $end->diffInMinutes($start);
+                // استخدام strtotime للتأكد من الحساب الصحيح
+                $start = strtotime($log->check_in);
+                $end   = strtotime($log->check_out);
+                $totalSeconds += ($end - $start);
             }
         }
 
-        // إذا كان الموظف لا يزال حاضراً، نضيف الوقت منذ آخر دخول
+        // إذا كان الموظف لا يزال حاضراً
         $currentLog = AttendanceLog::where('employee_id', $employeeId)
             ->where('date', $date)
             ->whereNull('check_out')
@@ -241,19 +241,18 @@ class AttendanceController extends Controller
             ->first();
 
         if ($currentLog && $currentLog->check_in) {
-            $start = Carbon::parse($currentLog->check_in, 'Asia/Beirut');
-            $end   = Carbon::now('Asia/Beirut');
-            $totalMinutes += $end->diffInMinutes($start);
+            $start = strtotime($currentLog->check_in);
+            $end   = time(); // الوقت الحالي
+            $totalSeconds += ($end - $start);
         }
 
-        // تحويل الدقائق إلى ساعات ودقائق
-        $hours   = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
+        $hours   = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
 
         return sprintf('%02d:%02d', $hours, $minutes);
     }
 
-// الدالة الأصلية تبقى كما هي
+    // الدالة الأصلية تبقى كما هي
     private function calculateDuration($checkIn, $checkOut)
     {
         if (! $checkIn || ! $checkOut) {
