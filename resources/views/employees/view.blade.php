@@ -30,6 +30,13 @@
                         قائمة الموظفين
                     </button>
                 </li>
+                <li class="me-2">
+                    <button type="button"
+                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        data-target=".schedule-work">
+                        أوقات العمل
+                    </button>
+                </li>
                 {{-- <li>
                     <a
                         class="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed">Disabled</a>
@@ -283,7 +290,7 @@
             </div>
         </div>
 
-        <div class="nav-item schedule-work table-container bg-white rounded-lg">
+        <div class="nav-item schedule-work table-container bg-white rounded-lg" style="display: none;">
             <div class="container mx-auto px-4 py-8">
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="p-4 border-b flex justify-between items-center">
