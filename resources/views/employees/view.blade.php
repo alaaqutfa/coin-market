@@ -428,7 +428,7 @@
                 </th>
                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                     <div class="flex items-center justify-center">
-                        <input type="checkbox" name="schedules[${rowCount}][is_alternate]" value="1" class="h-5 w-5 border border-black rounded">
+                        <input type="checkbox" name="schedules[${rowCount}][is_alternate]" value="0" class="h-5 w-5 border border-black rounded">
                     </div>
                 </th>
                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
@@ -496,12 +496,12 @@
             const employeeId = $('#employee_id').val();
 
             if (!employeeId) {
-                alert('يرجى اختيار موظف');
+                showToast('يرجى اختيار موظف', 'success');
                 return;
             }
 
             if ($('.schedule-row').length === 0) {
-                alert('يرجى إضافة أيام للجدول');
+                showToast('يرجى إضافة أيام للجدول', 'success');
                 return;
             }
 
@@ -510,7 +510,7 @@
 
             // إرسال البيانات باستخدام AJAX
             $.ajax({
-                url: '{{ route('attendance.update.schedule') }}',
+                url: "{{ route('attendance.update.schedule') }}",
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -520,7 +520,7 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        alert('تم حفظ الجدول بنجاح');
+                        showToast('تم حفظ الجدول بنجاح', 'success');
                         console.log('Success:', response);
 
                         // إعادة تعيين النموذج إذا لزم الأمر
@@ -529,12 +529,12 @@
                         // rowCount = 0;
                         // addScheduleRow();
                     } else {
-                        alert('حدث خطأ: ' + (response.message || 'Unknown error'));
+                        showToast('حدث خطأ: ' + (response.message || 'Unknown error'), 'error');
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                    alert('حدث خطأ أثناء الحفظ: ' + error);
+                    console.log('Error:', error);
+                    showToast('حدث خطأ أثناء الحفظ: ', 'error');
                 }
             });
         }
