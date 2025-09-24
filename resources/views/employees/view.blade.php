@@ -438,7 +438,7 @@
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                             </svg>
                         </div>
-                        <input type="time" name="schedules[${rowCount}][start_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:00" value="00:00" required />
+                        <input type="time" name="schedules[${rowCount}][start_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:30" value="00:00" required />
                     </div>
                 </th>
                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
@@ -448,7 +448,7 @@
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                             </svg>
                         </div>
-                        <input type="time" name="schedules[${rowCount}][end_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:00" value="00:00" required />
+                        <input type="time" name="schedules[${rowCount}][end_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:30" value="00:00" required />
                     </div>
                 </th>
                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
