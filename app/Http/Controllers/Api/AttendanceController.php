@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
@@ -438,7 +439,7 @@ class AttendanceController extends Controller
 
     public function updateEmployeeSchedule(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'employee_id'              => 'required|exists:employees,id',
             'schedules'                => 'required|array',
             'schedules.*.day_of_week'  => 'required|integer|between:0,6',
@@ -448,17 +449,25 @@ class AttendanceController extends Controller
             'schedules.*.work_hours'   => 'required|numeric|min:0|max:24',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors'  => $validator->errors(),
+            ], 422);
+        }
+
         $employeeId = $request->employee_id;
         WorkSchedule::where('employee_id', $employeeId)->delete();
 
         foreach ($request->schedules as $scheduleData) {
+            // تحويل القيم إلى النوع الصحيح
             WorkSchedule::create([
                 'employee_id'  => $employeeId,
-                'day_of_week'  => $scheduleData['day_of_week'],
-                'is_alternate' => $scheduleData['is_alternate'],
+                'day_of_week'  => (int) $scheduleData['day_of_week'],
+                'is_alternate' => (bool) $scheduleData['is_alternate'],
                 'start_time'   => $scheduleData['start_time'],
                 'end_time'     => $scheduleData['end_time'],
-                'work_hours'   => $scheduleData['work_hours'],
+                'work_hours'   => (float) $scheduleData['work_hours'],
             ]);
         }
 

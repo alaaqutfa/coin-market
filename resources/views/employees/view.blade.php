@@ -417,51 +417,56 @@
         function addScheduleRow() {
             rowCount++;
             const rowHtml = `
-                <tr id="row-${rowCount}" class="schedule-row">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <select name="schedules[${rowCount}][day_of_week]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
-                        ${daysOfWeek.map(day => `<option value="${day.id}">${day.name}</option>`).join('')}
-                    </select>
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <div class="flex items-center justify-center">
-                        <input type="checkbox" name="schedules[${rowCount}][is_alternate]" value="0" class="h-5 w-5 border border-black rounded">
+        <tr id="row-${rowCount}" class="schedule-row">
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <select name="schedules[${rowCount}][day_of_week]" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                    ${daysOfWeek.map(day => `<option value="${day.id}">${day.name}</option>`).join('')}
+                </select>
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <div class="flex items-center justify-center">
+                    <!-- hidden field للقيمة الافتراضية -->
+                    <input type="hidden" name="schedules[${rowCount}][is_alternate]" value="0">
+                    <!-- checkbox مع القيمة الصحيحة -->
+                    <input type="checkbox" name="schedules[${rowCount}][is_alternate]" value="1" class="h-5 w-5 border border-black rounded">
+                </div>
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                        </svg>
                     </div>
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <input type="time" name="schedules[${rowCount}][start_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:30" value="00:00" required />
+                    <!-- قيمة time افتراضية صحيحة -->
+                    <input type="time" name="schedules[${rowCount}][start_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="08:00" required />
+                </div>
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                        </svg>
                     </div>
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
-                            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <input type="time" name="schedules[${rowCount}][end_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" min="07:30" max="21:30" value="00:00" required />
-                    </div>
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <input type="number" step="0.5" min="0" max="24" name="schedules[${rowCount}][work_hours]"
-                            class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="8" required>
-                </th>
-                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                    <button type="button" class="remove-row bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
-                                حذف
-                            </button>
-                        </th>
-                </tr>
-            `;
+                    <!-- قيمة time افتراضية صحيحة -->
+                    <input type="time" name="schedules[${rowCount}][end_time]" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" value="17:00" required />
+                </div>
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <input type="number" step="0.5" min="0" max="24" name="schedules[${rowCount}][work_hours]"
+                        class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="8" value="8" required>
+            </th>
+            <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                <button type="button" class="remove-row bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
+                    حذف
+                </button>
+            </th>
+        </tr>
+    `;
 
             $('#schedule-rows').append(rowHtml);
 
@@ -472,8 +477,14 @@
 
             // حساب ساعات العمل تلقائياً عند تغيير وقت البدء أو النهاية
             $(`#row-${rowCount} input[name="schedules[${rowCount}][start_time]"],
-            #row-${rowCount} input[name="schedules[${rowCount}][end_time]"]`).on('change', function() {
+                #row-${rowCount} input[name="schedules[${rowCount}][end_time]"]`).on('change', function() {
                 calculateWorkHours(rowCount);
+            });
+
+            // تحديث hidden field عند تغيير الـ checkbox
+            $(`#row-${rowCount} input[type="checkbox"]`).on('change', function() {
+                const hiddenField = $(this).siblings('input[type="hidden"]');
+                hiddenField.val(this.checked ? '1' : '0');
             });
         }
 
@@ -492,18 +503,36 @@
             }
         }
 
+        function prepareFormData() {
+            // التأكد من أن جميع الـ checkboxes لها hidden fields
+            $('input[type="checkbox"]').each(function() {
+                if (!$(this).siblings('input[type="hidden"][name="' + $(this).attr('name') + '"]').length) {
+                    $(this).before(`<input type="hidden" name="${$(this).attr('name')}" value="0">`);
+                }
+            });
+
+            // تحديث hidden fields بناءً على حالة الـ checkboxes
+            $('input[type="checkbox"]').each(function() {
+                const hiddenField = $(this).siblings('input[type="hidden"][name="' + $(this).attr('name') + '"]');
+                hiddenField.val(this.checked ? '1' : '0');
+            });
+        }
+        // تعديل دالة submitScheduleForm
         function submitScheduleForm() {
             const employeeId = $('#employee_id').val();
 
             if (!employeeId) {
-                showToast('يرجى اختيار موظف', 'success');
+                showToast('يرجى اختيار موظف', 'error');
                 return;
             }
 
             if ($('.schedule-row').length === 0) {
-                showToast('يرجى إضافة أيام للجدول', 'success');
+                showToast('يرجى إضافة أيام للجدول', 'error');
                 return;
             }
+
+            // تحضير البيانات قبل الإرسال
+            prepareFormData();
 
             // جمع البيانات من النموذج
             const formData = new FormData($('#scheduleForm')[0]);
@@ -519,22 +548,16 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    if (response.success) {
-                        showToast('تم حفظ الجدول بنجاح', 'success');
-                        console.log('Success:', response);
-
-                        // إعادة تعيين النموذج إذا لزم الأمر
-                        // $('#scheduleForm')[0].reset();
-                        // $('#schedule-rows').empty();
-                        // rowCount = 0;
-                        // addScheduleRow();
-                    } else {
-                        showToast('حدث خطأ: ' + (response.message || 'Unknown error'), 'error');
-                    }
+                    showToast('تم حفظ الجدول بنجاح', 'success');
+                    console.log('Success:', response);
                 },
                 error: function(xhr, status, error) {
-                    console.log('Error:', error);
-                    showToast('حدث خطأ أثناء الحفظ: ', 'error');
+                    console.log('Error:', xhr.responseJSON);
+                    if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        showToast('حدث خطأ في التحقق: ' + JSON.stringify(xhr.responseJSON.errors), 'error');
+                    } else {
+                        showToast('حدث خطأ أثناء الحفظ', 'error');
+                    }
                 }
             });
         }
