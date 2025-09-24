@@ -166,105 +166,105 @@ class AttendanceController extends Controller
     }
 
     public function attendanceToday(Request $request)
-{
-    $today = now('Asia/Beirut')->toDateString();
+    {
+        $today = now('Asia/Beirut')->toDateString();
 
-    // الحصول على جميع السجلات كما هي
-    $logs = AttendanceLog::with('employee')
-        ->where('date', $today)
-        ->orderByDesc('updated_at')
-        ->orderByDesc('created_at')
-        ->get();
+        // الحصول على جميع السجلات كما هي
+        $logs = AttendanceLog::with('employee')
+            ->where('date', $today)
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at')
+            ->get();
 
-    // تجميع السجلات بحيث نأخذ الأخير فقط لكل موظف
-    $uniqueEmployees = [];
-    $filteredLogs = collect();
+        // تجميع السجلات بحيث نأخذ الأخير فقط لكل موظف
+        $uniqueEmployees = [];
+        $filteredLogs    = collect();
 
-    foreach ($logs as $log) {
-        if (!in_array($log->employee_id, $uniqueEmployees)) {
-            $uniqueEmployees[] = $log->employee_id;
-            $filteredLogs->push($log);
+        foreach ($logs as $log) {
+            if (! in_array($log->employee_id, $uniqueEmployees)) {
+                $uniqueEmployees[] = $log->employee_id;
+                $filteredLogs->push($log);
+            }
         }
+
+        $formattedLogs = $filteredLogs->map(function ($log) use ($today) {
+            // حساب المدة الكاملة للموظف لليوم كامل
+            $totalDuration = $this->calculateTotalDurationForEmployee($log->employee_id, $today);
+
+            return [
+                'id'            => $log->id,
+                'employee_id'   => $log->employee_id,
+                'employee_name' => $log->employee->name ?? 'غير معروف',
+                'employee_code' => $log->employee->employee_code ?? 'غير معروف',
+                'date'          => $log->date,
+                'check_in'      => $log->check_in,
+                'check_out'     => $log->check_out,
+                'note'          => $log->note,
+                'status'        => $log->check_out ? 'مغادر' : 'حاضر',
+                'duration'      => $totalDuration,
+            ];
+        });
+
+        return response()->json([
+            'date'            => $today,
+            'total_records'   => $formattedLogs->count(),
+            'present_count'   => $formattedLogs->where('status', 'حاضر')->count(),
+            'left_count'      => $formattedLogs->where('status', 'مغادر')->count(),
+            'attendance_logs' => $formattedLogs,
+        ]);
     }
 
-    $formattedLogs = $filteredLogs->map(function ($log) use ($today) {
-        // حساب المدة الكاملة للموظف لليوم كامل
-        $totalDuration = $this->calculateTotalDurationForEmployee($log->employee_id, $today);
+    private function calculateTotalDurationForEmployee($employeeId, $date)
+    {
+        // الحصول على جميع سجلات الموظف لهذا اليوم
+        $allLogs = AttendanceLog::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->orderBy('check_in')
+            ->get();
 
-        return [
-            'id'            => $log->id,
-            'employee_id'   => $log->employee_id,
-            'employee_name' => $log->employee->name ?? 'غير معروف',
-            'employee_code' => $log->employee->employee_code ?? 'غير معروف',
-            'date'          => $log->date,
-            'check_in'      => $log->check_in,
-            'check_out'     => $log->check_out,
-            'note'          => $log->note,
-            'status'        => $log->check_out ? 'مغادر' : 'حاضر',
-            'duration'      => $totalDuration,
-        ];
-    });
+        $totalSeconds = 0;
 
-    return response()->json([
-        'date'            => $today,
-        'total_records'   => $formattedLogs->count(),
-        'present_count'   => $formattedLogs->where('status', 'حاضر')->count(),
-        'left_count'      => $formattedLogs->where('status', 'مغادر')->count(),
-        'attendance_logs' => $formattedLogs,
-    ]);
-}
+        foreach ($allLogs as $log) {
+            if ($log->check_in && $log->check_out) {
+                $start = Carbon::parse($log->check_in);
+                $end   = Carbon::parse($log->check_out);
+                $totalSeconds += $end->diffInSeconds($start);
+            }
+        }
 
-private function calculateTotalDurationForEmployee($employeeId, $date)
-{
-    // الحصول على جميع سجلات الموظف لهذا اليوم
-    $allLogs = AttendanceLog::where('employee_id', $employeeId)
-        ->where('date', $date)
-        ->orderBy('check_in')
-        ->get();
+        // إذا كان الموظف لا يزال حاضراً، نضيف الوقت منذ آخر دخول
+        $currentLog = AttendanceLog::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->whereNull('check_out')
+            ->orderBy('check_in', 'desc')
+            ->first();
 
-    $totalSeconds = 0;
-
-    foreach ($allLogs as $log) {
-        if ($log->check_in && $log->check_out) {
-            $start = Carbon::parse($log->check_in);
-            $end = Carbon::parse($log->check_out);
+        if ($currentLog && $currentLog->check_in) {
+            $start = Carbon::parse($currentLog->check_in);
+            $end   = Carbon::now('Asia/Beirut');
             $totalSeconds += $end->diffInSeconds($start);
         }
+
+        // تحويل الثواني إلى ساعات ودقائق
+        $hours   = floor($totalSeconds / 3600);
+        $minutes = floor(($totalSeconds % 3600) / 60);
+
+        return sprintf('%02d:%02d', $hours, $minutes);
     }
-
-    // إذا كان الموظف لا يزال حاضراً، نضيف الوقت منذ آخر دخول
-    $currentLog = AttendanceLog::where('employee_id', $employeeId)
-        ->where('date', $date)
-        ->whereNull('check_out')
-        ->orderBy('check_in', 'desc')
-        ->first();
-
-    if ($currentLog && $currentLog->check_in) {
-        $start = Carbon::parse($currentLog->check_in);
-        $end = Carbon::now('Asia/Beirut');
-        $totalSeconds += $end->diffInSeconds($start);
-    }
-
-    // تحويل الثواني إلى ساعات ودقائق
-    $hours = floor($totalSeconds / 3600);
-    $minutes = floor(($totalSeconds % 3600) / 60);
-
-    return sprintf('%02d:%02d', $hours, $minutes);
-}
 
 // احتفظ بالدالة الأصلية كما هي
-private function calculateDuration($checkIn, $checkOut)
-{
-    if (!$checkIn || !$checkOut) {
-        return '00:00';
+    private function calculateDuration($checkIn, $checkOut)
+    {
+        if (! $checkIn || ! $checkOut) {
+            return '00:00';
+        }
+
+        $start    = Carbon::parse($checkIn);
+        $end      = Carbon::parse($checkOut);
+        $duration = $start->diff($end);
+
+        return sprintf('%02d:%02d', $duration->h, $duration->i);
     }
-
-    $start = Carbon::parse($checkIn);
-    $end = Carbon::parse($checkOut);
-    $duration = $start->diff($end);
-
-    return sprintf('%02d:%02d', $duration->h, $duration->i);
-}
 
     public function attendanceTodayPaginated(Request $request)
     {
