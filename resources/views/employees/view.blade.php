@@ -44,7 +44,7 @@
             </ul>
         </div>
 
-        <div class="nav-item attendance-log table-container bg-white rounded-lg" style="display: none;">
+        <div class="nav-item attendance-log table-container bg-white rounded-lg">
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
                     <i class="fa-solid fa-gauge ml-2"></i>
