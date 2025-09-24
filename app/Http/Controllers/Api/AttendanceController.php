@@ -222,13 +222,14 @@ class AttendanceController extends Controller
             ->orderBy('check_in')
             ->get();
 
-        $totalSeconds = 0;
+        $totalMinutes = 0;
 
         foreach ($allLogs as $log) {
             if ($log->check_in && $log->check_out) {
-                $start = Carbon::parse($log->check_in);
-                $end   = Carbon::parse($log->check_out);
-                $totalSeconds += $end->diffInSeconds($start);
+                // استخدام المنطقة الزمنية الصحيحة
+                $start = Carbon::parse($log->check_in, 'Asia/Beirut');
+                $end   = Carbon::parse($log->check_out, 'Asia/Beirut');
+                $totalMinutes += $end->diffInMinutes($start);
             }
         }
 
@@ -240,27 +241,27 @@ class AttendanceController extends Controller
             ->first();
 
         if ($currentLog && $currentLog->check_in) {
-            $start = Carbon::parse($currentLog->check_in);
+            $start = Carbon::parse($currentLog->check_in, 'Asia/Beirut');
             $end   = Carbon::now('Asia/Beirut');
-            $totalSeconds += $end->diffInSeconds($start);
+            $totalMinutes += $end->diffInMinutes($start);
         }
 
-        // تحويل الثواني إلى ساعات ودقائق
-        $hours   = floor($totalSeconds / 3600);
-        $minutes = floor(($totalSeconds % 3600) / 60);
+        // تحويل الدقائق إلى ساعات ودقائق
+        $hours   = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
 
         return sprintf('%02d:%02d', $hours, $minutes);
     }
 
-// احتفظ بالدالة الأصلية كما هي
+// الدالة الأصلية تبقى كما هي
     private function calculateDuration($checkIn, $checkOut)
     {
         if (! $checkIn || ! $checkOut) {
             return '00:00';
         }
 
-        $start    = Carbon::parse($checkIn);
-        $end      = Carbon::parse($checkOut);
+        $start    = Carbon::parse($checkIn, 'Asia/Beirut');
+        $end      = Carbon::parse($checkOut, 'Asia/Beirut');
         $duration = $start->diff($end);
 
         return sprintf('%02d:%02d', $duration->h, $duration->i);
