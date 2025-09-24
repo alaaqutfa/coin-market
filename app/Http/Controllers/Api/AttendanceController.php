@@ -216,40 +216,31 @@ class AttendanceController extends Controller
 
     private function calculateTotalDurationForEmployee($employeeId, $date)
     {
-        // الحصول على جميع سجلات الموظف لهذا اليوم
+        // للحصول فقط على مجموع بسيط للتأكد
         $allLogs = AttendanceLog::where('employee_id', $employeeId)
             ->where('date', $date)
-            ->orderBy('check_in')
+            ->whereNotNull('check_out')
             ->get();
 
-        $totalSeconds = 0;
+        $totalHours   = 0;
+        $totalMinutes = 0;
 
         foreach ($allLogs as $log) {
             if ($log->check_in && $log->check_out) {
-                // استخدام strtotime للتأكد من الحساب الصحيح
-                $start = strtotime($log->check_in);
-                $end   = strtotime($log->check_out);
-                $totalSeconds += ($end - $start);
+                $start = Carbon::parse($log->check_in);
+                $end   = Carbon::parse($log->check_out);
+                $diff  = $start->diff($end);
+
+                $totalHours += $diff->h;
+                $totalMinutes += $diff->i;
             }
         }
 
-        // إذا كان الموظف لا يزال حاضراً
-        $currentLog = AttendanceLog::where('employee_id', $employeeId)
-            ->where('date', $date)
-            ->whereNull('check_out')
-            ->orderBy('check_in', 'desc')
-            ->first();
+        // تحويل الدقائق الزائدة إلى ساعات
+        $totalHours += floor($totalMinutes / 60);
+        $totalMinutes = $totalMinutes % 60;
 
-        if ($currentLog && $currentLog->check_in) {
-            $start = strtotime($currentLog->check_in);
-            $end   = time(); // الوقت الحالي
-            $totalSeconds += ($end - $start);
-        }
-
-        $hours   = floor($totalSeconds / 3600);
-        $minutes = floor(($totalSeconds % 3600) / 60);
-
-        return sprintf('%02d:%02d', $hours, $minutes);
+        return sprintf('%02d:%02d', $totalHours, $totalMinutes);
     }
 
     // الدالة الأصلية تبقى كما هي
