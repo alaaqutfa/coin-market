@@ -68,6 +68,11 @@ class AttendanceController extends Controller
         $time    = now('Asia/Beirut')->format('H:i');
         $newNote = "{$time} - دخول : " . ($request->note ?? '');
 
+        // إذا كان هناك سجل سابق، نضيف الملاحظة الجديدة مع الاحتفاظ بالقديمة
+        if ($lastLog && $lastLog->note) {
+            $newNote = $lastLog->note . "\n" . $newNote;
+        }
+
         $log = AttendanceLog::create([
             'employee_id' => $employee->id,
             'date'        => $today,
@@ -118,9 +123,15 @@ class AttendanceController extends Controller
         $time    = now('Asia/Beirut')->format('H:i');
         $newNote = "{$time} - خروج : " . ($request->note ?? '');
 
+        if ($log->note) {
+            $updatedNote = $log->note . "\n" . $newNote;
+        } else {
+            $updatedNote = $newNote;
+        }
+
         $log->update([
             'check_out' => now('Asia/Beirut'),
-            'note'      => $newNote,
+            'note'      => $updatedNote,
         ]);
 
         $hoursData = $this->recordDailyHours($employee->id, now('Asia/Beirut')->toDateString(), $log->check_in, now('Asia/Beirut'));
@@ -131,8 +142,9 @@ class AttendanceController extends Controller
             ->first();
 
         if ($yesterdayLog) {
+            $yesterdayNote = $yesterdayLog->note ? $yesterdayLog->note . "\nغياب" : "غياب";
             $yesterdayLog->update([
-                'note' => trim(($yesterdayLog->note ?? '') . "\n" . 'غياب'),
+                'note' => $yesterdayNote,
             ]);
         }
 
