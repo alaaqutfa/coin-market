@@ -660,7 +660,7 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div class="text-center font-medium text-gray-900 whitespace-pre-line">
+                                    <div class="text-justify font-medium text-gray-900 whitespace-pre-line">
                                         ${log['note']}
                                     </div>
                                 </th>
