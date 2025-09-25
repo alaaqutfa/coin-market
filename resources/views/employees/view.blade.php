@@ -627,26 +627,40 @@
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                                     ${log['employee_code']}
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['employee_name']}
+                                <th class="px-6 py-4">
+                                    <div>
+                                        ${log['employee_name']}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['check_in']}
+                                <th class="px-6 py-4">
+                                    <div>
+                                        ${log['check_in']}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['check_out'] ? log['check_out'] : 'لم يغادر بعد'}
+                                <th class="px-6 py-4">
+                                    <div>
+                                        ${log['check_out'] ? log['check_out'] : 'لم يغادر بعد'}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['duration']}
+                                <th class="px-6 py-4">
+                                    <div>
+                                        ${log['duration']}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${log['status']}
+                                <th class="px-6 py-4">
+                                    <div>
+                                        ${log['status']}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap whitespace-pre-line">
-                                    ${log['note']}
+                                <th class="px-6 py-4">
+                                    <div class="text-center font-medium text-gray-900 whitespace-pre-line">
+                                        ${log['note']}
+                                    </div>
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                <th class="px-6 py-4">
+                                    <div>
 
+                                    </div>
                                 </th>
                             </tr>
                         `;
