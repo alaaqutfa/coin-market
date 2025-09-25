@@ -59,7 +59,7 @@ class CalculateDailyHours extends Command
                 ]
             );
 
-            $this->info("{$employee->name}: Actual: {$actualHours}h, Required: {$requiredHours}h");
+            $this->info("{$employee->employee_code}: Actual: {$actualHours}h, Required: {$requiredHours}h");
         }
 
         $this->info("Done ✅");
