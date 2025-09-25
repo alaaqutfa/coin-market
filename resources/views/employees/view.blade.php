@@ -642,7 +642,7 @@
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                                     ${log['status']}
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap whitespace-pre-line">
                                     ${log['note']}
                                 </th>
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
