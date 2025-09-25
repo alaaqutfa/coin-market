@@ -476,10 +476,11 @@
             });
 
             // حساب ساعات العمل تلقائياً عند تغيير وقت البدء أو النهاية
-            $(`#row-${rowCount} input[name="schedules[${rowCount}][start_time]"],
-                #row-${rowCount} input[name="schedules[${rowCount}][end_time]"]`).on('change', function() {
-                calculateWorkHours(rowCount);
-            });
+            $(`#row-${rowCount} input[name="schedules[${rowCount}][start_time]"]`)
+                .add(`#row-${rowCount} input[name="schedules[${rowCount}][end_time]"]`)
+                .on('change', function() {
+                    calculateWorkHours(rowCount);
+                });
 
             // تحديث hidden field عند تغيير الـ checkbox
             $(`#row-${rowCount} input[type="checkbox"]`).on('change', function() {
@@ -610,13 +611,7 @@
             });
         }
 
-        // اختيار موظف مختلف
-        $('#employee_id').on('change', function() {
-            const employeeId = $(this).val();
-            if (employeeId) {
-                loadEmployeeSchedule(employeeId);
-            }
-        });
+
 
         function attendanceToday() {
             const data = {};
@@ -812,6 +807,22 @@
         }
 
         $(document).ready(function() {
+
+            // اختيار موظف مختلف
+            $('#employee_id').on('change', function() {
+                const employeeId = $(this).val();
+                if (employeeId) {
+                    loadEmployeeSchedule(employeeId);
+                }
+            });
+
+            // هذا بتكتبه مرّة بس، مو جوّا addScheduleRow
+            $('#schedule-rows').on('change', 'input[name$="[start_time]"], input[name$="[end_time]"]', function() {
+                // استخرج رقم الصف من الـ name
+                const rowId = $(this).attr('name').match(/schedules\[(\d+)\]/)[1];
+                calculateWorkHours(rowId);
+            });
+
 
             initEditableFields();
 
