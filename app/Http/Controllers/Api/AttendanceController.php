@@ -135,7 +135,7 @@ class AttendanceController extends Controller
             'note'      => $updatedNote,
         ]);
 
-        $hoursData = $this->recordDailyHours($employee->id, now('Asia/Beirut')->toDateString(), $log->check_in, now('Asia/Beirut'));
+        // $hoursData = $this->recordDailyHours($employee->id, now('Asia/Beirut')->toDateString(), $log->check_in, now('Asia/Beirut'));
 
         $yesterdayLog = AttendanceLog::where('employee_id', $employee->id)
             ->where('date', now('Asia/Beirut')->subDay()->toDateString())
@@ -152,7 +152,6 @@ class AttendanceController extends Controller
         return response()->json([
             'message'    => 'تم تسجيل الخروج بنجاح',
             'log'        => $log,
-            'hours_data' => $hoursData,
         ]);
     }
 

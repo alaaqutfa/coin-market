@@ -12,11 +12,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // تنظيف الإشعارات المنتهية كل ثانية
-        // $schedule->command('notifications:cleanup')->everySecond();
-        
-        // أو كل 5 ثواني إذا أردت تقليل الحمل
-        $schedule->command('notifications:cleanup')->everyFiveSeconds();
+        // كل يوم الساعة 10 مساءً بتوقيت بيروت
+        $schedule->command('attendance:calculate-daily-hours')
+            ->timezone('Asia/Beirut')
+            ->dailyAt('22:00');
+
+        // تنظيف الإشعارات المنتهية كل دقيقة
+        $schedule->command('notifications:cleanup')->everyMinute();
     }
 
     /**
@@ -24,6 +26,9 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
+
+        // كمان لازم يستدعي routes/console.php
+        require base_path('routes/console.php');
     }
 }
