@@ -88,7 +88,7 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $products = $query->latest()->paginate(20);
+        $products = $query->latest()->paginate(50);
         $products->withPath(url('/products'));
 
         return view('products.partials.products-table', compact('products'))->render();
