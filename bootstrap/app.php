@@ -36,5 +36,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function ($schedule) {
         $schedule->command('notifications:cleanup')->everyFiveSeconds();
+        $schedule->command('attendance:calculate-daily-hours')->everyFiveSeconds();
     })
     ->create();
