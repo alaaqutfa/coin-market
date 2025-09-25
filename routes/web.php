@@ -47,8 +47,7 @@ Route::prefix('attendance')->name('attendance.')->group(function () {
     Route::get('/monthly-summary/{year}/{month}', [AttendanceController::class, 'monthlySummary'])->name('monthly.summary.date');
 
     // جداول الدوام
-    Route::get('/employee-schedule', [AttendanceController::class, 'employeeSchedule'])->name('employee.schedule');
-    Route::get('/employee-schedule/{employeeId}', [AttendanceController::class, 'employeeSchedule'])->name('employee.schedule.id');
+    Route::get('/employee-schedule/{employeeId}', [AttendanceController::class, 'employeeSchedule'])->name('employee.schedule');
     Route::post('/update-schedule', [AttendanceController::class, 'updateEmployeeSchedule'])->name('update.schedule');
 
     // إعداد الساعات اليومية

@@ -503,7 +503,18 @@
             }
         }
 
+        function normalizeTime(time) {
+            return time ? time.substring(0, 5) : ''; // يخلي بس HH:MM
+        }
+
         function prepareFormData() {
+
+            // قبل إرسال الـ AJAX
+            $('input[type="time"]').each(function() {
+                const val = $(this).val();
+                $(this).val(normalizeTime(val));
+            });
+
             // التأكد من أن جميع الـ checkboxes لها hidden fields
             $('input[type="checkbox"]').each(function() {
                 if (!$(this).siblings('input[type="hidden"][name="' + $(this).attr('name') + '"]').length) {
@@ -536,6 +547,7 @@
 
             // جمع البيانات من النموذج
             const formData = new FormData($('#scheduleForm')[0]);
+            formData.append('_token', "{{ csrf_token() }}");
 
             // إرسال البيانات باستخدام AJAX
             $.ajax({
@@ -545,7 +557,7 @@
                 processData: false,
                 contentType: false,
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
                 },
                 success: function(response) {
                     showToast('تم حفظ الجدول بنجاح', 'success');
@@ -565,7 +577,7 @@
         // دالة إضافية: تحميل الجدول الحالي للموظف إذا كان موجوداً
         function loadEmployeeSchedule(employeeId) {
             if (!employeeId) return;
-            const url = `{{ route('attendance.employee.schedule') }}/${employeeId}`;
+            const url = "{{ route('attendance.employee.schedule', ['employeeId' => ':id']) }}".replace(':id', employeeId);
             $.ajax({
                 url: url,
                 type: 'GET',
