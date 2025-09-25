@@ -35,7 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function ($schedule) {
-        $schedule->command('notifications:cleanup')->everyFiveSeconds();
-        $schedule->command('attendance:calculate-daily-hours')->everyFiveSeconds();
+        // كل يوم الساعة 10 مساءً بتوقيت بيروت
+        $schedule->command('attendance:calculate-daily-hours')
+            ->timezone('Asia/Beirut')
+            // ->dailyAt('22:00');
+            ->everyMinute()
+            ->withoutOverlapping();
+
+        // تنظيف الإشعارات المنتهية كل دقيقة
+        $schedule->command('notifications:cleanup')->everyMinute()->withoutOverlapping();
     })
     ->create();
