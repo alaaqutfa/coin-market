@@ -17,7 +17,7 @@ class CalculateDailyHours extends Command
     {
         $date = Carbon::now('Asia/Beirut')->toDateString();
 
-        $this->info("بدء حساب ساعات العمل ليوم {$date}");
+        $this->info("Start Calculate Working Hours - {$date}");
 
         $employees = Employee::all();
 
@@ -42,9 +42,9 @@ class CalculateDailyHours extends Command
                 ['actual_hours' => $actualHours]
             );
 
-            $this->info("تم حساب الساعات للموظف {$employee->name}: {$actualHours} ساعة");
+            $this->info("{$employee->name}: {$actualHours}");
         }
 
-        $this->info("تمت العملية بنجاح ✅");
+        $this->info("Done ✅");
     }
 }
