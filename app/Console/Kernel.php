@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping();
 
         // تنظيف الإشعارات المنتهية كل دقيقة
-        $schedule->command('notifications:cleanup')->everyMinute()->withoutOverlapping();
+        // $schedule->command('notifications:cleanup')->everyMinute()->withoutOverlapping();
     }
 
     /**

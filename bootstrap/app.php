@@ -43,6 +43,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ->withoutOverlapping();
 
         // تنظيف الإشعارات المنتهية كل دقيقة
-        $schedule->command('notifications:cleanup')->everyMinute()->withoutOverlapping();
+        // $schedule->command('notifications:cleanup')->everyMinute()->withoutOverlapping();
     })
     ->create();
