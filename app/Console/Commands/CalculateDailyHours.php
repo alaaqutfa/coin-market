@@ -1,23 +1,25 @@
 <?php
-
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Models\Employee;
 use App\Models\AttendanceLog;
 use App\Models\DailyWorkHour;
+use App\Models\Employee;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CalculateDailyHours extends Command
 {
-    protected $signature = 'attendance:calculate-daily-hours';
+    protected $signature   = 'attendance:calculate-daily-hours';
     protected $description = 'Calculate Working Hours And Store In DailyWorkHour';
 
     public function handle()
     {
-        $date = Carbon::now('Asia/Beirut')->toDateString();
-        $dayOfWeek = Carbon::now('Asia/Beirut')->dayOfWeek; // 0 (الأحد) إلى 6 (السبت)
+        // $date = Carbon::now('Asia/Beirut')->toDateString();
+        // $dayOfWeek = Carbon::now('Asia/Beirut')->dayOfWeek; // 0 (الأحد) إلى 6 (السبت)
+
+        $date      = Carbon::now('Asia/Beirut')->subDay()->toDateString();
+        $dayOfWeek = Carbon::now('Asia/Beirut')->subDay()->dayOfWeek;
 
         $this->info("Start Calculate Working Hours - {$date} (Day: {$dayOfWeek})");
 
@@ -51,11 +53,11 @@ class CalculateDailyHours extends Command
             DailyWorkHour::updateOrCreate(
                 [
                     'employee_id' => $employee->id,
-                    'date' => $date
+                    'date'        => $date,
                 ],
                 [
-                    'actual_hours' => $actualHours,
-                    'required_hours' => $requiredHours
+                    'actual_hours'   => $actualHours,
+                    'required_hours' => $requiredHours,
                 ]
             );
 

@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
         // كل يوم الساعة 10 مساءً بتوقيت بيروت
         $schedule->command('attendance:calculate-daily-hours')
             ->timezone('Asia/Beirut')
-            ->dailyAt('22:00');
+            // ->dailyAt('22:00');
+            ->everyMinute();
 
         // تنظيف الإشعارات المنتهية كل دقيقة
         $schedule->command('notifications:cleanup')->everyMinute();
