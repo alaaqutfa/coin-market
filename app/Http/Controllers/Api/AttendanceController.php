@@ -56,6 +56,7 @@ class AttendanceController extends Controller
         $today = now('Asia/Beirut')->toDateString();
 
         $lastLog = AttendanceLog::where('employee_id', $employee->id)
+            ->whereDate('created_at', Carbon::today('Asia/Beirut'))
             ->latest()
             ->first();
 
@@ -111,7 +112,7 @@ class AttendanceController extends Controller
         }
 
         $log = AttendanceLog::where('employee_id', $employee->id)
-            ->where('date', now('Asia/Beirut')->toDateString())
+            ->whereDate('created_at', Carbon::today('Asia/Beirut'))
             ->whereNull('check_out')
             ->latest()
             ->first();
