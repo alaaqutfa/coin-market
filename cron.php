@@ -1,6 +1,7 @@
 <?php
 $laravelBasePath = __DIR__ . '/..'; // تأكد من صحة المسار حسب مكان ملف cron.php
 
+echo __DIR__;
 echo 'Cron Job is runing';
 
 // تنفيذ الأمر artisan المطلوب وحفظ المخرجات (اختياري)
