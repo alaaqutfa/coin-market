@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('assets/img/design-bg-1.png') }}') no-repeat center center;
+            background: url('{{ asset('assets/img/design-bg-2.png') }}') no-repeat center center;
             background-size: cover;
             padding: 20px;
             overflow: hidden;
@@ -66,7 +66,11 @@
         .image-shape {
             position: relative;
             width: 60%;
-            height: 600px;
+            @if(count($products) > 4)
+                height: 500px;
+            @else
+                height: 600px;
+            @endif
             padding: 2rem;
             display: flex;
             justify-content: center;
@@ -115,7 +119,7 @@
             width: 100%;
             padding: 1rem;
             color: var(--secondary);
-            font-size: 4rem;
+            font-size: 3rem;
             font-weight: 800;
             line-height: 4rem;
             text-align: justify;
@@ -139,7 +143,7 @@
 <body>
     <div class="design-container">
         <div class="header flex justify-between items-center p-4"
-            style="border-bottom: 7px solid #ECC631;background:#ffffff80;">
+            style="border-bottom: 7px solid #ECC631;background:#fdedd390;">
             <div class="logo-side flex justify-center items-center flex-col gap-2">
                 <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo" />
                 <h2 class="font-bold text-nowrap" style="color:var(--secondary);font-size: 70px;">
