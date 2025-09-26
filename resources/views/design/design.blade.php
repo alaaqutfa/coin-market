@@ -122,7 +122,7 @@
             font-size: 3rem;
             font-weight: 800;
             line-height: 4rem;
-            text-align: justify;
+            text-align: start;
         }
 
         .price {
