@@ -731,9 +731,9 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <textarea contenteditable="true" data-field="note" class="editable-field-log text-justify font-medium text-gray-900 whitespace-pre-line">
+                                    <div contenteditable="true" data-field="note" class="editable-field-log text-justify font-medium text-gray-900 whitespace-pre-line">
                                         ${log['note']}
-                                    </textarea>
+                                    </div>
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
