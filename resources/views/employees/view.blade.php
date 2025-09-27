@@ -958,12 +958,12 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div class="text-center">
-                                        ${summary['total_actual_hours']}
+                                        ${parseFloat(summary['total_actual_hours'] || 0).toFixed(2)}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
                                     <div class="text-center">
-                                        ${summary['total_required_hours']}
+                                        ${parseFloat(summary['total_required_hours'] || 0).toFixed(2)}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
