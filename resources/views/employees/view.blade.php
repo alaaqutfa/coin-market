@@ -530,7 +530,7 @@
                 </div>
             </th>
             <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                <input type="number" min="0" max="24" name="schedules[${rowCount}][work_hours]"
+                <input type="number" min="0" max="24" step="0.01" name="schedules[${rowCount}][work_hours]"
                         class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="11" value="11" required>
             </th>
             <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
