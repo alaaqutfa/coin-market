@@ -610,7 +610,8 @@ class AttendanceController extends Controller
                 'total_required_hours' => $totalRequired,
                 'total_actual_hours'   => $totalActual,
                 'achievement_rate'     => $totalRequired > 0 ? round(($totalActual / $totalRequired) * 100, 2) : 0,
-                'attendance_days'      => $employee->dailyWorkHours->count(),
+                'attendance_days' => $employee->dailyWorkHours()->where('actual_hours', '>', 0)->count(),
+                'absent_days' => $employee->dailyWorkHours()->where('required_hours', '>', 0)->where('actual_hours', 0)->count(),
                 'status'               => $totalActual >= $totalRequired ? 'مكتمل' : 'غير مكتمل',
             ];
         });

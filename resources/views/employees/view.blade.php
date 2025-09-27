@@ -255,6 +255,11 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">أيام الغياب</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الساعات المنجزة</span>
                                 </div>
                             </th>
@@ -954,6 +959,11 @@
                                 <th class="px-6 py-4">
                                     <div class="text-center">
                                         ${summary['attendance_days']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['absent_days']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
