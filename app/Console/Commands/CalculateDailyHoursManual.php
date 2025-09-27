@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CalculateDailyHoursManual extends Command
 {
-    protected $signature   = 'attendance:calculate-daily-hours-manual {date} {--truncate}';
+    protected $signature   = 'attendance:calculate-daily-hours-manual {date} {--truncate} {--debug}';
     protected $description = 'Calculate Working Hours For Specific Date With Optional Truncate';
 
     public function handle()
@@ -47,6 +47,8 @@ class CalculateDailyHoursManual extends Command
         $employees = Employee::all();
         $totalEmployees = count($employees);
         $processed = 0;
+        $employeesWithLogs = 0;
+        $totalActualHours = 0;
 
         $this->info("Processing {$totalEmployees} employees...");
 
@@ -60,15 +62,34 @@ class CalculateDailyHoursManual extends Command
                 ->get();
 
             $totalMinutes = 0;
+            $logCount = $logs->count();
 
-            foreach ($logs as $log) {
+            if ($this->option('debug') && $logCount > 0) {
+                $this->info("\nDebug - Employee {$employee->employee_code}: {$logCount} logs found");
+            }
+
+            foreach ($logs as $index => $log) {
                 if ($log->check_in && $log->check_out) {
-                    $totalMinutes += Carbon::parse($log->check_in)
+                    $minutes = Carbon::parse($log->check_in)
                         ->diffInMinutes(Carbon::parse($log->check_out));
+                    $totalMinutes += $minutes;
+
+                    if ($this->option('debug')) {
+                        $this->info("Log {$index}: {$log->check_in} to {$log->check_out} = {$minutes} minutes");
+                    }
+                } else {
+                    if ($this->option('debug')) {
+                        $this->warn("Log {$index}: Incomplete - CheckIn: {$log->check_in}, CheckOut: {$log->check_out}");
+                    }
                 }
             }
 
             $actualHours = $totalMinutes / 60;
+
+            if ($logCount > 0 && $actualHours > 0) {
+                $employeesWithLogs++;
+                $totalActualHours += $actualHours;
+            }
 
             // الحصول على الساعات المطلوبة من WorkSchedule
             $workSchedule = WorkSchedule::where('employee_id', $employee->id)
@@ -89,6 +110,10 @@ class CalculateDailyHoursManual extends Command
                 ]
             );
 
+            if ($this->option('debug') && $logCount > 0) {
+                $this->info("Total for {$employee->employee_code}: {$actualHours}h");
+            }
+
             $progressBar->advance();
             $processed++;
         }
@@ -96,12 +121,16 @@ class CalculateDailyHoursManual extends Command
         $progressBar->finish();
         $this->newLine();
 
-        $this->info("✅ Successfully processed {$processed} employees for date: {$date}");
+        // عرض إحصائيات
+        $this->info("=== SUMMARY ===");
+        $this->info("📅 Date: {$date}");
+        $this->info("👥 Total employees: {$totalEmployees}");
+        $this->info("📊 Employees with logs: {$employeesWithLogs}");
+        $this->info("⏱️  Total actual hours: " . round($totalActualHours, 2) . "h");
+        $this->info("✅ Successfully processed {$processed} employees");
 
         if ($this->option('truncate')) {
-            $this->info("📊 Table was truncated and recalculated for date: {$date}");
-        } else {
-            $this->info("📊 Data updated/inserted for date: {$date}");
+            $this->info("📈 Table was truncated and recalculated");
         }
 
         return 0;
