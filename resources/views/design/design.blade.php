@@ -143,7 +143,7 @@
 <body>
     <div class="design-container">
         <div class="header flex justify-between items-center p-4"
-            style="border-bottom: 7px solid #ECC631;background:#fdedd390;">
+            style="border-bottom: 7px solid #ECC631;">
             <div class="logo-side flex justify-center items-center flex-col gap-2">
                 <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo" />
                 <h2 class="font-bold text-nowrap" style="color:var(--secondary);font-size: 70px;">
