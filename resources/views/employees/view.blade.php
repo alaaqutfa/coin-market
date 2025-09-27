@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="quick-calculates p-4 grid grid-cols-4 gap-8">
+            <div class="quick-calculates p-4 lg:grid grid-cols-4 gap-8">
 
                 <div
                     class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
@@ -157,7 +157,14 @@
 
             </div>
 
-            <div class="relative overflow-x-auto">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-calendar-days ml-2"></i>
+                    الموجز اليومي
+                </h2>
+            </div>
+
+            <div class="relative my-4 overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
@@ -208,6 +215,72 @@
                         </tr>
                     </thead>
                     <tbody id="attendanceToday-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-calendar ml-2"></i>
+                    الموجز الشهري
+                </h2>
+                <div class="flex items-center space-x-4 gap-2">
+                    <button id="monthly-summary" onclick="location.reload();"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative my-4 overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                <input type="checkbox" name="" id=""
+                                    class="border border-gray-400 rounded" />
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الرقم الوظيفي</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الأسم</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">أيام الحضور</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الساعات المنجزة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الساعات المطلوبة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الحالة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">نسبة الإنجاز</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الأجراءات</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthlySummary-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -457,8 +530,8 @@
                 </div>
             </th>
             <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                <input type="number" step="0.5" min="0" max="24" name="schedules[${rowCount}][work_hours]"
-                        class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="8" value="8" required>
+                <input type="number" min="0" max="24" name="schedules[${rowCount}][work_hours]"
+                        class="shadow-xs bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="11" value="11" required>
             </th>
             <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                 <button type="button" class="remove-row bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">
@@ -606,12 +679,10 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error loading schedule:', error);
+                    console.log('Error loading schedule:', error);
                 }
             });
         }
-
-
 
         function attendanceToday() {
             const data = {};
@@ -627,7 +698,7 @@
                     var data = ``;
                     attendance_logs.forEach((log) => {
                         data += `
-                            <tr>
+                            <tr data-id="${log['id']}">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
                                 </th>
@@ -640,12 +711,12 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div contenteditable="true" data-field="check_in" class="editable-field-log">
                                         ${log['check_in']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div contenteditable="true" data-field="check_out" class="editable-field-log">
                                         ${log['check_out'] ? log['check_out'] : 'لم يغادر بعد'}
                                     </div>
                                 </th>
@@ -660,13 +731,16 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div class="text-justify font-medium text-gray-900 whitespace-pre-line">
+                                    <textarea contenteditable="true" data-field="note" class="editable-field-log text-justify font-medium text-gray-900 whitespace-pre-line">
                                         ${log['note']}
-                                    </div>
+                                    </textarea>
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
-
+                                        <button onclick="deleteAttendance(${log['id']})"
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </th>
                             </tr>
@@ -684,6 +758,46 @@
                         console.log('Validation errors:', xhr.responseJSON.errors);
                     }
                 },
+            });
+        }
+
+        function updateAttendanceField(logId, field, value) {
+            const data = {};
+            data[field] = value;
+            data._token = '{{ csrf_token() }}';
+
+            $.ajax({
+                url: `/attendance/${logId}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(response) {
+                    showToast(response.message, 'success');
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء التحديث', 'error');
+                    console.log('Error:', xhr.responseText);
+                }
+            });
+        }
+
+        function deleteAttendance(logId) {
+            if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
+
+            $.ajax({
+                url: `/attendance/${logId}`,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    showToast(response.message, 'success');
+                    attendanceToday(); // إعادة تحميل الجدول
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء الحذف', 'error');
+                    console.log('Error:', xhr.responseText);
+                }
             });
         }
 
@@ -772,11 +886,18 @@
 
         function initEditableFields() {
             $('.editable-field').off('blur').on('blur', function() {
+                const employeeId = $(this).closest('tr').data('id');
                 const field = $(this).data('field');
                 const value = $(this).text().trim();
-                const employeeId = $(this).closest('tr').data('id');
 
                 updateEmployeeField(employeeId, field, value);
+            });
+            $(document).on('blur', '.editable-field-log', function() {
+                const logId = $(this).closest('tr').data('id');
+                const field = $(this).data('field');
+                const value = $(this).text().trim();
+
+                updateAttendanceField(logId, field, value);
             });
         }
 
@@ -802,6 +923,87 @@
                     if (xhr.responseJSON && xhr.responseJSON.errors) {
                         console.log('Validation errors:', xhr.responseJSON.errors);
                     }
+                }
+            });
+        }
+
+        function getMonthlySummary() {
+            $.ajax({
+                url: '{{ route('attendance.monthly.summary') }}',
+                type: 'GET',
+                success: function(response) {
+                    console.log("Monthly Summary:");
+                    console.log(response);
+                    var employees_summary = response['employees_summary'];
+                    console.log(employees_summary);
+                    var data = ``;
+                    employees_summary.forEach((summary) => {
+                        data += `
+                            <tr data-id="${summary['id']}">
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+                                </th>
+                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                    ${summary['employee_code']}
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['employee_name']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['attendance_days']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['total_actual_hours']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['total_required_hours']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['status']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${summary['achievement_rate']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div>
+
+                                    </div>
+                                </th>
+                            </tr>
+                        `;
+                    });
+                    $('#monthlySummary-table-body').html(data);
+                    $('#monthly-summary').text(response['period']);
+                },
+                error: function(xhr) {
+                    console.log("Error:", xhr.responseText);
+                }
+            });
+        }
+
+        getMonthlySummary();
+
+        function getMonthlySummaryByDate(year, month) {
+            $.ajax({
+                url: `/attendance/monthly-summary/${year}/${month}`,
+                type: 'GET',
+                success: function(response) {
+                    console.log("Monthly Summary (Date):", response);
+                },
+                error: function(xhr) {
+                    console.log("Error:", xhr.responseText);
                 }
             });
         }

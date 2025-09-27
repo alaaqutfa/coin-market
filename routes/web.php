@@ -33,6 +33,10 @@ Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('
 
 // Routes الحضور والانصراف (للوحة التحكم)
 Route::prefix('attendance')->name('attendance.')->group(function () {
+    Route::put('/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
+    Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
+
+
     // لوحة التحكم اليومية
     Route::get('/dashboard-today', [AttendanceController::class, 'dashboardToday'])->name('dashboard.today');
 

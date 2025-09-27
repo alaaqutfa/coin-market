@@ -135,7 +135,7 @@ class AttendanceController extends Controller
             'note'      => $updatedNote,
         ]);
 
-        // $hoursData = $this->recordDailyHours($employee->id, now('Asia/Beirut')->toDateString(), $log->check_in, now('Asia/Beirut'));
+        // $hoursData = $this->recorddailyWorkHours($employee->id, now('Asia/Beirut')->toDateString(), $log->check_in, now('Asia/Beirut'));
 
         $yesterdayLog = AttendanceLog::where('employee_id', $employee->id)
             ->where('date', now('Asia/Beirut')->subDay()->toDateString())
@@ -150,8 +150,8 @@ class AttendanceController extends Controller
         }
 
         return response()->json([
-            'message'    => 'تم تسجيل الخروج بنجاح',
-            'log'        => $log,
+            'message' => 'تم تسجيل الخروج بنجاح',
+            'log'     => $log,
         ]);
     }
 
@@ -211,6 +211,36 @@ class AttendanceController extends Controller
             'present_count'   => $formattedLogs->where('status', 'حاضر')->count(),
             'left_count'      => $formattedLogs->where('status', 'مغادر')->count(),
             'attendance_logs' => $formattedLogs,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $attendance = AttendanceLog::findOrFail($id);
+
+        $validated = $request->validate([
+            'check_in'  => 'nullable|date',
+            'check_out' => 'nullable|date',
+            'note'      => 'nullable|string',
+        ]);
+
+        $attendance->update($validated);
+
+        return response()->json([
+            'success'    => true,
+            'message'    => 'تم تحديث السجل بنجاح',
+            'attendance' => $attendance,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $attendance = AttendanceLog::findOrFail($id);
+        $attendance->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حذف السجل بنجاح',
         ]);
     }
 
@@ -319,7 +349,7 @@ class AttendanceController extends Controller
         return $schedule ? $schedule->work_hours : 0;
     }
 
-    private function recordDailyHours($employeeId, $date, $checkIn, $checkOut)
+    private function recorddailyWorkHours($employeeId, $date, $checkIn, $checkOut)
     {
         $checkInTime   = Carbon::parse($checkIn, 'Asia/Beirut');
         $checkOutTime  = Carbon::parse($checkOut, 'Asia/Beirut');
@@ -400,64 +430,6 @@ class AttendanceController extends Controller
                 'total_hours_difference' => number_format($totalActualHours - $totalRequiredHours, 2),
             ],
             'attendance_logs' => $formattedLogs,
-        ]);
-    }
-
-    public function monthlyReport(Request $request, $employeeId = null, $year = null, $month = null)
-    {
-        $employeeId = $employeeId ?? $request->user()->id;
-        $year       = $year ?? now('Asia/Beirut')->year;
-        $month      = $month ?? now('Asia/Beirut')->month;
-
-        $employee  = Employee::findOrFail($employeeId);
-        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
-        $endDate   = Carbon::create($year, $month, 1)->endOfMonth();
-
-        $totalRequiredMonthly = 0;
-        $currentDate          = $startDate->copy();
-        while ($currentDate <= $endDate) {
-            $totalRequiredMonthly += $this->getRequiredHours($employeeId, $currentDate->format('Y-m-d'));
-            $currentDate->addDay();
-        }
-
-        $dailyHours = DailyWorkHour::where('employee_id', $employeeId)
-            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-            ->orderBy('date')
-            ->get();
-
-        $totalActualHours = $dailyHours->sum('actual_hours');
-
-        return response()->json([
-            'employee'      => [
-                'id'            => $employee->id,
-                'name'          => $employee->name,
-                'employee_code' => $employee->employee_code,
-            ],
-            'period'        => [
-                'year'       => $year,
-                'month'      => $month,
-                'month_name' => $startDate->translatedFormat('F Y'),
-            ],
-            'summary'       => [
-                'monthly_required_hours' => $totalRequiredMonthly,
-                'total_actual_hours'     => $totalActualHours,
-                'achievement_rate'       => $totalRequiredMonthly > 0 ? round(($totalActualHours / $totalRequiredMonthly) * 100, 2) : 0,
-                'working_days'           => $dailyHours->where('required_hours', '>', 0)->count(),
-                'off_days'               => $dailyHours->where('required_hours', 0)->count(),
-                'average_daily_hours'    => $dailyHours->where('required_hours', '>', 0)->count() > 0 ?
-                round($totalActualHours / $dailyHours->where('required_hours', '>', 0)->count(), 2) : 0,
-            ],
-            'daily_details' => $dailyHours->map(function ($daily) use ($employeeId) {
-                $requiredHours = $this->getRequiredHours($employeeId, $daily->date);
-                return [
-                    'date'           => $daily->date,
-                    'day_name'       => Carbon::parse($daily->date, 'Asia/Beirut')->translatedFormat('l'),
-                    'required_hours' => $requiredHours,
-                    'actual_hours'   => $daily->actual_hours,
-                    'difference'     => round($daily->actual_hours - $requiredHours, 2),
-                    'day_type'       => $requiredHours > 0 ? 'عمل' : 'إجازة',
-                ];
-            }),
         ]);
     }
 
@@ -546,14 +518,72 @@ class AttendanceController extends Controller
             'required_hours' => 'required|numeric|min:0|max:24',
         ]);
 
-        $dailyHours = DailyWorkHour::updateOrCreate(
+        $dailyWorkHours = DailyWorkHour::updateOrCreate(
             ['employee_id' => $request->employee_id, 'date' => $request->date],
             ['required_hours' => $request->required_hours]
         );
 
         return response()->json([
             'message' => 'تم تحديث الساعات المطلوبة بنجاح',
-            'data'    => $dailyHours,
+            'data'    => $dailyWorkHours,
+        ]);
+    }
+
+    public function monthlyReport(Request $request, $employeeId = null, $year = null, $month = null)
+    {
+        $employeeId = $employeeId ?? $request->user()->id;
+        $year       = $year ?? now('Asia/Beirut')->year;
+        $month      = $month ?? now('Asia/Beirut')->month;
+
+        $employee  = Employee::findOrFail($employeeId);
+        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
+        $endDate   = Carbon::create($year, $month, 1)->endOfMonth();
+
+        $totalRequiredMonthly = 0;
+        $currentDate          = $startDate->copy();
+        while ($currentDate <= $endDate) {
+            $totalRequiredMonthly += $this->getRequiredHours($employeeId, $currentDate->format('Y-m-d'));
+            $currentDate->addDay();
+        }
+
+        $dailyWorkHours = DailyWorkHour::where('employee_id', $employeeId)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->orderBy('date')
+            ->get();
+
+        $totalActualHours = $dailyWorkHours->sum('actual_hours');
+
+        return response()->json([
+            'employee'      => [
+                'id'            => $employee->id,
+                'name'          => $employee->name,
+                'employee_code' => $employee->employee_code,
+            ],
+            'period'        => [
+                'year'       => $year,
+                'month'      => $month,
+                'month_name' => $startDate->translatedFormat('F Y'),
+            ],
+            'summary'       => [
+                'monthly_required_hours' => $totalRequiredMonthly,
+                'total_actual_hours'     => $totalActualHours,
+                'achievement_rate'       => $totalRequiredMonthly > 0 ? round(($totalActualHours / $totalRequiredMonthly) * 100, 2) : 0,
+                'working_days'           => $dailyWorkHours->where('required_hours', '>', 0)->count(),
+                'off_days'               => $dailyWorkHours->where('required_hours', 0)->count(),
+                'average_daily_hours'    => $dailyWorkHours->where('required_hours', '>', 0)->count() > 0 ?
+                round($totalActualHours / $dailyWorkHours->where('required_hours', '>', 0)->count(), 2) : 0,
+            ],
+            'daily_details' => $dailyWorkHours->map(function ($daily) use ($employeeId) {
+                $requiredHours = $this->getRequiredHours($employeeId, $daily->date);
+                return [
+                    'date'           => $daily->date,
+                    'day_name'       => Carbon::parse($daily->date, 'Asia/Beirut')->translatedFormat('l'),
+                    'required_hours' => $requiredHours,
+                    'actual_hours'   => $daily->actual_hours,
+                    'difference'     => round($daily->actual_hours - $requiredHours, 2),
+                    'day_type'       => $requiredHours > 0 ? 'عمل' : 'إجازة',
+                ];
+            }),
         ]);
     }
 
@@ -565,13 +595,13 @@ class AttendanceController extends Controller
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate   = Carbon::create($year, $month, 1)->endOfMonth();
 
-        $employees = Employee::with(['dailyHours' => function ($query) use ($startDate, $endDate) {
+        $employees = Employee::with(['dailyWorkHours' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
         }])->get();
 
         $summary = $employees->map(function ($employee) {
-            $totalRequired = $employee->dailyHours->sum('required_hours');
-            $totalActual   = $employee->dailyHours->sum('actual_hours');
+            $totalRequired = $employee->dailyWorkHours->sum('required_hours');
+            $totalActual   = $employee->dailyWorkHours->sum('actual_hours');
 
             return [
                 'employee_id'          => $employee->id,
@@ -580,7 +610,7 @@ class AttendanceController extends Controller
                 'total_required_hours' => $totalRequired,
                 'total_actual_hours'   => $totalActual,
                 'achievement_rate'     => $totalRequired > 0 ? round(($totalActual / $totalRequired) * 100, 2) : 0,
-                'attendance_days'      => $employee->dailyHours->count(),
+                'attendance_days'      => $employee->dailyWorkHours->count(),
                 'status'               => $totalActual >= $totalRequired ? 'مكتمل' : 'غير مكتمل',
             ];
         });
