@@ -706,27 +706,27 @@
                                     ${log['employee_code']}
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div class="text-center">
                                         ${log['employee_name']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div contenteditable="true" data-field="check_in" class="editable-field-log">
+                                    <div contenteditable="true" data-field="check_in" class="editable-field-log text-center">
                                         ${log['check_in']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div contenteditable="true" data-field="check_out" class="editable-field-log">
+                                    <div contenteditable="true" data-field="check_out" class="editable-field-log text-center">
                                         ${log['check_out'] ? log['check_out'] : 'لم يغادر بعد'}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div class="text-center">
                                         ${log['duration']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div class="text-center">
                                         ${log['status']}
                                     </div>
                                 </th>
