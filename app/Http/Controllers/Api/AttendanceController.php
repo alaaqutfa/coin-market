@@ -591,7 +591,7 @@ class AttendanceController extends Controller
     {
         $year  = $year ?? now('Asia/Beirut')->year;
         $month = $month ?? now('Asia/Beirut')->month;
-
+        dd(["year"=> $year,"month"=> $month]);
         $startDate = Carbon::create($year, $month, 1)->startOfMonth();
         $endDate   = Carbon::create($year, $month, 1)->endOfMonth();
 
