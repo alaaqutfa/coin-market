@@ -205,7 +205,7 @@
                     الموجز الشهري <span class="employee-name"></span>
                 </h2>
                 <div class="flex items-center space-x-4 gap-2">
-                    
+
                 </div>
             </div>
 
@@ -1000,7 +1000,7 @@
                         `;
                     });
                     $('#employee-monthly-summary-table-body').html(data);
-                    $('.employee-name');text(employee['name'] + " " + employee['employee_code']);
+                    $('.employee-name').text(employee['name'] + " " + employee['employee_code']);
                     // إخفاء كل العناصر
                     $('.nav-item').fadeOut(200);
                     $('.attendance-employee-monthly-log').fadeIn(200);
