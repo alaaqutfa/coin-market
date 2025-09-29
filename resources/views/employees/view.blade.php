@@ -878,7 +878,7 @@
 
         function getMonthlySummaryByDate(id,year, month) {
             $.ajax({
-                url: `/attendance/monthly-summary/${id}/${year}/${month}`,
+                url: `/attendance/monthly-report/${id}/${year}/${month}`,
                 type: 'GET',
                 success: function(response) {
                     console.log("Monthly Summary (Date):");
