@@ -960,6 +960,7 @@
                             'Wednesday':'الأربعاء',
                             'Thursday':'الخميس',
                             'Friday':'الجمعة',
+                            'Saturday':'السبت',
                         };
                         data += `
                             <tr>
