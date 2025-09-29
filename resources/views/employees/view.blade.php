@@ -952,6 +952,15 @@
                             month: '2-digit',
                             day: '2-digit'
                         });
+                        let dayNameAr = {
+                            'Sunday':'الأحد',
+                            'Monday':'الإثنين',
+                            'Tuesday':'الثلاثاء',
+                            'Tuesday':'الثلاثاء',
+                            'Wednesday':'الأربعاء',
+                            'Thursday':'الخميس',
+                            'Friday':'الجمعة',
+                        };
                         data += `
                             <tr>
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
@@ -961,7 +970,7 @@
                                     ${formattedDate}
                                 </th>
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${detail['day_name']}
+                                    ${dayNameAr[detail['day_name']]}
                                 </th>
                                 <th class="px-6 py-4">
                                     <div class="text-center">
