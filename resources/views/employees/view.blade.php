@@ -229,11 +229,6 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">الأسم</span>
-                                </div>
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الساعات المنجزة</span>
                                 </div>
                             </th>
@@ -970,11 +965,6 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div class="text-center">
-                                        ${employee['name']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
                                         ${parseFloat(detail['required_hours'] || 0).toFixed(2)}
                                     </div>
                                 </th>
@@ -1000,7 +990,7 @@
                         `;
                     });
                     $('#employee-monthly-summary-table-body').html(data);
-                    $('.employee-name').text(employee['name'] + " " + employee['employee_code']);
+                    $('.employee-name').text(employee['name'] + " - " + employee['employee_code']);
                     // إخفاء كل العناصر
                     $('.nav-item').fadeOut(200);
                     $('.attendance-employee-monthly-log').fadeIn(200);
