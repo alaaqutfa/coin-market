@@ -876,9 +876,9 @@
             });
         }
 
-        function getMonthlySummaryByDate(year, month) {
+        function getMonthlySummaryByDate(id,year, month) {
             $.ajax({
-                url: `/attendance/monthly-summary/${year}/${month}`,
+                url: `/attendance/monthly-summary/${id}/${year}/${month}`,
                 type: 'GET',
                 success: function(response) {
                     console.log("Monthly Summary (Date):");
