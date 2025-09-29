@@ -19,8 +19,15 @@
                 <li class="me-2">
                     <button type="button"
                         class="nav-btn inline-block p-4 text-yellow-400 border-b-2 border-yellow-400 rounded-t-lg active"
-                        data-target=".attendance-log">
-                        سجل الحضور
+                        data-target=".attendance-daily-log">
+                        الموجز اليومي
+                    </button>
+                </li>
+                <li class="me-2">
+                    <button type="button"
+                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        data-target=".attendance-monthly-log">
+                        الموجز الشهري
                     </button>
                 </li>
                 <li class="me-2">
@@ -44,124 +51,20 @@
             </ul>
         </div>
 
-        <div class="nav-item attendance-log table-container bg-white rounded-lg">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-gauge ml-2"></i>
-                    لوحة تحكم
-                </h2>
-                <div class="flex items-center space-x-4 gap-2">
-                    <button id="today-log" onclick="location.reload();"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                    </button>
-                </div>
-            </div>
+        <div class="nav-item attendance-daily-log table-container bg-white rounded-lg">
 
-            <div class="quick-calculates p-4 lg:grid grid-cols-4 gap-8">
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-users-rectangle text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">إجمالي عدد الموظفين :</h2>
-                        <h1 class="total_employees text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-address-book text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">المطلوب حضورهم اليوم :</h2>
-                        <h1 class="expected_employees text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-users text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">الحاضرين :</h2>
-                        <h1 class="present_employees text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-users-slash text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">الغائبين :</h2>
-                        <h1 class="absent_employees text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-percent text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">نسبة الحضور :</h2>
-                        <h1 class="attendance_rate text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-clock text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">الساعات الفعلية :</h2>
-                        <h1 class="total_actual_hours text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-stopwatch-20 text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">الساعات المطلوبة :</h2>
-                        <h1 class="total_required_hours text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-                <div
-                    class="calc-item h-20 cursor-pointer shadow-lg rounded-lg bg-gray-100 p-4 flex justify-start items-center gap-4">
-
-                    <i class="fa-solid fa-hourglass-start text-2xl text-gray-800"></i>
-
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-gray-800 text-xl font-medium">الفرق :</h2>
-                        <h1 class="total_hours_difference text-gray-800 text-2xl font-black">...</h1>
-                    </div>
-
-                </div>
-
-            </div>
 
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
                     <i class="fa-solid fa-calendar-days ml-2"></i>
                     الموجز اليومي
                 </h2>
+                <div class="flex items-center space-x-4 gap-2">
+                    <button id="today-log" onclick="attendanceToday();"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
             </div>
 
             <div class="relative my-4 overflow-x-auto">
@@ -217,6 +120,9 @@
                     <tbody id="attendanceToday-table-body"></tbody>
                 </table>
             </div>
+        </div>
+
+        <div class="nav-item attendance-monthly-log table-container bg-white rounded-lg" style="display: none;">
 
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
@@ -288,6 +194,7 @@
                     <tbody id="monthlySummary-table-body"></tbody>
                 </table>
             </div>
+
         </div>
 
         <div class="nav-item employee-list table-container bg-white rounded-lg" style="display: none;">
@@ -607,7 +514,7 @@
                 hiddenField.val(this.checked ? '1' : '0');
             });
         }
-        // تعديل دالة submitScheduleForm
+
         function submitScheduleForm() {
             const employeeId = $('#employee_id').val();
 
@@ -653,7 +560,6 @@
             });
         }
 
-        // دالة إضافية: تحميل الجدول الحالي للموظف إذا كان موجوداً
         function loadEmployeeSchedule(employeeId) {
             if (!employeeId) return;
             const url = "{{ route('attendance.employee.schedule', ['employeeId' => ':id']) }}".replace(':id', employeeId);
@@ -806,41 +712,6 @@
             });
         }
 
-        function dashboardToday() {
-            // إنشاء كائن البيانات
-            const data = {};
-            data._token = '{{ csrf_token() }}';
-
-            $.ajax({
-                url: `{{ route('attendance.dashboard.today') }}`,
-                type: 'GET',
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function(response) {
-                    var statistics = response['statistics'];
-                    $('#today-log').text(`${response['day_name']} ${response['date']}`);
-                    $('.total_employees').text(statistics['total_employees']);
-                    $('.expected_employees').text(statistics['expected_employees']);
-                    $('.present_employees').text(statistics['present_employees']);
-                    $('.absent_employees').text(statistics['absent_employees']);
-                    $('.attendance_rate').text(statistics['attendance_rate'] + "%");
-                    $('.total_actual_hours').text(statistics['total_actual_hours']);
-                    $('.total_required_hours').text(statistics['total_required_hours']);
-                    $('.total_hours_difference').text(statistics['total_hours_difference']);
-
-                },
-                error: function(xhr) {
-                    showToast('حدث خطأ أثناء التحديث', 'error');
-                    console.log('Error:', xhr.responseText);
-
-                    // عرض أخطاء التحقق إن وجدت
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        console.log('Validation errors:', xhr.responseJSON.errors);
-                    }
-                }
-            });
-        }
-
         function deleteEmployee(employeeId) {
             if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الموظف؟')) {
                 return;
@@ -871,7 +742,6 @@
             });
         }
 
-        // دالة للتحقق إذا لم يتبقى أي موظفين
         function checkIfNoEmployees() {
             const employeeRows = $('tr[data-id]');
             if (employeeRows.length === 0) {
@@ -988,7 +858,10 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
-
+                                        <button onclick="getMonthlySummaryByDate(${summary['year']}, ${summary['month']})"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                            <i class="fas fa-eye"></i> عرض التفاصيل
+                                        </button>
                                     </div>
                                 </th>
                             </tr>
@@ -1003,14 +876,14 @@
             });
         }
 
-        getMonthlySummary();
-
         function getMonthlySummaryByDate(year, month) {
             $.ajax({
                 url: `/attendance/monthly-summary/${year}/${month}`,
                 type: 'GET',
                 success: function(response) {
-                    console.log("Monthly Summary (Date):", response);
+                    console.log("Monthly Summary (Date):");
+                    console.log(response);
+
                 },
                 error: function(xhr) {
                     console.log("Error:", xhr.responseText);
@@ -1020,7 +893,6 @@
 
         $(document).ready(function() {
 
-            // اختيار موظف مختلف
             $('#employee_id').on('change', function() {
                 const employeeId = $(this).val();
                 if (employeeId) {
@@ -1028,15 +900,11 @@
                 }
             });
 
-            // هذا بتكتبه مرّة بس، مو جوّا addScheduleRow
             $('#schedule-rows').on('change', 'input[name$="[start_time]"], input[name$="[end_time]"]', function() {
                 // استخرج رقم الصف من الـ name
                 const rowId = $(this).attr('name').match(/schedules\[(\d+)\]/)[1];
                 calculateWorkHours(rowId);
             });
-
-
-            initEditableFields();
 
             $('.nav-btn').on('click', function() {
                 // إزالة التنسيقات من الأزرار
@@ -1055,20 +923,17 @@
                 $(target).fadeIn(200);
             });
 
-            dashboardToday();
-            attendanceToday();
-
-            // إضافة صف جديد
             $('#add-row').on('click', addScheduleRow);
 
-            // إرسال النموذج
             $('#scheduleForm').on('submit', function(e) {
                 e.preventDefault();
                 submitScheduleForm();
             });
 
-            // إضافة أول صف عند تحميل الصفحة
             addScheduleRow();
+            initEditableFields();
+            attendanceToday();
+            getMonthlySummary();
         });
     </script>
 @endpush
