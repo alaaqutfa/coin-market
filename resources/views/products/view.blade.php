@@ -640,6 +640,7 @@
 
                 let data = {
                     have_image: $("input[name='have_image']").val(),
+                    no_image: $("input[name='no_image']").val(),
                     barcode: $("input[name='barcode']").val(),
                     name: $("input[name='name']").val(),
                     price: $("input[name='price']").val(),
