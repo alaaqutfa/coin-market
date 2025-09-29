@@ -56,7 +56,7 @@
                 <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' ' . $product->weight . ' high quality png image' }}"
                     title="{{ $product->name }} {{ $product->weight }} - {{ $product->price }}$"
                     class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"
-                    onclick="copyTitle(this)">
+                    onclick="copyTitle('{{ $product->barcode }}')">
                     <i class="fas fa-search"></i>
                 </a>
 

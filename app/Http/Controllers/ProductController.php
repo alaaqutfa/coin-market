@@ -248,10 +248,11 @@ class ProductController extends Controller
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
             // حذف السعر من الاسم لو موجود
-            $cleanName = preg_replace('/ - \d+(\.\d+)?\$/', '', $originalName);
+            // $cleanName = preg_replace('/ - \d+(\.\d+)?\$/', '', $originalName);
 
             // البحث عن المنتج
-            $product = Product::where('name', $cleanName)->first();
+            // $product = Product::where('name', $cleanName)->first();
+            $product = Product::where('barcode', $originalName)->first();
 
             // فقط لو لقى المنتج يكمل
             if ($product) {
