@@ -205,10 +205,7 @@
                     الموجز الشهري <span class="employee-name"></span>
                 </h2>
                 <div class="flex items-center space-x-4 gap-2">
-                    <button id="monthly-employee-summary" onclick="location.reload();"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
+                    
                 </div>
             </div>
 
@@ -228,11 +225,6 @@
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">اليوم</span>
-                                </div>
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">الرقم الوظيفي</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
@@ -976,12 +968,9 @@
                                 <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
                                     ${detail['day_name']}
                                 </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${employee['employee_code']}
-                                </th>
                                 <th class="px-6 py-4">
                                     <div class="text-center">
-                                        ${employee['employee_name']}
+                                        ${employee['name']}
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
@@ -1011,6 +1000,7 @@
                         `;
                     });
                     $('#employee-monthly-summary-table-body').html(data);
+                    $('.employee-name');text(employee['name'] + " " + employee['employee_code']);
                     // إخفاء كل العناصر
                     $('.nav-item').fadeOut(200);
                     $('.attendance-employee-monthly-log').fadeIn(200);
