@@ -858,9 +858,9 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
-                                        <button onclick="getMonthlySummaryByDate(${summary['year']}, ${summary['month']})"
+                                        <button onclick="getMonthlySummaryByDate(${summary['employee_id']},new Date().getFullYear(), new Date().getMonth() + 1)"
                                             class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-                                            <i class="fas fa-eye"></i> عرض التفاصيل
+                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                 </th>
