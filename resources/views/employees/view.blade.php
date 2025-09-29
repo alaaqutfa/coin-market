@@ -197,6 +197,79 @@
 
         </div>
 
+        <div class="nav-item attendance-employee-monthly-log table-container bg-white rounded-lg" style="display: none;">
+
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-calendar ml-2"></i>
+                    الموجز الشهري <span class="employee-name"></span>
+                </h2>
+                <div class="flex items-center space-x-4 gap-2">
+                    <button id="monthly-employee-summary" onclick="location.reload();"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="relative my-4 overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                <input type="checkbox" name="" id=""
+                                    class="border border-gray-400 rounded" />
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">التاريخ</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">اليوم</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الرقم الوظيفي</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الأسم</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الساعات المنجزة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الساعات المطلوبة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">النتيجة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الأجراءات</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-monthly-summary-table-body">
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
         <div class="nav-item employee-list table-container bg-white rounded-lg" style="display: none;">
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
@@ -807,10 +880,7 @@
                 url: '{{ route('attendance.monthly.summary') }}',
                 type: 'GET',
                 success: function(response) {
-                    console.log("Monthly Summary:");
-                    console.log(response);
                     var employees_summary = response['employees_summary'];
-                    console.log(employees_summary);
                     var data = ``;
                     employees_summary.forEach((summary) => {
                         data += `
@@ -876,14 +946,74 @@
             });
         }
 
-        function getMonthlySummaryByDate(id,year, month) {
+        function getMonthlySummaryByDate(id, year, month) {
             $.ajax({
                 url: `/attendance/monthly-report/${id}/${year}/${month}`,
                 type: 'GET',
                 success: function(response) {
-                    console.log("Monthly Summary (Date):");
+                    console.log(`Monthly Summary (${id}):`);
                     console.log(response);
-
+                    var employee = response['employee'];
+                    var daily_details = response['daily_details'];
+                    var period = response['period'];
+                    var summary = response['summary'];
+                    var data = ``;
+                    daily_details.forEach((detail) => {
+                        let dateObj = new Date(detail['date']);
+                        let formattedDate = dateObj.toLocaleDateString('ar-EG', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                        data += `
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+                                </th>
+                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                    ${formattedDate}
+                                </th>
+                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                    ${detail['day_name']}
+                                </th>
+                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                                    ${employee['employee_code']}
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${employee['employee_name']}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${parseFloat(detail['required_hours'] || 0).toFixed(2)}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${parseFloat(detail['actual_hours'] || 0).toFixed(2)}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div class="text-center">
+                                        ${parseFloat(detail['difference'] || 0).toFixed(2)}
+                                    </div>
+                                </th>
+                                <th class="px-6 py-4">
+                                    <div>
+                                        <button onclick=""
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        `;
+                    });
+                    $('#employee-monthly-summary-table-body').html(data);
+                    // إخفاء كل العناصر
+                    $('.nav-item').fadeOut(200);
+                    $('.attendance-employee-monthly-log').fadeIn(200);
                 },
                 error: function(xhr) {
                     console.log("Error:", xhr.responseText);
