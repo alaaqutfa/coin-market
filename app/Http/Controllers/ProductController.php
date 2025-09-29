@@ -53,6 +53,11 @@ class ProductController extends Controller
             $query->whereNotNull('image_path');
         }
 
+        // مع صورة
+        if ($request->no_image) {
+            $query->whereNull('image_path');
+        }
+
         // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
         if ($request->date_from && $request->date_to) {
             $query->whereBetween('created_at', [
