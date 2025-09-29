@@ -229,12 +229,12 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">الساعات المنجزة</span>
+                                    <span class="text-base">الساعات المطلوبة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">الساعات المطلوبة</span>
+                                    <span class="text-base">الساعات المنجزة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
