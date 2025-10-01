@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductBarcodeLog;
 // use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -122,13 +123,38 @@ class ProductController extends Controller
 
         $product = Product::create($productData);
 
-        // ProductBarcodeLog::createTemporaryNotification(
-        //     $product->name . ' ' . $product->price . '/' . $product->weight . ' added successfolly',
-        //     $request->note,
-        //     1
-        // );
+        ProductBarcodeLog::createTemporaryNotification(
+            $product->name . ' ' . $product->price . '/' . $product->weight . ' added successfolly',
+            $request->note,
+            1
+        );
 
         return response()->json($product, 201);
+    }
+
+    public function bulkStore(Request $request)
+    {
+        $products = $request->input('products', []);
+
+        $insertData = [];
+        foreach ($products as $p) {
+            if (! empty($p['barcode']) && ! empty($p['name'])) {
+                $insertData[] = [
+                    'barcode'    => $p['barcode'],
+                    'name'       => $p['name'],
+                    'price'      => $p['price'] ?? 0,
+                    'weight'     => $p['weight'] ?? null,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        if (count($insertData)) {
+            Product::insert($insertData);
+        }
+
+        return response()->json(['success' => true, 'count' => count($insertData)]);
     }
 
     public function trackProductBarcodeLog()

@@ -167,6 +167,13 @@
                 <li class="me-2">
                     <button type="button"
                         class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        data-target=".add-products">
+                        أضافة منتجات
+                    </button>
+                </li>
+                <li class="me-2">
+                    <button type="button"
+                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target=".products-images">
                         صور المنتجات
                     </button>
@@ -412,6 +419,56 @@
 
         </div>
 
+        <!-- إضافة منتجات -->
+        <div class="nav-item add-products table-container bg-white rounded-lg" style="display: none;">
+
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                    <i class="fas fa-list ml-2"></i>
+                    أضافة منتجات
+                </h2>
+            </div>
+
+            <div class="relative overflow-x-auto">
+                <table id="new-products-table" class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th class="px-6 py-4 text-center">#</th>
+                            <th class="px-6 py-4 text-center">الباركود</th>
+                            <th class="px-6 py-4 text-center">اسم المنتج</th>
+                            <th class="px-6 py-4 text-center">السعر</th>
+                            <th class="px-6 py-4 text-center">الوزن</th>
+                            <th class="px-6 py-4 text-center">إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="new-products-body">
+                        <tr>
+                            <td class="px-6 py-4">1</td>
+                            <td class="px-6 py-4"><input type="text" name="products[0][barcode]"
+                                    class="border rounded p-1" required>
+                            </td>
+                            <td class="px-6 py-4"><input type="text" name="products[0][name]"
+                                    class="border rounded p-1" required></td>
+                            <td class="px-6 py-4"><input type="number" step="0.01" name="products[0][price]"
+                                    class="border rounded p-1" required></td>
+                            <td class="px-6 py-4"><input type="text" name="products[0][weight]"
+                                    class="border rounded p-1"></td>
+                            <td class="px-6 py-4"><button type="button" class="remove-row text-red-500">حذف</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="my-8 flex gap-2">
+                    <button type="button" id="add-row" class="bg-green-500 text-white px-4 py-2 rounded">+ إضافة
+                        سطر</button>
+                    <button type="button" id="save-all" class="bg-blue-500 text-white px-4 py-2 rounded">💾 حفظ
+                        الجميع</button>
+                </div>
+            </div>
+
+        </div>
+
         <div class="nav-item products-images table-container bg-white rounded-lg" style="display: none;">
             <form id="previewForm" class="my-6" enctype="multipart/form-data">
                 <div class="flex items-center justify-center w-full">
@@ -476,7 +533,7 @@
             $(function() {
 
                 $('input[name="have_image"]').on('change', function() {
-                    if(this.checked){
+                    if (this.checked) {
                         $('.have_image_div').addClass('bg-yellow-500');
                     } else {
                         $('.have_image_div').removeClass('bg-yellow-500');
@@ -485,7 +542,7 @@
                 });
 
                 $('input[name="no_image"]').on('change', function() {
-                    if(this.checked){
+                    if (this.checked) {
                         $('.no_image_div').addClass('bg-yellow-500');
                     } else {
                         $('.no_image_div').removeClass('bg-yellow-500');
@@ -930,7 +987,60 @@
                 form.remove();
             }
 
+            let rowIndex = 1; // لمتابعة فهرس الصفوف الجديدة
+
             $(document).ready(function() {
+
+                // ✅ إضافة سطر جديد
+                $("#add-row").on("click", function() {
+                    let newRow = `
+                        <tr>
+                            <td class="px-6 py-4">${rowIndex + 1}</td>
+                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][barcode]" class="border rounded p-1" required></td>
+                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][name]" class="border rounded p-1" required></td>
+                            <td class="px-6 py-4"><input type="number" step="0.01" name="products[${rowIndex}][price]" class="border rounded p-1" required></td>
+                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][weight]" class="border rounded p-1"></td>
+                            <td class="px-6 py-4"><button type="button" class="remove-row text-red-500">حذف</button></td>
+                        </tr>
+                    `;
+                    $("#new-products-body").append(newRow);
+                    rowIndex++;
+                });
+
+                // ✅ حذف سطر
+                $(document).on("click", ".remove-row", function() {
+                    $(this).closest("tr").remove();
+                });
+
+                // ✅ حفظ الجميع
+                $("#save-all").on("click", function() {
+                    let formData = {};
+                    $("#new-products-body tr").each(function(i, row) {
+                        $(row).find("input").each(function() {
+                            formData[$(this).attr("name")] = $(this).val();
+                        });
+                    });
+
+                    $.ajax({
+                        url: "{{ route('products.bulkStore') }}",
+                        type: "POST",
+                        data: formData,
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        success: function(res) {
+                            showToast("✅ تم الحفظ بنجاح (" + res.count + " منتج)", "success");
+                            $("#new-products-body").empty(); // تفريغ الجدول
+                            rowIndex = 0;
+                            $("#add-row").click(); // أول سطر فارغ
+                        },
+                        error: function(xhr) {
+                            showToast("❌ حدث خطأ أثناء الحفظ", "error");
+                            console.log(xhr.responseText);
+                        }
+                    });
+                });
+
                 // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
                 initEditableFields();
 
