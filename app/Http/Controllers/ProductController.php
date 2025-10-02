@@ -189,15 +189,6 @@ class ProductController extends Controller
         // الباركودات المفقودة (اللي موجودة في اللوج بس مش موجودة في المنتجات)
         $missing = array_diff($allBarcodes, $existing);
 
-        // سجل كل محاولة تحقق في اللوج
-        foreach ($allBarcodes as $barcode) {
-            ProductBarcodeLog::create([
-                'barcode' => $barcode,
-                'exists'  => in_array($barcode, $existing),
-                'source'  => 'fetch-missing',
-            ]);
-        }
-
         return response()->json(array_values($missing));
     }
 
