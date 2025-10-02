@@ -429,55 +429,7 @@
                             <th class="px-6 py-4 text-center">إجراء</th>
                         </tr>
                     </thead>
-                    <tbody id="new-products-body">
-                        <tr class="border-b hover:bg-gray-50">
-                            <!-- الترقيم -->
-                            <td class="px-4 py-3 text-center font-medium text-gray-700">
-                                1
-                            </td>
-
-                            <!-- الباركود -->
-                            <td class="px-4 py-3">
-                                <div class="flex flex-col">
-                                    <input type="text" name="products[0][barcode]"
-                                        class="barcode-input w-40 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
-                                        placeholder="أدخل الباركود" required>
-                                    <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">
-                                        ⚠️ الباركود موجود مسبقاً
-                                    </span>
-                                </div>
-                            </td>
-
-                            <!-- اسم المنتج -->
-                            <td class="px-4 py-3">
-                                <input type="text" name="products[0][name]"
-                                    class="w-72 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
-                                    placeholder="أدخل اسم المنتج" required>
-                            </td>
-
-                            <!-- السعر -->
-                            <td class="px-4 py-3">
-                                <input type="number" step="0.01" name="products[0][price]"
-                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
-                                    placeholder="السعر" required>
-                            </td>
-
-                            <!-- الوزن -->
-                            <td class="px-4 py-3">
-                                <input type="text" name="products[0][weight]"
-                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition"
-                                    placeholder="الوزن">
-                            </td>
-
-                            <!-- زر الحذف -->
-                            <td class="px-4 py-3 text-center">
-                                <button type="button"
-                                    class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
-                                    حذف
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="new-products-body"></tbody>
                 </table>
 
                 <div class="my-8 flex gap-2">
@@ -1072,6 +1024,8 @@
                         }
                     });
                 });
+
+                $('#fetch-missing').click();
 
                 // التحقق من تكرار الباركود أثناء الإدخال
                 $(document).on("change", ".barcode-input", function() {
