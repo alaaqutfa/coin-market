@@ -56,7 +56,7 @@ class CalculateDailyHours extends Command
                     'date'        => $date,
                 ],
                 [
-                    'actual_hours'   => round($actualHours > $requiredHours ? $requiredHours : $actualHours, 2),
+                    'actual_hours'   => round($actualHours, 2),
                     'required_hours' => $requiredHours,
                 ]
             );
