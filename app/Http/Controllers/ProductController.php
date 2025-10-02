@@ -123,12 +123,6 @@ class ProductController extends Controller
 
         $product = Product::create($productData);
 
-        ProductBarcodeLog::createTemporaryNotification(
-            $product->name . ' ' . $product->price . '/' . $product->weight . ' added successfolly',
-            $request->note,
-            1
-        );
-
         return response()->json($product, 201);
     }
 
