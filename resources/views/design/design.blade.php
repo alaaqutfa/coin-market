@@ -66,7 +66,8 @@
         .image-shape {
             position: relative;
             width: 60%;
-            @if(count($products) > 4)
+
+            @if (count($products) > 4)
                 height: 500px;
             @else
                 height: 600px;
@@ -142,8 +143,7 @@
 
 <body>
     <div class="design-container">
-        <div class="header flex justify-between items-center p-4"
-            style="border-bottom: 7px solid #ECC631;">
+        <div class="header flex justify-between items-center p-4" style="border-bottom: 7px solid #ECC631;">
             <div class="logo-side flex justify-center items-center flex-col gap-2">
                 <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo" />
                 <h2 class="font-bold text-nowrap" style="color:var(--secondary);font-size: 70px;">
@@ -170,9 +170,11 @@
                     <div class="image-shape">
                         <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
                             alt="product image" />
-                        <span class="weight">
-                            {{ $product->weight }}
-                        </span>
+                        @if ($product->weight != 0)
+                            <span class="weight">
+                                {{ $product->weight }}
+                            </span>
+                        @endif
                     </div>
                     <div class="price-shape">
                         <h5 class="name">

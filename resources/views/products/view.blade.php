@@ -449,7 +449,7 @@
                 <div class="flex items-center justify-center w-full">
                     <label for="dropzone-file"
                         class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6 m-4">
                             <svg class="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -471,6 +471,9 @@
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
+                            <th scope="col" class="px-6 py-4">
+                                #
+                            </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <input type="checkbox" name="" id=""
@@ -551,8 +554,14 @@
                             let table = $('#previewTable');
                             table.html("");
                             data.forEach((item, index) => {
+                                let rowIndex = $('#previewTable tr').length;
                                 table.append(`
                         <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200" data-id="${item.id ?? '-'}">
+                            <td class="px-6 py-4">
+                                <div class="flex justify-center items-center" data-field="id">
+                                    ${rowIndex}
+                                </div>
+                            </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center items-center" data-field="id">
                                     <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
