@@ -1052,16 +1052,22 @@
 
                 $('#fetch-missing').click(function() {
                     $.ajax({
-                        url: '{{ route("products.getMissingProducts") }}',
+                        url: '{{ route('products.getMissingProducts') }}',
                         method: 'GET',
                         success: function(response) {
-                            console.log(response);
+                            showToast('تم جلب المنتجات المفقودة', 'success');
                             response.forEach(barcode => {
-                                addRow(barcode);
+                                // تحقق إذا الباركود موجود بالفعل
+                                if ($('#new-products-table tbody tr').filter(function() {
+                                        return $(this).find('.barcode-input').val() ==
+                                            barcode;
+                                    }).length === 0) {
+                                    addRow(barcode);
+                                }
                             });
                         },
                         error: function(err) {
-                            alert('حدث خطأ أثناء جلب المنتجات.');
+                            showToast('حدث خطأ أثناء جلب المنتجات.', 'error');
                             console.log(err);
                         }
                     });
