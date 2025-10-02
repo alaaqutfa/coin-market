@@ -483,6 +483,8 @@
                 <div class="my-8 flex gap-2">
                     <button type="button" id="add-row" class="bg-green-500 text-white px-4 py-2 rounded">+ إضافة
                         سطر</button>
+                    <button type="button" id="fetch-missing" class="bg-yellow-500 text-white px-4 py-2 rounded">🟡 جلب
+                        المنتجات غير الموجودة</button>
                     <button type="button" id="save-all" class="bg-blue-500 text-white px-4 py-2 rounded">💾 حفظ
                         الجميع</button>
                 </div>
@@ -1008,72 +1010,60 @@
                 form.remove();
             }
 
-            let rowIndex = 1; // لمتابعة فهرس الصفوف الجديدة
+            function addRow(barcode = '') {
+                let rowIndex = $('#new-products-body tr').length;
+                let rowHtml = `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex flex-col">
+                                <input type="text" name="products[${rowIndex}][barcode]" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
+                                <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">⚠️ الباركود موجود مسبقاً</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="number" step="0.01" name="products[${rowIndex}][price]" class="w-32 border rounded-lg px-3 py-2" placeholder="السعر" required>
+                        </td>
+                        <td class="px-4 py-3">
+                            <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button type="button" class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">حذف</button>
+                        </td>
+                </tr>`;
+                $('#new-products-body').append(rowHtml);
+            }
+
 
             $(document).ready(function() {
 
                 // ✅ إضافة سطر جديد
                 $("#add-row").on("click", function() {
-                    let newRow = `
-                        <tr class="border-b hover:bg-gray-50">
-                            <!-- الترقيم -->
-                            <td class="px-4 py-3 text-center font-medium text-gray-700">
-                                ${rowIndex + 1}
-                            </td>
-
-                            <!-- الباركود -->
-                            <td class="px-4 py-3">
-                                <div class="flex flex-col">
-                                    <input type="text"
-                                        name="products[${rowIndex}][barcode]"
-                                        class="barcode-input w-40 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
-                                        placeholder="أدخل الباركود" required>
-                                    <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">
-                                        ⚠️ الباركود موجود مسبقاً
-                                    </span>
-                                </div>
-                            </td>
-
-                            <!-- اسم المنتج -->
-                            <td class="px-4 py-3">
-                                <input type="text"
-                                    name="products[${rowIndex}][name]"
-                                    class="w-72 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
-                                    placeholder="أدخل اسم المنتج" required>
-                            </td>
-
-                            <!-- السعر -->
-                            <td class="px-4 py-3">
-                                <input type="number" step="0.01"
-                                    name="products[${rowIndex}][price]"
-                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
-                                    placeholder="السعر" required>
-                            </td>
-
-                            <!-- الوزن -->
-                            <td class="px-4 py-3">
-                                <input type="text"
-                                    name="products[${rowIndex}][weight]"
-                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition"
-                                    placeholder="الوزن">
-                            </td>
-
-                            <!-- زر الحذف -->
-                            <td class="px-4 py-3 text-center">
-                                <button type="button"
-                                        class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
-                                    حذف
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    $("#new-products-body").append(newRow);
-                    rowIndex++;
+                    addRow();
                 });
 
                 // ✅ حذف سطر
                 $(document).on("click", ".remove-row", function() {
                     $(this).closest("tr").remove();
+                });
+
+                $('#fetch-missing').click(function() {
+                    $.ajax({
+                        url: '{{ route("products.getMissingProducts") }}',
+                        method: 'GET',
+                        success: function(response) {
+                            response.forEach(barcode => {
+                                addRow(barcode);
+                            });
+                        },
+                        error: function(err) {
+                            alert('حدث خطأ أثناء جلب المنتجات.');
+                            console.log(err);
+                        }
+                    });
                 });
 
                 // التحقق من تكرار الباركود أثناء الإدخال

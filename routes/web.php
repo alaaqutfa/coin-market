@@ -11,6 +11,7 @@ Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
 Route::get('/products', [ProductController::class, 'list'])->name('products.list');
 Route::get('/filter-products', [ProductController::class, 'filter'])->name('products.filter');
 Route::post('/products/bulk-store', [ProductController::class, 'bulkStore'])->name('products.bulkStore');
+Route::get('/products/missing', [ProductController::class, 'getMissingProducts'])->name('products.getMissingProducts');
 Route::post('/products/preview-images', [ProductController::class, 'previewImages'])->name('products.preview.images');
 Route::post('/products/save-images', [ProductController::class, 'saveImages'])->name('products.save.images');
 Route::get('/show-catalog', [ProductController::class, 'showCatalog'])->name('showCatalog');

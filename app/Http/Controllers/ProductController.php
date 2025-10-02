@@ -145,8 +145,16 @@ class ProductController extends Controller
         $insertData = [];
         foreach ($products as $p) {
             if (! empty($p['barcode']) && ! empty($p['name'])) {
-                // تحقق إذا الباركود موجود مسبقاً
-                if (! in_array($p['barcode'], $existingBarcodes)) {
+                $exists = in_array($p['barcode'], $existingBarcodes);
+
+                // سجل اللوج
+                ProductBarcodeLog::create([
+                    'barcode' => $p['barcode'],
+                    'exists'  => ! $exists,
+                    'source'  => 'bulkStore',
+                ]);
+
+                if (! $exists) {
                     $insertData[] = [
                         'barcode'    => $p['barcode'],
                         'name'       => $p['name'],
@@ -170,9 +178,27 @@ class ProductController extends Controller
         ]);
     }
 
-    public function trackProductBarcodeLog()
+    public function getMissingProducts()
     {
+        // كل الباركودات اللي تم تسجيلها في لوج الباركود
+        $allBarcodes = ProductBarcodeLog::pluck('barcode')->unique()->toArray();
 
+        // الباركودات الموجودة فعلياً في جدول المنتجات
+        $existing = Product::pluck('barcode')->toArray();
+
+        // الباركودات المفقودة (اللي موجودة في اللوج بس مش موجودة في المنتجات)
+        $missing = array_diff($allBarcodes, $existing);
+
+        // سجل كل محاولة تحقق في اللوج
+        foreach ($allBarcodes as $barcode) {
+            ProductBarcodeLog::create([
+                'barcode' => $barcode,
+                'exists'  => in_array($barcode, $existing),
+                'source'  => 'fetch-missing',
+            ]);
+        }
+
+        return response()->json(array_values($missing));
     }
 
     public function show($id)
@@ -260,6 +286,13 @@ class ProductController extends Controller
     public function findByBarcode($barcode)
     {
         $product = Product::where('barcode', $barcode)->first();
+
+        // سجل اللوج
+        ProductBarcodeLog::create([
+            'barcode' => $barcode,
+            'exists'  => $product ? true : false,
+            'source'  => 'api', // أو ممكن تبعتها بالـ request
+        ]);
 
         if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);

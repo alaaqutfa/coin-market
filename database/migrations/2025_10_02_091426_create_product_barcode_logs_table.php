@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('product_barcode_logs', function (Blueprint $table) {
             $table->id();
-            $table->text('note');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
-            $table->boolean('seen')->default(false);
+            $table->string('barcode'); // الباركود اللي تم التحقق منه
+            $table->boolean('exists')->default(false); // هل موجود بالمنتجات؟
+            $table->string('source')->nullable(); // مصدر العملية (api / bulkStore / manual)
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // المستخدم إذا متوفر
             $table->timestamps();
-            
-            $table->index('seen');
+
+            // فهارس للبحث السريع
+            $table->index('barcode');
+            $table->index('exists');
             $table->index('created_at');
         });
     }
