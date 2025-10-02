@@ -592,8 +592,8 @@ class AttendanceController extends Controller
         $year  = $year ?? now('Asia/Beirut')->year;
         $month = $month ?? now('Asia/Beirut')->month;
 
-        $startDate = Carbon::create($year, $month, 1)->startOfMonth();
-        $endDate   = Carbon::create($year, $month, 1)->endOfMonth();
+        $startDate = Carbon::create($year, $month, 1, 0, 0, 0, 'Asia/Beirut')->startOfMonth();
+        $endDate   = Carbon::create($year, $month, 1, 0, 0, 0, 'Asia/Beirut')->endOfMonth();
 
         $employees = Employee::with(['dailyWorkHours' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
@@ -610,8 +610,8 @@ class AttendanceController extends Controller
                 'total_required_hours' => $totalRequired,
                 'total_actual_hours'   => $totalActual,
                 'achievement_rate'     => $totalRequired > 0 ? round(($totalActual / $totalRequired) * 100, 2) : 0,
-                'attendance_days'      => $employee->dailyWorkHours()->where('actual_hours', '>', 0)->count(),
-                'absent_days'          => $employee->dailyWorkHours()->where('required_hours', '>', 0)->where('actual_hours', 0)->count(),
+                'attendance_days'      => $employee->dailyWorkHours->where('actual_hours', '>', 0)->count(),
+                'absent_days'          => $employee->dailyWorkHours->where('required_hours', '>', 0)->where('actual_hours', 0)->count(),
                 'status'               => $totalActual >= $totalRequired ? 'مكتمل' : 'غير مكتمل',
             ];
         });
