@@ -1055,6 +1055,7 @@
                         url: '{{ route("products.getMissingProducts") }}',
                         method: 'GET',
                         success: function(response) {
+                            console.log(response);
                             response.forEach(barcode => {
                                 addRow(barcode);
                             });
