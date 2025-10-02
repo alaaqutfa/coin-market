@@ -136,17 +136,26 @@ class ProductController extends Controller
     {
         $products = $request->input('products', []);
 
+        // استخرج كل الباركودات المرسلة
+        $barcodes = collect($products)->pluck('barcode')->filter()->unique();
+
+        // جيب الباركودات الموجودة أصلاً
+        $existingBarcodes = Product::whereIn('barcode', $barcodes)->pluck('barcode')->toArray();
+
         $insertData = [];
         foreach ($products as $p) {
             if (! empty($p['barcode']) && ! empty($p['name'])) {
-                $insertData[] = [
-                    'barcode'    => $p['barcode'],
-                    'name'       => $p['name'],
-                    'price'      => $p['price'] ?? 0,
-                    'weight'     => $p['weight'] ?? null,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                // تحقق إذا الباركود موجود مسبقاً
+                if (! in_array($p['barcode'], $existingBarcodes)) {
+                    $insertData[] = [
+                        'barcode'    => $p['barcode'],
+                        'name'       => $p['name'],
+                        'price'      => $p['price'] ?? 0,
+                        'weight'     => $p['weight'] ?? null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
             }
         }
 
@@ -154,7 +163,11 @@ class ProductController extends Controller
             Product::insert($insertData);
         }
 
-        return response()->json(['success' => true, 'count' => count($insertData)]);
+        return response()->json([
+            'success'  => true,
+            'inserted' => count($insertData),
+            'skipped'  => count($existingBarcodes), // المنتجات اللي تم تخطيها
+        ]);
     }
 
     public function trackProductBarcodeLog()

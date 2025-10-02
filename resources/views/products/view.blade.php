@@ -352,9 +352,6 @@
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الباركود</span>
-                                    <input type="text" name="barcode"
-                                        class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-yellow-500 focus:border-yellow-500"
-                                        placeholder="البحث..." />
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
@@ -365,25 +362,16 @@
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">اسم المنتج</span>
-                                    <input type="text" name="name"
-                                        class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-yellow-500 focus:border-yellow-500"
-                                        placeholder="البحث..." />
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">السعر</span>
-                                    <input type="text" name="price"
-                                        class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-yellow-500 focus:border-yellow-500"
-                                        placeholder="البحث..." />
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الوزن</span>
-                                    <input type="text" name="weight"
-                                        class="filter-input block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-white text-xs focus:ring-yellow-500 focus:border-yellow-500"
-                                        placeholder="البحث..." />
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
@@ -442,18 +430,51 @@
                         </tr>
                     </thead>
                     <tbody id="new-products-body">
-                        <tr>
-                            <td class="px-6 py-4">1</td>
-                            <td class="px-6 py-4"><input type="text" name="products[0][barcode]"
-                                    class="border rounded p-1" required>
+                        <tr class="border-b hover:bg-gray-50">
+                            <!-- الترقيم -->
+                            <td class="px-4 py-3 text-center font-medium text-gray-700">
+                                1
                             </td>
-                            <td class="px-6 py-4"><input type="text" name="products[0][name]"
-                                    class="border rounded p-1" required></td>
-                            <td class="px-6 py-4"><input type="number" step="0.01" name="products[0][price]"
-                                    class="border rounded p-1" required></td>
-                            <td class="px-6 py-4"><input type="text" name="products[0][weight]"
-                                    class="border rounded p-1"></td>
-                            <td class="px-6 py-4"><button type="button" class="remove-row text-red-500">حذف</button>
+
+                            <!-- الباركود -->
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col">
+                                    <input type="text" name="products[0][barcode]"
+                                        class="barcode-input w-40 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                                        placeholder="أدخل الباركود" required>
+                                    <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">
+                                        ⚠️ الباركود موجود مسبقاً
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- اسم المنتج -->
+                            <td class="px-4 py-3">
+                                <input type="text" name="products[0][name]"
+                                    class="w-72 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                                    placeholder="أدخل اسم المنتج" required>
+                            </td>
+
+                            <!-- السعر -->
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.01" name="products[0][price]"
+                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                                    placeholder="السعر" required>
+                            </td>
+
+                            <!-- الوزن -->
+                            <td class="px-4 py-3">
+                                <input type="text" name="products[0][weight]"
+                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition"
+                                    placeholder="الوزن">
+                            </td>
+
+                            <!-- زر الحذف -->
+                            <td class="px-4 py-3 text-center">
+                                <button type="button"
+                                    class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                                    حذف
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -994,13 +1015,56 @@
                 // ✅ إضافة سطر جديد
                 $("#add-row").on("click", function() {
                     let newRow = `
-                        <tr>
-                            <td class="px-6 py-4">${rowIndex + 1}</td>
-                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][barcode]" class="border rounded p-1" required></td>
-                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][name]" class="border rounded p-1" required></td>
-                            <td class="px-6 py-4"><input type="number" step="0.01" name="products[${rowIndex}][price]" class="border rounded p-1" required></td>
-                            <td class="px-6 py-4"><input type="text" name="products[${rowIndex}][weight]" class="border rounded p-1"></td>
-                            <td class="px-6 py-4"><button type="button" class="remove-row text-red-500">حذف</button></td>
+                        <tr class="border-b hover:bg-gray-50">
+                            <!-- الترقيم -->
+                            <td class="px-4 py-3 text-center font-medium text-gray-700">
+                                ${rowIndex + 1}
+                            </td>
+
+                            <!-- الباركود -->
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col">
+                                    <input type="text"
+                                        name="products[${rowIndex}][barcode]"
+                                        class="barcode-input w-40 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 outline-none transition"
+                                        placeholder="أدخل الباركود" required>
+                                    <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">
+                                        ⚠️ الباركود موجود مسبقاً
+                                    </span>
+                                </div>
+                            </td>
+
+                            <!-- اسم المنتج -->
+                            <td class="px-4 py-3">
+                                <input type="text"
+                                    name="products[${rowIndex}][name]"
+                                    class="w-72 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-400 focus:border-green-400 outline-none transition"
+                                    placeholder="أدخل اسم المنتج" required>
+                            </td>
+
+                            <!-- السعر -->
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.01"
+                                    name="products[${rowIndex}][price]"
+                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-400 focus:border-purple-400 outline-none transition"
+                                    placeholder="السعر" required>
+                            </td>
+
+                            <!-- الوزن -->
+                            <td class="px-4 py-3">
+                                <input type="text"
+                                    name="products[${rowIndex}][weight]"
+                                    class="w-32 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none transition"
+                                    placeholder="الوزن">
+                            </td>
+
+                            <!-- زر الحذف -->
+                            <td class="px-4 py-3 text-center">
+                                <button type="button"
+                                        class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                                    حذف
+                                </button>
+                            </td>
                         </tr>
                     `;
                     $("#new-products-body").append(newRow);
@@ -1010,6 +1074,33 @@
                 // ✅ حذف سطر
                 $(document).on("click", ".remove-row", function() {
                     $(this).closest("tr").remove();
+                });
+
+                // التحقق من تكرار الباركود أثناء الإدخال
+                $(document).on("change", ".barcode-input", function() {
+                    let input = $(this);
+                    let barcode = input.val();
+                    let errorSpan = input.siblings(".barcode-error");
+
+                    if (barcode.trim() !== "") {
+                        var barcodeRoute = "{{ route('products.findByBarcode', ':barcode') }}";
+                        let url = barcodeRoute.replace(':barcode', barcode);
+                        $.ajax({
+                            url: url,
+                            type: "GET",
+                            success: function(response) {
+                                // إذا رجع منتج يعني الباركود موجود
+                                input.val(""); // افرغ الحقل
+                                errorSpan.removeClass("hidden").text("⚠️ الباركود موجود مسبقاً");
+                            },
+                            error: function(xhr) {
+                                if (xhr.status === 404) {
+                                    // الباركود غير موجود → خبّي رسالة الخطأ
+                                    errorSpan.addClass("hidden");
+                                }
+                            }
+                        });
+                    }
                 });
 
                 // ✅ حفظ الجميع

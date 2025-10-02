@@ -12,7 +12,7 @@ Route::get('/test', function () {
 
 // Routes المنتجات
 Route::apiResource('products', ProductController::class);
-Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode']);
+Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode'])->name('products.findByBarcode');
 Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
 
 // Routes الحضور والانصراف (بدون مصادقة)
