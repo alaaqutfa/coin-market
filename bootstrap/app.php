@@ -37,8 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function ($schedule) {
         $schedule->command('attendance:calculate-daily-hours')
             ->timezone('Asia/Beirut')
-            ->dailyAt('22:00')
+            ->dailyAt('02:00')
             ->withoutOverlapping();
-
     })
     ->create();

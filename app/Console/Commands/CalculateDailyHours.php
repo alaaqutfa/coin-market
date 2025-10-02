@@ -15,11 +15,11 @@ class CalculateDailyHours extends Command
 
     public function handle()
     {
-        $date = Carbon::now('Asia/Beirut')->toDateString();
-        $dayOfWeek = Carbon::now('Asia/Beirut')->dayOfWeek; // 0 (الأحد) إلى 6 (السبت)
+        // $date      = Carbon::now('Asia/Beirut')->toDateString();
+        // $dayOfWeek = Carbon::now('Asia/Beirut')->dayOfWeek;
 
-        // $date      = Carbon::now('Asia/Beirut')->subDay()->toDateString();
-        // $dayOfWeek = Carbon::now('Asia/Beirut')->subDay()->dayOfWeek;
+        $date      = Carbon::now('Asia/Beirut')->subDay()->toDateString();
+        $dayOfWeek = Carbon::now('Asia/Beirut')->subDay()->dayOfWeek;
 
         $this->info("Start Calculate Working Hours - {$date} (Day: {$dayOfWeek})");
 
@@ -56,7 +56,7 @@ class CalculateDailyHours extends Command
                     'date'        => $date,
                 ],
                 [
-                    'actual_hours'   => $actualHours,
+                    'actual_hours'   => round($actualHours > $requiredHours ? $requiredHours : $actualHours, 2),
                     'required_hours' => $requiredHours,
                 ]
             );
