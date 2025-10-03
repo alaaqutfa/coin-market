@@ -33,6 +33,7 @@
         </td>
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="end_date">
+                @dd($employee->end_date)
                 @if ($employee->end_date)
                     {{ $employee->end_date->format('Y-m-d') }}
                 @else
