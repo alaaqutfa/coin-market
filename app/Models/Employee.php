@@ -28,6 +28,7 @@ class Employee extends Authenticatable
 
     protected $casts = [
         'start_date' => 'date',
+        'end_date' => 'date:Y-m-d',
         'salary'     => 'decimal:2',
     ];
 
