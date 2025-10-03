@@ -294,6 +294,60 @@
                         </div>
                     </div>
 
+                    <!-- نطاق تواريخ سجلات الباركود -->
+                    <div>
+                        <label class="block mb-2 text-sm font-medium">من تاريخ (سجلات الباركود)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-calendar-day text-gray-400"></i>
+                            </div>
+                            <input type="date" name="barcode_date_from"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block mb-2 text-sm font-medium">إلى تاريخ (سجلات الباركود)</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <i class="fas fa-calendar-day text-gray-400"></i>
+                            </div>
+                            <input type="date" name="barcode_date_to"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
+                        </div>
+                    </div>
+
+                    <!-- خيارات تاريخ سريعة لسجلات الباركود -->
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-sm font-medium">خيارات سريعة (سجلات الباركود)</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="setBarcodeDateFilter('today')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-day ml-2"></i> اليوم
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('yesterday')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-minus ml-2"></i> البارحة
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('week')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('month')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('this_month')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar ml-2"></i> هذا الشهر
+                            </button>
+                            <button type="button" onclick="clearBarcodeDateFilter()"
+                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-times ml-2"></i> مسح التواريخ
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- زر التصفية -->
                     <div class="flex items-end">
                         <button type="submit"
@@ -636,8 +690,7 @@
                     $(target).fadeIn(200);
                 });
             });
-        </script>
-        <script>
+
             // تعريف المتغيرات العالمية
             let autoRefreshEnabled = false;
             let autoRefreshInterval = null;
@@ -648,6 +701,7 @@
             @foreach ($products as $product)
                 productIds.add({{ $product->id }});
             @endforeach
+
             function toggleUserInteraction(disable) {
                 if (disable) {
                     // تعطيل الحقول القابلة للتعديل
@@ -671,6 +725,56 @@
                     $('button.delete-btn').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
                 }
             }
+
+            // دوال خاصة بتواريخ سجلات الباركود
+            function setBarcodeDateFilter(range) {
+                const today = new Date();
+                let fromDate, toDate;
+
+                switch (range) {
+                    case 'today':
+                        fromDate = today.toISOString().split('T')[0];
+                        toDate = fromDate;
+                        break;
+                    case 'yesterday':
+                        const yesterday = new Date(today);
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        fromDate = yesterday.toISOString().split('T')[0];
+                        toDate = fromDate;
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(today);
+                        weekAgo.setDate(weekAgo.getDate() - 7);
+                        fromDate = weekAgo.toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(today);
+                        monthAgo.setDate(monthAgo.getDate() - 30);
+                        fromDate = monthAgo.toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                    case 'this_month':
+                        fromDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                        toDate = today.toISOString().split('T')[0];
+                        break;
+                }
+
+                $("input[name='barcode_date_from']").val(fromDate);
+                $("input[name='barcode_date_to']").val(toDate);
+
+                // تطبيق الفلترة تلقائياً
+                applyFilters();
+            }
+
+            function clearBarcodeDateFilter() {
+                $("input[name='barcode_date_from']").val('');
+                $("input[name='barcode_date_to']").val('');
+
+                // تطبيق الفلترة تلقائياً
+                applyFilters();
+            }
+
             // تعريف الدالة في النطاق العام
             window.applyFilters = function(isAutoRefresh) {
                 // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
@@ -688,6 +792,8 @@
                     weight: $("input[name='weight']").val(),
                     date_from: $("input[name='date_from']").val(),
                     date_to: $("input[name='date_to']").val(),
+                    barcode_date_from: $("input[name='barcode_date_from']").val(),
+                    barcode_date_to: $("input[name='barcode_date_to']").val(),
                     page: {{ $products->currentPage() }},
                     _token: '{{ csrf_token() }}'
                 };
@@ -997,7 +1103,6 @@
                 </tr>`;
                 $('#new-products-body').append(rowHtml);
             }
-
 
             $(document).ready(function() {
 

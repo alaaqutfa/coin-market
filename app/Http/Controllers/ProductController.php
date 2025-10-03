@@ -54,7 +54,7 @@ class ProductController extends Controller
             $query->whereNotNull('image_path');
         }
 
-        // مع صورة
+        // بدون صورة
         if ($request->no_image) {
             $query->whereNull('image_path');
         }
@@ -63,7 +63,7 @@ class ProductController extends Controller
         if ($request->date_from && $request->date_to) {
             $query->whereBetween('created_at', [
                 $request->date_from . ' 00:00:00',
-                $request->date_to . ' 23:59:5 9',
+                $request->date_to . ' 23:59:59',
             ]);
         }
 
@@ -91,6 +91,16 @@ class ProductController extends Controller
                 now()->subMonth()->startOfDay(),
                 now()->endOfDay(),
             ]);
+        }
+
+        // فلترة حسب سجلات الباركود - الجزء الجديد
+        if ($request->barcode_date_from && $request->barcode_date_to) {
+            $query->whereHas('barcodeLogs', function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->barcode_date_from . ' 00:00:00',
+                    $request->barcode_date_to . ' 23:59:59',
+                ]);
+            });
         }
 
         // الترتيب من الأحدث إلى الأقدم

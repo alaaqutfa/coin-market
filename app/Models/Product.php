@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Models;
 
+use APP\Models\ProductBarcodeLog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use APP\Models\ProductBarcodeLog;
 
 class Product extends Model
 {
@@ -18,16 +17,16 @@ class Product extends Model
         'quantity',
         'weight',
         'image_path',
-        'social_media_urls'
+        'social_media_urls',
     ];
 
     protected $casts = [
         'social_media_urls' => 'array',
-        'price' => 'decimal:2'
+        'price'             => 'decimal:2',
     ];
 
-    public function barcodeLogs(): HasMany
+    public function barcodeLogs()
     {
-        return $this->hasMany(ProductBarcodeLog::class);
+        return $this->hasMany(ProductBarcodeLog::class, 'barcode', 'barcode');
     }
 }
