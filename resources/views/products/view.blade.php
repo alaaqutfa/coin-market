@@ -1090,6 +1090,9 @@
                             </div>
                         </td>
                         <td class="px-4 py-3">
+                            ${added_at}
+                        </td>
+                        <td class="px-4 py-3">
                             <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
                         </td>
                         <td class="px-4 py-3">
