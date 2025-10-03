@@ -884,15 +884,6 @@
                 data: JSON.stringify(data),
                 success: function(response) {
                     showToast('تم تحديث معلومات الموظف بنجاح', 'success');
-
-                    // تحديث الواجهة بناءً على الاستجابة
-                    if (field === 'end_date') {
-                        if (response.employee.end_date) {
-                            $element.text(response.employee.end_date);
-                        } else {
-                            $element.text('قيد العمل');
-                        }
-                    }
                 },
                 error: function(xhr) {
                     showToast('حدث خطأ أثناء التحديث', 'error');
