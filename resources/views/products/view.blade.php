@@ -476,6 +476,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
                             <th class="px-6 py-4 text-center">#</th>
+                            <th class="px-6 py-4 text-center">التاريخ</th>
                             <th class="px-6 py-4 text-center">الباركود</th>
                             <th class="px-6 py-4 text-center">اسم المنتج</th>
                             <th class="px-6 py-4 text-center">السعر</th>
@@ -1077,7 +1078,7 @@
                 form.remove();
             }
 
-            function addRow(barcode = '') {
+            function addRow(barcode = '',added_at = '') {
                 let rowIndex = $('#new-products-body tr').length;
                 let rowHtml = `
                     <tr class="border-b hover:bg-gray-50">
@@ -1118,7 +1119,7 @@
 
                 $('#fetch-missing').click(function() {
                     $.ajax({
-                        url: '{{ route('products.getMissingProducts') }}',
+                        url: '{{ route("products.getMissingProducts") }}',
                         method: 'GET',
                         success: function(response) {
                             showToast('تم جلب المنتجات المفقودة', 'success');
@@ -1128,7 +1129,7 @@
                                         return $(this).find('.barcode-input').val() ==
                                             barcode;
                                     }).length === 0) {
-                                    addRow(barcode);
+                                    addRow(barcode['barcode'], barcode['added_at']);
                                 }
                             });
                         },

@@ -182,15 +182,34 @@ class ProductController extends Controller
         ]);
     }
 
+    // public function getMissingProducts()
+    // {
+    //     // الباركودات الموجودة فعلياً في جدول المنتجات
+    //     $existing = Product::pluck('barcode')->toArray();
+
+    //     // جيب الباركودات المفقودة مباشرة من اللوج وفلترهم حسب created_at
+    //     $missing = ProductBarcodeLog::whereNotIn('barcode', $existing)
+    //         ->orderBy('created_at', 'asc')
+    //         ->pluck('barcode')
+    //         ->toArray();
+
+    //     return response()->json($missing);
+    // }
     public function getMissingProducts()
     {
         // الباركودات الموجودة فعلياً في جدول المنتجات
         $existing = Product::pluck('barcode')->toArray();
 
-        // جيب الباركودات المفقودة مباشرة من اللوج وفلترهم حسب created_at
+        // رجع الباركود مع وقت إضافته
         $missing = ProductBarcodeLog::whereNotIn('barcode', $existing)
             ->orderBy('created_at', 'asc')
-            ->pluck('barcode')
+            ->get(['barcode', 'created_at']) // نجيب الحقول اللي بدنا ياها فقط
+            ->map(function ($log) {
+                return [
+                    'barcode'  => $log->barcode,
+                    'added_at' => $log->created_at->format('Y-m-d H:i:s'), // التاريخ + الدقيقة + الثانية
+                ];
+            })
             ->toArray();
 
         return response()->json($missing);
