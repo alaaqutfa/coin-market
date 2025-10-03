@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use APP\Models\ProductBarcodeLog;
+use App\Models\ProductBarcodeLog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
