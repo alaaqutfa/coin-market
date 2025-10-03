@@ -184,8 +184,10 @@ class ProductController extends Controller
 
     public function getMissingProducts()
     {
-        // كل الباركودات اللي تم تسجيلها في لوج الباركود
-        $allBarcodes = ProductBarcodeLog::pluck('barcode')->unique()->toArray();
+        // كل الباركودات اللي تم تسجيلها في لوج الباركود مرتبة حسب الوقت
+        $allBarcodes = ProductBarcodeLog::orderBy('created_at', 'asc')
+            ->pluck('barcode')
+            ->toArray();
 
         // الباركودات الموجودة فعلياً في جدول المنتجات
         $existing = Product::pluck('barcode')->toArray();
@@ -193,6 +195,7 @@ class ProductController extends Controller
         // الباركودات المفقودة (اللي موجودة في اللوج بس مش موجودة في المنتجات)
         $missing = array_diff($allBarcodes, $existing);
 
+        // نرجعهم بنفس الترتيب مع إعادة الفهرسة
         return response()->json(array_values($missing));
     }
 
