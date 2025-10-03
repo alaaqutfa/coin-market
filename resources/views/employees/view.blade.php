@@ -830,7 +830,7 @@
                 const value = $(this).text().trim();
 
                 // معالجة خاصة لحقل end_date
-                if (fieldName === 'end_date') {
+                if (fieldName == 'end_date') {
                     // إذا كان المستخدم كتب "قيد العمل" أو حذف النص
                     if (value === 'قيد العمل' || value === '') {
                         value = null;
