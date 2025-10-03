@@ -829,7 +829,36 @@
                 const field = $(this).data('field');
                 const value = $(this).text().trim();
 
+                // معالجة خاصة لحقل end_date
+                if (fieldName === 'end_date') {
+                    // إذا كان المستخدم كتب "قيد العمل" أو حذف النص
+                    if (value === 'قيد العمل' || value === '') {
+                        value = null;
+                    }
+                    // إذا كتب تاريخ، تأكد من صحته
+                    else if (value) {
+                        if (!isValidDate(value)) {
+                            showToast('صيغة التاريخ غير صحيحة. استخدم YYYY-MM-DD', 'error');
+                            $field.text($field.data('original-value') || 'قيد العمل');
+                            return;
+                        }
+                    }
+                }
+
                 updateEmployeeField(employeeId, field, value);
+            });
+            // حفظ القيمة الأصلية عند التركيز على الحقل
+            $('.editable-field').on('focus', function() {
+                const $field = $(this);
+                const currentText = $field.text().trim();
+
+                // إذا كان النص الحالي هو "قيد العمل"، اتركه فارغاً للكتابة
+                if (currentText === 'قيد العمل') {
+                    $field.text('');
+                    $field.data('original-value', null);
+                } else {
+                    $field.data('original-value', currentText);
+                }
             });
             $(document).on('blur', '.editable-field-log', function() {
                 const logId = $(this).closest('tr').data('id');
@@ -853,17 +882,33 @@
                 data: JSON.stringify(data),
                 success: function(response) {
                     showToast('تم تحديث معلومات الموظف بنجاح', 'success');
+
+                    // تحديث الواجهة بناءً على الاستجابة
+                    if (field === 'end_date') {
+                        if (response.employee.end_date) {
+                            $element.text(response.employee.end_date);
+                        } else {
+                            $element.text('قيد العمل');
+                        }
+                    }
                 },
                 error: function(xhr) {
                     showToast('حدث خطأ أثناء التحديث', 'error');
-                    console.log('Error:', xhr.responseText);
-
+                    $element.text($element.data('original-value') || 'قيد العمل');
                     // عرض أخطاء التحقق إن وجدت
                     if (xhr.responseJSON && xhr.responseJSON.errors) {
                         console.log('Validation errors:', xhr.responseJSON.errors);
                     }
                 }
             });
+        }
+
+        function isValidDate(dateString) {
+            const regex = /^\d{4}-\d{2}-\d{2}$/;
+            if (!regex.test(dateString)) return false;
+
+            const date = new Date(dateString);
+            return date instanceof Date && !isNaN(date);
         }
 
         function getMonthlySummary() {
@@ -957,14 +1002,14 @@
                             day: '2-digit'
                         });
                         let dayNameAr = {
-                            'Sunday':'الأحد',
-                            'Monday':'الإثنين',
-                            'Tuesday':'الثلاثاء',
-                            'Tuesday':'الثلاثاء',
-                            'Wednesday':'الأربعاء',
-                            'Thursday':'الخميس',
-                            'Friday':'الجمعة',
-                            'Saturday':'السبت',
+                            'Sunday': 'الأحد',
+                            'Monday': 'الإثنين',
+                            'Tuesday': 'الثلاثاء',
+                            'Tuesday': 'الثلاثاء',
+                            'Wednesday': 'الأربعاء',
+                            'Thursday': 'الخميس',
+                            'Friday': 'الجمعة',
+                            'Saturday': 'السبت',
                         };
                         data += `
                             <tr>

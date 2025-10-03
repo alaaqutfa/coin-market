@@ -32,15 +32,16 @@
             </div>
         </td>
         <td class="px-6 py-4">
-            <div class="editable-field" contenteditable="true" data-field="end_date">
-
+            <div class="editable-field" contenteditable="true" data-field="end_date"
+                data-original-value="{{ $employee->end_date ? $employee->end_date->format('Y-m-d') : '' }}"
+                data-empty-text="قيد العمل">
                 @if ($employee->end_date)
-                    @dd($employee->end_date)
                     {{ $employee->end_date->format('Y-m-d') }}
                 @else
                     قيد العمل
                 @endif
             </div>
+            <small class="text-gray-500 text-xs">اتركه فارغاً لحذف تاريخ الانتهاء</small>
         </td>
         <td class="px-6 py-4">
             <div class="flex justify-center items-center gap-2">
