@@ -60,6 +60,7 @@ class EmployeeController extends Controller
             'employee_code' => ['nullable', 'string', 'max:50', Rule::unique('employees', 'employee_code')],
             'salary'        => 'required|numeric',
             'start_date'    => 'required|date',
+            'end_date' => 'nullable|date',
             'email'         => ['nullable', 'email', 'max:255', Rule::unique('employees', 'email')],
             'phone'         => ['nullable', 'string', 'max:30', Rule::unique('employees', 'phone')],
             'password'      => 'required|string|min:6',
@@ -72,6 +73,7 @@ class EmployeeController extends Controller
             'employee_code' => $employeeCode,
             'salary'        => $data['salary'],
             'start_date'    => $data['start_date'],
+            'end_date' => $data['end_date'] ?? null,
             'email'         => $data['email'] ?? null,
             'phone'         => $data['phone'] ?? null,
             'password'      => Hash::make($data['password']),
@@ -94,6 +96,7 @@ class EmployeeController extends Controller
             'employee_code' => ['sometimes', 'nullable', 'string', 'max:50', Rule::unique('employees', 'employee_code')->ignore($employee->id)],
             'salary'        => 'sometimes|required|numeric',
             'start_date'    => 'sometimes|required|date',
+            'end_date' => 'nullable|date',
             'email'         => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('employees', 'email')->ignore($employee->id)],
             'phone'         => ['sometimes', 'nullable', 'string', 'max:30', Rule::unique('employees', 'phone')->ignore($employee->id)],
             'password'      => 'sometimes|nullable|string|min:6',
@@ -119,6 +122,10 @@ class EmployeeController extends Controller
 
         if (isset($data['start_date'])) {
             $updateData['start_date'] = $data['start_date'];
+        }
+
+        if (isset($data['end_date'])) {
+            $updateData['end_date'] = $data['end_date'];
         }
 
         if (isset($data['email'])) {
