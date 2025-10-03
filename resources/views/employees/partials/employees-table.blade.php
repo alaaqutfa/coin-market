@@ -33,7 +33,7 @@
         </td>
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="end_date">
-            {{ $employee->start_date->format('Y-m-d') ?? 'قيد العمل' }}
+            {{ $employee->end_date->format('Y-m-d') ?? 'قيد العمل' }}
             </div>
         </td>
         <td class="px-6 py-4">
