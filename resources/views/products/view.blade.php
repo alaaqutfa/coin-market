@@ -1084,13 +1084,13 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
                         <td class="px-4 py-3">
+                            ${added_at}
+                        </td>
+                        <td class="px-4 py-3">
                             <div class="flex flex-col">
                                 <input type="text" name="products[${rowIndex}][barcode]" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
                                 <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">⚠️ الباركود موجود مسبقاً</span>
                             </div>
-                        </td>
-                        <td class="px-4 py-3">
-                            ${added_at}
                         </td>
                         <td class="px-4 py-3">
                             <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
