@@ -15,6 +15,7 @@ class Employee extends Authenticatable
         'employee_code',
         'salary',
         'start_date',
+        'end_date',
         'email',
         'phone',
         'password',

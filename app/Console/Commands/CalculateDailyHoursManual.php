@@ -44,7 +44,7 @@ class CalculateDailyHoursManual extends Command
             }
         }
 
-        $employees = Employee::all();
+        $employees = Employee::whereNull('end_date')->get();
         $totalEmployees = count($employees);
         $processed = 0;
         $employeesWithLogs = 0;

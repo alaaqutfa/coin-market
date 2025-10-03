@@ -23,7 +23,7 @@ class CalculateDailyHours extends Command
 
         $this->info("Start Calculate Working Hours - {$date} (Day: {$dayOfWeek})");
 
-        $employees = Employee::all();
+        $employees = Employee::whereNull('end_date')->get();
 
         foreach ($employees as $employee) {
             // حساب الساعات الفعلية

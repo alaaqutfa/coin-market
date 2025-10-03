@@ -11,11 +11,11 @@
                 {{ $employee->name }}
             </div>
         </td>
-        {{-- <td class="px-6 py-4">
+        <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="price">
                 {{ $employee->salary }}
             </div>
-        </td> --}}
+        </td>
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="email">
                 {{ $employee->email ?? 'لا يوجد' }}
@@ -29,6 +29,11 @@
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="start_date">
             {{ $employee->start_date->format('Y-m-d') }}
+            </div>
+        </td>
+        <td class="px-6 py-4">
+            <div class="editable-field" contenteditable="true" data-field="end_date">
+            {{ $employee->start_date->format('Y-m-d') ?? 'قيد العمل' }}
             </div>
         </td>
         <td class="px-6 py-4">

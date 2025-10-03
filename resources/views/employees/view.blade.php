@@ -268,7 +268,6 @@
                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
                         أضافة موظف
                     </a>
-
                 </div>
             </div>
 
@@ -290,11 +289,11 @@
                                     <span class="text-base">الأسم</span>
                                 </div>
                             </th>
-                            {{-- <th scope="col" class="px-6 py-4">
+                            <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">الراتب</span>
                                 </div>
-                            </th> --}}
+                            </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">البريد الإلكتروني</span>
@@ -308,6 +307,11 @@
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">تاريخ البدء بالعمل</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">تاريخ أنتهاء العمل</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
