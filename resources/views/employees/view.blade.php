@@ -828,6 +828,8 @@
                 const employeeId = $(this).closest('tr').data('id');
                 const field = $(this).data('field');
                 const value = $(this).text().trim();
+                const $field = $(this);
+                const fieldName = $field.data('field');
 
                 // معالجة خاصة لحقل end_date
                 if (fieldName == 'end_date') {
