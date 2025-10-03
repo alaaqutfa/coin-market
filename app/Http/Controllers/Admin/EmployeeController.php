@@ -13,13 +13,13 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = Employee::orderBy('employee_code', 'desc')->get();
+        $employees = Employee::whereNull('end_date')->orderBy('employee_code', 'desc')->get();
         return view('employees.view', compact('employees'));
     }
 
     public function show_employee_code_list()
     {
-        $employees = Employee::orderBy('employee_code', 'desc')->get();
+        $employees = Employee::whereNull('end_date')->orderBy('employee_code', 'desc')->get();
         return view('employees.employee_code_list', compact('employees'));
     }
 
@@ -160,22 +160,22 @@ class EmployeeController extends Controller
     }
 
     public function isWorkingDay($employee, Carbon $date)
-{
-    $schedule = $employee->workSchedules()
-        ->where('day_of_week', $date->dayOfWeek) // 0-6
-        ->get();
+    {
+        $schedule = $employee->workSchedules()
+            ->where('day_of_week', $date->dayOfWeek) // 0-6
+            ->get();
 
-    foreach ($schedule as $rule) {
-        if (!$rule->is_alternate) {
-            return true; // دوام ثابت
+        foreach ($schedule as $rule) {
+            if (!$rule->is_alternate) {
+                return true; // دوام ثابت
+            }
+
+            // لو دوام أسبوع بعد أسبوع
+            if ($date->weekOfYear % 2 == 0) {
+                return true; // مثال: الأسابيع الزوجية
+            }
         }
 
-        // لو دوام أسبوع بعد أسبوع
-        if ($date->weekOfYear % 2 == 0) {
-            return true; // مثال: الأسابيع الزوجية
-        }
+        return false;
     }
-
-    return false;
-}
 }
