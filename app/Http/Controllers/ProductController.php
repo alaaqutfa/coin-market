@@ -187,15 +187,11 @@ class ProductController extends Controller
         // الباركودات الموجودة فعلياً في جدول المنتجات
         $existing = Product::pluck('barcode')->toArray();
 
-        // كل الباركودات من اللوج مرتبة من الأقدم إلى الأحدث
-        $allBarcodes = ProductBarcodeLog::orderBy('created_at', 'asc')
+        // جيب الباركودات المفقودة مباشرة من اللوج وفلترهم حسب created_at
+        $missing = ProductBarcodeLog::whereNotIn('barcode', $existing)
+            ->orderBy('created_at', 'asc')
             ->pluck('barcode')
             ->toArray();
-
-        // فلترة الباركودات: رجع فقط اللي مش موجودة في المنتجات
-        $missing = array_values(array_filter($allBarcodes, function ($barcode) use ($existing) {
-            return ! in_array($barcode, $existing);
-        }));
 
         return response()->json($missing);
     }
