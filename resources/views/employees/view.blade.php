@@ -930,8 +930,9 @@
 
         function getMonthlySummary(year = null, month = null) {
             $.ajax({
-                url: "/attendance/monthly/summary/" + (year ?? new Date().getFullYear()) + "/" + (
-                    month ?? (new Date().getMonth() + 1)),
+                url: "/attendance/monthly-summary/" + (year ?? new Date().getFullYear()) + "/" + (
+                    month ?? (new Date().getMonth() + 1)
+                ),
                 type: 'GET',
                 success: function(response) {
                     var employees_summary = response['employees_summary'];
