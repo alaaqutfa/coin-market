@@ -595,7 +595,7 @@ class AttendanceController extends Controller
         $startDate = Carbon::create($year, $month, 1, 0, 0, 0, 'Asia/Beirut')->startOfMonth();
         $endDate   = Carbon::create($year, $month, 1, 0, 0, 0, 'Asia/Beirut')->endOfMonth();
 
-        $employees = Employee::with(['dailyWorkHours' => function ($query) use ($startDate, $endDate) {
+        $employees = Employee::whereNull('end_date')->with(['dailyWorkHours' => function ($query) use ($startDate, $endDate) {
             $query->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')]);
         }])->get();
 
