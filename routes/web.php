@@ -26,7 +26,6 @@ Route::post('/employees', [EmployeeController::class, 'store'])->name('employees
 Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 
-
 // لوحة تحكم رئيسية للحضور
 // صفحة العرض اليومي
 // صفحات التقارير الشهرية
@@ -37,7 +36,6 @@ Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('
 Route::prefix('attendance')->name('attendance.')->group(function () {
     Route::put('/{id}', [AttendanceController::class, 'update'])->name('attendance.update');
     Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('attendance.destroy');
-
 
     // لوحة التحكم اليومية
     Route::get('/dashboard-today', [AttendanceController::class, 'dashboardToday'])->name('dashboard.today');
@@ -50,6 +48,8 @@ Route::prefix('attendance')->name('attendance.')->group(function () {
 
     // التقرير الشهري لجميع الموظفين
     Route::get('/monthly-summary', [AttendanceController::class, 'monthlySummary'])->name('monthly.summary');
+    Route::get('/attendance/monthly/summary/{year?}/{month?}', [AttendanceController::class, 'monthlySummary'])
+        ->name('attendance.monthly.summary');
     Route::get('/monthly-summary/{year}/{month}', [AttendanceController::class, 'monthlySummary'])->name('monthly.summary.date');
 
     // جداول الدوام
@@ -63,4 +63,3 @@ Route::prefix('attendance')->name('attendance.')->group(function () {
     Route::get('/today', [AttendanceController::class, 'attendanceToday'])->name('today');
     Route::get('/today-paginated', [AttendanceController::class, 'attendanceTodayPaginated'])->name('today.paginated');
 });
-

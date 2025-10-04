@@ -129,9 +129,33 @@
                     <i class="fa-solid fa-calendar ml-2"></i>
                     الموجز الشهري
                 </h2>
-                <div class="flex items-center space-x-4 gap-2">
+                {{-- <div class="flex items-center space-x-4 gap-2">
                     <button id="monthly-summary" onclick="location.reload();"
                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    </button>
+                </div> --}}
+                <div class="flex gap-4 mb-4">
+                    <select id="year-select" class="border border-gray-300 rounded px-2 py-1">
+                        <!-- تعبئة السنوات -->
+                    </select>
+
+                    <select id="month-select" class="border border-gray-300 rounded px-2 py-1">
+                        <option value="1">يناير</option>
+                        <option value="2">فبراير</option>
+                        <option value="3">مارس</option>
+                        <option value="4">أبريل</option>
+                        <option value="5">مايو</option>
+                        <option value="6">يونيو</option>
+                        <option value="7">يوليو</option>
+                        <option value="8">أغسطس</option>
+                        <option value="9">سبتمبر</option>
+                        <option value="10">أكتوبر</option>
+                        <option value="11">نوفمبر</option>
+                        <option value="12">ديسمبر</option>
+                    </select>
+
+                    <button id="fetch-summary" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded">
+                        عرض التقرير
                     </button>
                 </div>
             </div>
@@ -904,68 +928,40 @@
             return date instanceof Date && !isNaN(date);
         }
 
-        function getMonthlySummary() {
+        function getMonthlySummary(year = null, month = null) {
             $.ajax({
-                url: '{{ route('attendance.monthly.summary') }}',
+                url: "/attendance/monthly/summary" + (year ?? new Date().getFullYear()) + "/" + (
+                    month ?? (new Date().getMonth() + 1)),
                 type: 'GET',
                 success: function(response) {
                     var employees_summary = response['employees_summary'];
                     var data = ``;
                     employees_summary.forEach((summary) => {
                         data += `
-                            <tr data-id="${summary['id']}">
-                                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
-                                </th>
-                                <th scope="row" class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
-                                    ${summary['employee_code']}
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${summary['employee_name']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${summary['attendance_days']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${summary['absent_days']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${parseFloat(summary['total_actual_hours'] || 0).toFixed(2)}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${parseFloat(summary['total_required_hours'] || 0).toFixed(2)}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${summary['status']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div class="text-center">
-                                        ${summary['achievement_rate']}
-                                    </div>
-                                </th>
-                                <th class="px-6 py-4">
-                                    <div>
-                                        <button onclick="getMonthlySummaryByDate(${summary['employee_id']},new Date().getFullYear(), new Date().getMonth() + 1)"
-                                            class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                </th>
-                            </tr>
-                        `;
+                    <tr data-id="${summary['id']}">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <input type="checkbox" class="border border-gray-400 rounded" />
+                        </th>
+                        <th class="px-6 py-4 text-center font-medium text-gray-900 whitespace-nowrap">
+                            ${summary['employee_code']}
+                        </th>
+                        <th class="px-6 py-4 text-center">${summary['employee_name']}</th>
+                        <th class="px-6 py-4 text-center">${summary['attendance_days']}</th>
+                        <th class="px-6 py-4 text-center">${summary['absent_days']}</th>
+                        <th class="px-6 py-4 text-center">${parseFloat(summary['total_actual_hours'] || 0).toFixed(2)}</th>
+                        <th class="px-6 py-4 text-center">${parseFloat(summary['total_required_hours'] || 0).toFixed(2)}</th>
+                        <th class="px-6 py-4 text-center">${summary['status']}</th>
+                        <th class="px-6 py-4 text-center">${summary['achievement_rate']}%</th>
+                        <th class="px-6 py-4 text-center">
+                            <button onclick="getMonthlySummaryByDate(${summary['employee_id']}, ${year}, ${month})"
+                                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </th>
+                    </tr>
+                `;
                     });
+
                     $('#monthlySummary-table-body').html(data);
                     $('#monthly-summary').text(response['period']);
                 },
@@ -1092,10 +1088,26 @@
                 submitScheduleForm();
             });
 
+            for (let y = new Date().getFullYear(); y >= 2020; y--) {
+                $('#year-select').append(`<option value="${y}">${y}</option>`);
+            }
+
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
+            $('#year-select').val(currentYear);
+            $('#month-select').val(currentMonth);
+
+            $('#fetch-summary').click(function() {
+                let year = $('#year-select').val();
+                let month = $('#month-select').val();
+                getMonthlySummary(year, month);
+            });
+
+
             addScheduleRow();
             initEditableFields();
             attendanceToday();
-            getMonthlySummary();
+            getMonthlySummary(currentYear, currentMonth);
         });
     </script>
 @endpush
