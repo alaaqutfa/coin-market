@@ -1130,7 +1130,7 @@
                                 // تحقق إذا الباركود موجود بالفعل
                                 if ($('#new-products-table tbody tr').filter(function() {
                                         return $(this).find('.barcode-input').val() ==
-                                            barcode;
+                                            barcode['barcode'];
                                     }).length === 0) {
                                     addRow(barcode['barcode'], barcode['added_at']);
                                 }
