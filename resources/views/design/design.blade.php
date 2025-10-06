@@ -67,9 +67,9 @@
             position: relative;
             width: 100%;
             @if (count($products) > 4)
-                height: 300px;
+                height: 350px;
             @else
-                height: 400px;
+                height: 450px;
             @endif
             padding: 1rem;
             display: flex;
@@ -112,6 +112,7 @@
 
         .price-shape {
             width: 100%;
+            height: 150px;
             box-shadow: 20px 10px 10px #22222280;
         }
 
