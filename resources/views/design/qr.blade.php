@@ -61,7 +61,7 @@
         }
 
         .info-side h2 {
-            font-size: 5rem;
+            font-size: 2.5rem;
             text-align: center;
             color: black;
             font-weight: 900;
