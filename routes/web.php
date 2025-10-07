@@ -25,7 +25,7 @@ Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('e
 Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
 Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
-
+Route::get('/employee/qr/{id}', [EmployeeController::class, 'showQr'])->name('employee.qr');
 // لوحة تحكم رئيسية للحضور
 // صفحة العرض اليومي
 // صفحات التقارير الشهرية

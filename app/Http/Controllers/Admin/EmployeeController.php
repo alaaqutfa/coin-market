@@ -178,4 +178,14 @@ class EmployeeController extends Controller
 
         return false;
     }
+
+
+    public function showQr($id)
+    {
+        // إذا عندك موديل اسمه Employee
+        $employee = Employee::findOrFail($id);
+
+        // تمرير بيانات الموظف إلى صفحة Blade
+        return view('design.qr', compact('employee'));
+    }
 }

@@ -48,6 +48,9 @@
                 <button onclick="deleteEmployee({{ $employee->id }})" class="text-red-600 hover:text-red-800">
                     <i class="fas fa-trash"></i>
                 </button>
+                <a href="{{ route('employee.qr', $employee->id) }}" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-solid fa-qrcode"></i>
+                </a>
             </div>
         </td>
     </tr>
