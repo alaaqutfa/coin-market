@@ -1111,7 +1111,7 @@
             }
 
             $.ajax({
-                url: '{{ route("viewDayAttendance") }}',
+                url: '{{ route("attendance.viewDayAttendance") }}',
                 method: 'GET',
                 data: {
                     employee_id: employeeId,
