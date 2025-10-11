@@ -1039,7 +1039,6 @@
                     var data = ``;
                     daily_details.forEach((detail) => {
                         let dateObj = new Date(detail['date']);
-                        console.log(detail);
                         let formattedDate = dateObj.toLocaleDateString('en-CA', {
                             year: 'numeric',
                             month: '2-digit',
@@ -1083,7 +1082,7 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
-                                        <button onclick="viewDayAttendance(${detail['id']},${formattedDate})"
+                                        <button onclick="viewDayAttendance(${employee['id']},'${formattedDate}')"
                                             class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                                             <i class="fas fa-eye"></i>
                                         </button>
