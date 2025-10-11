@@ -128,7 +128,7 @@
 @endsection
 
 
-@push('scripts')
+@push('script')
     <script>
         function dashboardToday() {
             // إنشاء كائن البيانات
