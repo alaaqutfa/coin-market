@@ -55,7 +55,11 @@
         }
 
         .product {
-            width: 45%;
+            @if (count($products) <= 2)
+                width: 50%;
+            @else
+                width: 45%;
+            @endif
             display: flex;
             justify-content: center;
             align-items: end;
@@ -66,6 +70,7 @@
         .image-shape {
             position: relative;
             width: 100%;
+
             @if (count($products) > 4)
                 height: 350px;
             @else
@@ -142,16 +147,16 @@
                     <div class="image-shape">
                         <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
                             alt="product image" />
-                            <div class="price-weight-shape">
-                                <span class="price">
-                                    {{ $product->price }}$
+                        <div class="price-weight-shape">
+                            <span class="price">
+                                {{ $product->price }}$
+                            </span>
+                            @if ($product->weight != 0)
+                                <span class="weight">
+                                    {{ $product->weight }}
                                 </span>
-                                @if ($product->weight != 0)
-                                    <span class="weight">
-                                        {{ $product->weight }}
-                                    </span>
-                                @endif
-                            </div>
+                            @endif
+                        </div>
                     </div>
                     <div class="price-shape">
                         <h5 class="name">
