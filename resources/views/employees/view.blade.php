@@ -1104,14 +1104,14 @@
             });
         }
 
-        function viewDayAttendance(id) {
+        function viewDayAttendance(employeeId,date) {
             if (!employeeId || !date) {
                 alert('يرجى إدخال المعرف والتاريخ');
                 return;
             }
 
             $.ajax({
-                url: '/attendance/day',
+                url: '{{ route("viewDayAttendance") }}',
                 method: 'GET',
                 data: {
                     employee_id: employeeId,
