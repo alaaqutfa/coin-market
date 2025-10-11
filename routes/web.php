@@ -26,11 +26,6 @@ Route::post('/employees', [EmployeeController::class, 'store'])->name('employees
 Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
 Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 Route::get('/employee/qr/{id}', [EmployeeController::class, 'showQr'])->name('employee.qr');
-// لوحة تحكم رئيسية للحضور
-// صفحة العرض اليومي
-// صفحات التقارير الشهرية
-// واجهة إدارة جداول الدوام
-// واجهة إعداد الساعات اليومية
 
 // Routes الحضور والانصراف (للوحة التحكم)
 Route::prefix('attendance')->name('attendance.')->group(function () {
@@ -62,4 +57,6 @@ Route::prefix('attendance')->name('attendance.')->group(function () {
     // سجل الحضور (للعرض اليومي)
     Route::get('/today', [AttendanceController::class, 'attendanceToday'])->name('today');
     Route::get('/today-paginated', [AttendanceController::class, 'attendanceTodayPaginated'])->name('today.paginated');
+    Route::get('/day', [AttendanceController::class, 'getEmployeeDayAttendance'])->name('viewDayAttendance');
+
 });

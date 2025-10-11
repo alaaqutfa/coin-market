@@ -281,6 +281,59 @@
 
         </div>
 
+        <div class="nav-item attendance-employee-daily-log table-container bg-white rounded-lg" style="display: none;">
+
+            <div class="p-4 border-b flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-calendar ml-2"></i>
+                    موجز
+                    <span class="attendance-daily-date"></span>
+                    لتاريخ
+                    <span class="employee-name"></span>
+                </h2>
+                <div class="flex items-center space-x-4 gap-2">
+
+                </div>
+            </div>
+
+            <div class="relative my-4 overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-4">
+                                <input type="checkbox" name="" id=""
+                                    class="border border-gray-400 rounded" />
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">دخول</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">خروج</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الملاحظات</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الأجراءات</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="employee-daily-summary-table-body">
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
         <div class="nav-item employee-list table-container bg-white rounded-lg" style="display: none;">
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
@@ -986,7 +1039,8 @@
                     var data = ``;
                     daily_details.forEach((detail) => {
                         let dateObj = new Date(detail['date']);
-                        let formattedDate = dateObj.toLocaleDateString('ar-EG', {
+                        console.log(detail);
+                        let formattedDate = dateObj.toLocaleDateString('en-CA', {
                             year: 'numeric',
                             month: '2-digit',
                             day: '2-digit'
@@ -1029,7 +1083,7 @@
                                 </th>
                                 <th class="px-6 py-4">
                                     <div>
-                                        <button onclick=""
+                                        <button onclick="viewDayAttendance(${detail['id']},${formattedDate})"
                                             class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                                             <i class="fas fa-eye"></i>
                                         </button>
@@ -1046,6 +1100,48 @@
                 },
                 error: function(xhr) {
                     console.log("Error:", xhr.responseText);
+                }
+            });
+        }
+
+        function viewDayAttendance(id) {
+            if (!employeeId || !date) {
+                alert('يرجى إدخال المعرف والتاريخ');
+                return;
+            }
+
+            $.ajax({
+                url: '/attendance/day',
+                method: 'GET',
+                data: {
+                    employee_id: employeeId,
+                    date: date
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    let tbody = $('#employee-daily-summary-table-body');
+                    tbody.empty();
+
+                    if (response.records.length === 0) {
+                        tbody.append('<tr><td colspan="3">لا توجد سجلات لهذا اليوم</td></tr>');
+                        return;
+                    }
+
+                    response.records.forEach(record => {
+                        tbody.append(`
+                    <tr>
+                        <td></td>
+                        <td>${record.check_in ?? '-'}</td>
+                        <td>${record.check_out ?? '-'}</td>
+                        <td>${record.note ?? '-'}</td>
+                        <td></td>
+                    </tr>
+                `);
+                    });
+                },
+                error: function(xhr) {
+                    alert('حدث خطأ أثناء الجلب');
                 }
             });
         }

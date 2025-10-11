@@ -622,4 +622,23 @@ class AttendanceController extends Controller
             'employees_summary' => $summary,
         ]);
     }
+
+    public function getEmployeeDayAttendance(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'employee_id' => 'required|integer',
+            'date'        => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $records = AttendanceLog::where('employee_id', $request->employee_id)
+            ->whereDate('date', $request->date)
+            ->orderBy('check_in', 'asc')
+            ->get();
+
+        return response()->json(['records' => $records]);
+    }
 }
