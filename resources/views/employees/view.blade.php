@@ -1123,18 +1123,39 @@
                     tbody.empty();
 
                     if (response.records.length === 0) {
-                        tbody.append('<tr><td colspan="3">لا توجد سجلات لهذا اليوم</td></tr>');
+                        tbody.append('<tr><td colspan="5" class="px-6 py-4 font-medium text-gray-900">لا توجد سجلات لهذا اليوم</td></tr>');
                         return;
                     }
 
                     response.records.forEach(record => {
                         tbody.append(`
                     <tr>
-                        <td></td>
-                        <td>${record.check_in ?? '-'}</td>
-                        <td>${record.check_out ?? '-'}</td>
-                        <td>${record.note ?? '-'}</td>
-                        <td></td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+                        </th>
+                        <th class="px-6 py-4">
+                            <div contenteditable="true" data-field="check_in" class="editable-field-log text-center">
+                                ${record.check_in ?? '-'}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4">
+                            <div contenteditable="true" data-field="check_out" class="editable-field-log text-center">
+                                ${record.check_out ?? '-'}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4">
+                            <div contenteditable="true" data-field="note" class="editable-field-log text-justify font-medium text-gray-900 whitespace-pre-line">
+                                ${record.note ?? '-'}
+                            </div>
+                        </th>
+                        <th class="px-6 py-4">
+                            <div>
+                                <button onclick=""
+                                    class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </th>
                     </tr>
                 `);
                     });
