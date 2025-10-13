@@ -281,7 +281,7 @@
 
         </div>
 
-        <div class="nav-item attendance-employee-daily-log table-container bg-white rounded-lg" style="display: none;">
+        <div class="nav-item attendance-employee-day-log table-container bg-white rounded-lg" style="display: none;">
 
             <div class="p-4 border-b flex justify-between items-center">
                 <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
@@ -1103,14 +1103,14 @@
             });
         }
 
-        function viewDayAttendance(employeeId,date) {
+        function viewDayAttendance(employeeId, date) {
             if (!employeeId || !date) {
                 alert('يرجى إدخال المعرف والتاريخ');
                 return;
             }
 
             $.ajax({
-                url: '{{ route("attendance.viewDayAttendance") }}',
+                url: '{{ route('attendance.viewDayAttendance') }}',
                 method: 'GET',
                 data: {
                     employee_id: employeeId,
@@ -1138,6 +1138,9 @@
                     </tr>
                 `);
                     });
+                    // إخفاء كل العناصر
+                    $('.nav-item').fadeOut(200);
+                    $('.attendance-employee-day-log').fadeIn(200);
                 },
                 error: function(xhr) {
                     alert('حدث خطأ أثناء الجلب');
