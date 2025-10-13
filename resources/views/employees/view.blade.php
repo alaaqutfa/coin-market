@@ -1129,7 +1129,7 @@
 
                     response.records.forEach(record => {
                         tbody.append(`
-                    <tr>
+                    <tr  data-id="${record['id']}">
                         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                             <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
                         </th>
