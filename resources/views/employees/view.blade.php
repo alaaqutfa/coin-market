@@ -306,12 +306,12 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">دخول</span>
+                                    <span class="text-base">تسجيل دخول</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">خروج</span>
+                                    <span class="text-base">تسجيل خروج</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
