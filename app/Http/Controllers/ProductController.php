@@ -203,10 +203,10 @@ class ProductController extends Controller
         // رجع الباركود مع وقت إضافته
         $missing = ProductBarcodeLog::whereNotIn('barcode', $existing)
             ->orderBy('created_at', 'asc')
-            ->get(['id','barcode', 'created_at']) // نجيب الحقول اللي بدنا ياها فقط
+            ->get(['id', 'barcode', 'created_at'])
             ->map(function ($log) {
                 return [
-                    'id'  => $log->id,
+                    'id'       => $log->id,
                     'barcode'  => $log->barcode,
                     'added_at' => $log->created_at->format('Y-m-d H:i:s'), // التاريخ + الدقيقة + الثانية
                 ];
@@ -221,12 +221,22 @@ class ProductController extends Controller
         $log = ProductBarcodeLog::find($id);
 
         if (! $log) {
-            return response()->json(['success' => false, 'message' => 'السجل غير موجود'], 404);
+            return response()->json([
+                'success' => false,
+                'message' => 'السجل غير موجود.',
+            ], 404);
         }
 
-        $log->delete();
+        // جلب قيمة الباركود قبل الحذف
+        $barcode = $log->barcode;
 
-        return response()->json(['success' => true, 'message' => 'تم حذف السجل بنجاح']);
+        // حذف كل السجلات التي تحمل نفس الباركود
+        $deletedCount = ProductBarcodeLog::where('barcode', $barcode)->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => "تم حذف {$deletedCount} سجل يحمل الباركود {$barcode}.",
+        ]);
     }
 
     public function show($id)
