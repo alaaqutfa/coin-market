@@ -1135,11 +1135,12 @@
                             if (response.success) {
                                 button.closest('tr').remove();
                             } else {
-                                alert(response.message || 'حدث خطأ أثناء الحذف');
+                                showToast(response.message || 'حدث خطأ أثناء الحذف','showToast');
                             }
                         },
-                        error: function() {
-                            alert('تعذر الاتصال بالسيرفر');
+                        error: function(err) {
+                            showToast('تعذر الاتصال بالسيرفر','error');
+                            console.log(err);
                         }
                     });
                 });
