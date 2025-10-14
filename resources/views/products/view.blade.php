@@ -1088,7 +1088,7 @@
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
                         <td class="px-4 py-3 flex justify-center items-center gap-4">
-                            <button type="button" class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                            <button type="button" class="remove-row text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
                                 x
                             </button>
                             ${added_at}
