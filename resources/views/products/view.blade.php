@@ -1109,7 +1109,7 @@
                             <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <button type="button" class="delete-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                            <button type="button" class="delete-row-new-products bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
@@ -1119,7 +1119,7 @@
 
             $(document).ready(function() {
 
-                $(document).on('click', '.delete-row', function() {
+                $(document).on('click', '.delete-row-new-products', function() {
                     const button = $(this);
                     const id = button.data('id');
 
