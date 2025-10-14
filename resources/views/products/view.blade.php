@@ -1129,7 +1129,7 @@
                         url: '{{ route("product.destroyMissing", ":id") }}'.replace(":id",id),
                         type: 'DELETE',
                         headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
                         },
                         success: function(response) {
                             if (response.success) {
