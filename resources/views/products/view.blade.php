@@ -634,9 +634,13 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex justify-center items-center">
-                                    <button type="button" class="delete-row text-red-600 hover:text-red-800" data-index="${index}">
+                                    <button
+                                        type="button"
+                                        class="delete-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition"
+                                        data-id="${record_id}">
                                         <i class="fas fa-trash"></i>
                                     </button>
+
                                 </div>
                             </td>
                         </tr>
@@ -1078,12 +1082,15 @@
                 form.remove();
             }
 
-            function addRow(barcode = '',added_at = '') {
+            function addRow(barcode = '', added_at = '') {
                 let rowIndex = $('#new-products-body tr').length;
                 let rowHtml = `
                     <tr class="border-b hover:bg-gray-50">
                         <td class="px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 flex justify-center items-center gap-4">
+                            <button type="button" class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                                x
+                            </button>
                             ${added_at}
                         </td>
                         <td class="px-4 py-3">
@@ -1102,13 +1109,40 @@
                             <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <button type="button" class="remove-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">حذف</button>
+                            <button type="button" class="delete-row bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                                <i class="fas fa-trash"></i>
+                            </button>
                         </td>
                 </tr>`;
                 $('#new-products-body').append(rowHtml);
             }
 
             $(document).ready(function() {
+
+                $(document).on('click', '.delete-row', function() {
+                    const button = $(this);
+                    const id = button.data('id');
+
+                    if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
+
+                    $.ajax({
+                        url: '{{ route("product.destroyMissing", ":id") }}'.replace(":id",id),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                button.closest('tr').remove();
+                            } else {
+                                alert(response.message || 'حدث خطأ أثناء الحذف');
+                            }
+                        },
+                        error: function() {
+                            alert('تعذر الاتصال بالسيرفر');
+                        }
+                    });
+                });
 
                 // ✅ إضافة سطر جديد
                 $("#add-row").on("click", function() {
@@ -1122,7 +1156,7 @@
 
                 $('#fetch-missing').click(function() {
                     $.ajax({
-                        url: '{{ route("products.getMissingProducts") }}',
+                        url: '{{ route('products.getMissingProducts') }}',
                         method: 'GET',
                         success: function(response) {
                             showToast('تم جلب المنتجات المفقودة', 'success');

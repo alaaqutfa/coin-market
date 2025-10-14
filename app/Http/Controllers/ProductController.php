@@ -215,6 +215,19 @@ class ProductController extends Controller
         return response()->json($missing);
     }
 
+    public function destroyMissing($id)
+    {
+        $log = ProductBarcodeLog::find($id);
+
+        if (! $log) {
+            return response()->json(['success' => false, 'message' => 'السجل غير موجود'], 404);
+        }
+
+        $log->delete();
+
+        return response()->json(['success' => true, 'message' => 'تم حذف السجل بنجاح']);
+    }
+
     public function show($id)
     {
         $product = Product::findOrFail($id);
