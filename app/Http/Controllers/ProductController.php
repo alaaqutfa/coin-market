@@ -206,6 +206,7 @@ class ProductController extends Controller
             ->get(['barcode', 'created_at']) // نجيب الحقول اللي بدنا ياها فقط
             ->map(function ($log) {
                 return [
+                    'id'  => $log->id,
                     'barcode'  => $log->barcode,
                     'added_at' => $log->created_at->format('Y-m-d H:i:s'), // التاريخ + الدقيقة + الثانية
                 ];
