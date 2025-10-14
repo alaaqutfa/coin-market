@@ -203,7 +203,7 @@ class ProductController extends Controller
         // رجع الباركود مع وقت إضافته
         $missing = ProductBarcodeLog::whereNotIn('barcode', $existing)
             ->orderBy('created_at', 'asc')
-            ->get(['barcode', 'created_at']) // نجيب الحقول اللي بدنا ياها فقط
+            ->get(['id','barcode', 'created_at']) // نجيب الحقول اللي بدنا ياها فقط
             ->map(function ($log) {
                 return [
                     'id'  => $log->id,
