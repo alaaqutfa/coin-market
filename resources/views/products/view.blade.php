@@ -1157,6 +1157,7 @@
                         method: 'GET',
                         success: function(response) {
                             showToast('تم جلب المنتجات المفقودة', 'success');
+                            console.log(response);
                             response.forEach(barcode => {
                                 // تحقق إذا الباركود موجود بالفعل
                                 if ($('#new-products-table tbody tr').filter(function() {
