@@ -204,6 +204,7 @@
                                 <i class="fas fa-barcode text-gray-400"></i>
                             </div>
                             <input type="text" name="barcode" placeholder="أدخل الباركود"
+                                value="{{ $filters['barcode'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -216,6 +217,7 @@
                                 <i class="fas fa-tag text-gray-400"></i>
                             </div>
                             <input type="text" name="name" placeholder="أدخل اسم المنتج"
+                                value="{{ $filters['name'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -227,7 +229,7 @@
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-dollar-sign text-gray-400"></i>
                             </div>
-                            <input type="number" name="price" placeholder="السعر"
+                            <input type="number" name="price" placeholder="السعر" value="{{ $filters['price'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -239,7 +241,7 @@
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-weight text-gray-400"></i>
                             </div>
-                            <input type="number" name="weight" placeholder="الوزن"
+                            <input type="number" name="weight" placeholder="الوزن" value="{{ $filters['weight'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -251,7 +253,7 @@
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-calendar-day text-gray-400"></i>
                             </div>
-                            <input type="date" name="date_from"
+                            <input type="date" name="date_from" value="{{ $filters['date_from'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -262,7 +264,7 @@
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-calendar-day text-gray-400"></i>
                             </div>
-                            <input type="date" name="date_to"
+                            <input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -302,6 +304,7 @@
                                 <i class="fas fa-calendar-day text-gray-400"></i>
                             </div>
                             <input type="date" name="barcode_date_from"
+                                value="{{ $filters['barcode_date_from'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -312,65 +315,40 @@
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-calendar-day text-gray-400"></i>
                             </div>
-                            <input type="date" name="barcode_date_to"
+                            <input type="date" name="barcode_date_to" value="{{ $filters['barcode_date_to'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
-                        </div>
-                    </div>
-
-                    <!-- خيارات تاريخ سريعة لسجلات الباركود -->
-                    <div class="md:col-span-2">
-                        <label class="block mb-2 text-sm font-medium">خيارات سريعة (سجلات الباركود)</label>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="setBarcodeDateFilter('today')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-day ml-2"></i> اليوم
-                            </button>
-                            <button type="button" onclick="setBarcodeDateFilter('yesterday')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-minus ml-2"></i> البارحة
-                            </button>
-                            <button type="button" onclick="setBarcodeDateFilter('week')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
-                            </button>
-                            <button type="button" onclick="setBarcodeDateFilter('month')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
-                            </button>
-                            <button type="button" onclick="setBarcodeDateFilter('this_month')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar ml-2"></i> هذا الشهر
-                            </button>
-                            <button type="button" onclick="clearBarcodeDateFilter()"
-                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-times ml-2"></i> مسح التواريخ
-                            </button>
                         </div>
                     </div>
 
                     <!-- زر التصفية -->
                     <div class="flex items-end">
                         <button type="submit"
-                            class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center  gap-2">
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-filter ml-2"></i>
                             تطبيق الفلترة
                         </button>
                     </div>
+
+                    <!-- خيارات الصور -->
                     <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="have_image" name="have_image" value="0" class="sr-only peer">
+                        <input type="checkbox" id="have_image" name="have_image" value="1"
+                            {{ isset($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="have_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
                         </div>
                         <span class="ms-3 text-sm font-medium text-white">منتجات لديها صور فقط</span>
                     </label>
+
                     <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="no_image" name="no_image" value="0" class="sr-only peer">
+                        <input type="checkbox" id="no_image" name="no_image" value="1"
+                            {{ isset($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="no_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
                         </div>
                         <span class="ms-3 text-sm font-medium text-white">منتجات ليس لديها صور فقط</span>
                     </label>
                 </form>
+
             </div>
 
             <div class="p-4 border-b flex justify-between items-center">
@@ -1264,7 +1242,7 @@
                     if (!confirm('هل أنت متأكد أنك تريد حذف الصور غير المرتبطة؟')) return;
 
                     $.ajax({
-                        url: '{{ route("products.cleanUnused") }}',
+                        url: '{{ route('products.cleanUnused') }}',
                         type: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': "{{ csrf_token() }}"

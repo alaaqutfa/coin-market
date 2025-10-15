@@ -98,9 +98,10 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $products = $query->latest()->paginate(50)->appends($request->all());
+        $filters = $request->all();
+        $products = $query->latest()->paginate(50)->appends($filters);
         $products->withPath(url('/products'));
-        return view('products.view', compact('products'));
+        return view('products.view', compact('products','filters'));
     }
 
     public function filter(Request $request)
@@ -182,10 +183,11 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $products = $query->latest()->paginate(50)->appends($request->all());
+        $filters = $request->all();
+        $products = $query->latest()->paginate(50)->appends($filters);
         $products->withPath(url('/products'));
 
-        return view('products.partials.products-table', compact('products'))->render();
+        return view('products.partials.products-table', compact('products','filters'))->render();
     }
 
     public function store(Request $request)
