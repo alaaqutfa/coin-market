@@ -320,6 +320,37 @@
                         </div>
                     </div>
 
+                    <!-- خيارات تاريخ سريعة لسجلات الباركود -->
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-sm font-medium">خيارات سريعة (سجلات الباركود)</label>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" onclick="setBarcodeDateFilter('today')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-day ml-2"></i> اليوم
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('yesterday')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-minus ml-2"></i> البارحة
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('week')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('month')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
+                            </button>
+                            <button type="button" onclick="setBarcodeDateFilter('this_month')"
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-calendar ml-2"></i> هذا الشهر
+                            </button>
+                            <button type="button" onclick="clearBarcodeDateFilter()"
+                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                <i class="fas fa-times ml-2"></i> مسح التواريخ
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- زر التصفية -->
                     <div class="flex items-end">
                         <button type="submit"
@@ -332,7 +363,7 @@
                     <!-- خيارات الصور -->
                     <label class="inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="have_image" name="have_image" value="1"
-                            {{ isset($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
+                            {{ !empty($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="have_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
                         </div>
@@ -341,7 +372,7 @@
 
                     <label class="inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="no_image" name="no_image" value="1"
-                            {{ isset($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
+                            {{ !empty($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="no_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
                         </div>
