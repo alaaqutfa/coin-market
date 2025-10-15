@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -351,31 +352,51 @@ class ProductController extends Controller
 
     public function previewImages(Request $request)
     {
-        $files   = $request->file('images');
+        $files   = $request->file('images', []);
         $results = [];
 
+        if (! is_array($files) || count($files) === 0) {
+            return response()->json([]);
+        }
+
         foreach ($files as $file) {
+            if (! $file->isValid()) {
+                $results[] = [
+                    'status'   => 'error',
+                    'message'  => 'invalid_file',
+                    'original' => $file->getClientOriginalName(),
+                ];
+                continue;
+            }
+
+            // نفترض أن اسم الملف بدون الامتداد هو الباركود
             $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
 
-            // حذف السعر من الاسم لو موجود
-            // $cleanName = preg_replace('/ - \d+(\.\d+)?\$/', '', $originalName);
+            // البحث عبر barcode (كما في كودك)
+            $product = \App\Models\Product::where('barcode', $originalName)->first();
 
-            // البحث عن المنتج
-            // $product = Product::where('name', $cleanName)->first();
-            $product = Product::where('barcode', $originalName)->first();
+            // اسم مؤقت آمن
+            $tmpName = uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+            $tmpPath = 'tmp_products/' . $tmpName;
 
-            // فقط لو لقى المنتج يكمل
+            // خزن في disk 'public' داخل storage/app/public/tmp_products
+            Storage::disk('public')->putFileAs('tmp_products', $file, $tmpName);
+
             if ($product) {
-                // حفظ مؤقت في مجلد public/tmp_products
-                $tmpName = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('storage/tmp_products'), $tmpName);
-
                 $results[] = [
                     'id'     => $product->id,
                     'name'   => $product->name,
-                    'image'  => asset('storage/tmp_products/' . $tmpName),
+                    // المسار الذي يمكن عرضه عبر asset()-> storage symlink يجب أن يكون storage/...
+                    'image'  => asset('storage/' . $tmpPath),
                     'tmp'    => $tmpName,
                     'status' => 'matched',
+                ];
+            } else {
+                $results[] = [
+                    'name'   => $originalName,
+                    'image'  => asset('storage/' . $tmpPath),
+                    'tmp'    => $tmpName,
+                    'status' => 'unmatched',
                 ];
             }
         }
@@ -385,43 +406,68 @@ class ProductController extends Controller
 
     public function saveImages(Request $request)
     {
-        $items = $request->input('items');
-        foreach ($items as $item) {
-            $product = Product::find($item['id']);
-            if ($product && isset($item['tmp'])) {
-                $tmpPath = public_path('storage/tmp_products/' . $item['tmp']);
-                if (file_exists($tmpPath)) {
-                    $extension = pathinfo($tmpPath, PATHINFO_EXTENSION);
+        $items = $request->input('items', []);
 
-                    // اسم الصورة = اسم المنتج + السعر
-                    $safeName = Str::slug($product->name . '-' . $product->price, '_');
-                    $newName  = $safeName . '.' . $extension;
-                    $newPath  = public_path('storage/products/' . $newName);
-
-                    // إنشاء مجلد products إذا مش موجود
-                    if (! file_exists(public_path('storage/products'))) {
-                        mkdir(public_path('storage/products'), 0777, true);
-                    }
-
-                    // حذف الصورة القديمة إن وُجدت
-                    if ($product->image_path) {
-                        $oldPath = public_path('storage/' . $product->image_path);
-                        if (file_exists($oldPath)) {
-                            unlink($oldPath);
-                        }
-                    }
-
-                    // نقل الملف الجديد
-                    rename($tmpPath, $newPath);
-
-                    // تحديث المنتج في قاعدة البيانات
-                    $product->update([
-                        'image_path' => 'products/' . $newName,
-                    ]);
-                }
-            }
+        if (! is_array($items) || count($items) === 0) {
+            return response()->json(['status' => 'no_items']);
         }
 
+        foreach ($items as $item) {
+            if (! isset($item['id']) || ! isset($item['tmp'])) {
+                // تخطي العناصر غير المكتملة
+                continue;
+            }
+
+            $product = \App\Models\Product::find($item['id']);
+            if (! $product) {
+                Log::warning("saveImages: product not found for id {$item['id']}");
+                continue;
+            }
+
+            $tmpName     = $item['tmp'];
+            $tmpRelative = 'tmp_products/' . $tmpName;
+            $destDir     = 'products';
+
+            // تأكد أن الملف المؤقت موجود
+            if (! Storage::disk('public')->exists($tmpRelative)) {
+                Log::warning("saveImages: tmp file not found: {$tmpRelative}");
+                continue;
+            }
+
+            // امتداد الملف
+            $extension = pathinfo($tmpName, PATHINFO_EXTENSION) ?: 'jpg';
+
+            // اسم آمن يعتمد على اسم المنتج والسعر
+            $safeName    = Str::slug($product->name . '-' . $product->price, '_');
+            $newName     = $safeName . '.' . $extension;
+            $newRelative = $destDir . '/' . $newName;
+
+            // إذا كان هناك ملف قديم نريد حذفه
+            if (! empty($product->image_path)) {
+                // تأكد من أن image_path مخزن نسبياً مثل "products/xxx.jpg"
+                $oldRelative = $product->image_path;
+                if (Storage::disk('public')->exists($oldRelative)) {
+                    Storage::disk('public')->delete($oldRelative);
+                } else {
+                    // ربما تخزين قديم يختلف؛ حاول الحذف من 'storage/' prefix
+                    if (strpos($oldRelative, 'storage/') === 0) {
+                        $maybe = substr($oldRelative, strlen('storage/'));
+                        if (Storage::disk('public')->exists($maybe)) {
+                            Storage::disk('public')->delete($maybe);
+                        }
+                    }
+                }
+            }
+
+            // انقل/إعادة تسمية الملف من tmp_products => products
+            Storage::disk('public')->move($tmpRelative, $newRelative);
+
+            // تحديث قاعدة البيانات (احفظ المسار النسبي ضمن disk public)
+            $product->image_path = $newRelative;
+            $product->save();
+        }
+
+        // امسح tmp_products المتبقي إن أردت (مثال)
         $this->clearTmpProducts();
 
         return response()->json(['status' => 'success']);
