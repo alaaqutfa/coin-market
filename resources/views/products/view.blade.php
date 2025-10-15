@@ -362,7 +362,8 @@
 
                     <!-- خيارات الصور -->
                     <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="have_image" name="have_image" value="{{ !empty($filters['have_image']) ? '1' : '0' }}"
+                        <input type="checkbox" id="have_image" name="have_image"
+                            value="{{ !empty($filters['have_image']) ? '1' : '0' }}"
                             {{ !empty($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="have_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
@@ -371,7 +372,8 @@
                     </label>
 
                     <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="no_image" name="no_image" value="{{ !empty($filters['no_image']) ? '1' : '0' }}"
+                        <input type="checkbox" id="no_image" name="no_image"
+                            value="{{ !empty($filters['no_image']) ? '1' : '0' }}"
                             {{ !empty($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
                         <div
                             class="no_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
@@ -409,7 +411,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
                             <th scope="col" class="px-6 py-4">
-                                <input type="checkbox" name="" id=""
+                                <input type="checkbox" name="check-all-page-items" id="check-all-page-items"
                                     class="border border-gray-400 rounded" />
                             </th>
                             <th scope="col" class="px-6 py-4">
@@ -1062,6 +1064,22 @@
                     return;
                 }
 
+                // تقسيم الـ IDs إلى مجموعات (4 في كل مجموعة)
+                const groups = [];
+                for (let i = 0; i < ids.length; i += 4) {
+                    groups.push(ids.slice(i, i + 4));
+                }
+
+                // إرسال كل مجموعة على حدة
+                groups.forEach((group, index) => {
+                    setTimeout(() => {
+                        sendCatalogRequest(group);
+                    }, index * 100); // تأخير بسيط بين الطلبات
+                });
+            }
+
+            // دالة منفصلة لإرسال الطلب
+            function sendCatalogRequest(ids) {
                 // إنشاء نموذج وإرساله لتحميل الملف
                 let form = $('<form>', {
                     method: 'GET',
@@ -1125,6 +1143,20 @@
             }
 
             $(document).ready(function() {
+
+                // حدث تحديد/إلغاء تحديد الكل
+                $('#check-all-page-items').change(function() {
+                    const isChecked = $(this).prop('checked');
+                    $('table input[type="checkbox"]').prop('checked', isChecked);
+                });
+
+                // حدث عند تغيير أي checkbox فردي
+                $('table input[type="checkbox"]').not('#check-all-page-items').change(function() {
+                    const allChecked = $('table input[type="checkbox"]').not('#check-all-page-items').length ===
+                        $('table input[type="checkbox"]').not('#check-all-page-items').filter(':checked')
+                        .length;
+                    $('#check-all-page-items').prop('checked', allChecked);
+                });
 
                 $(document).on('click', '.delete-row-new-products', function() {
                     const button = $(this);
