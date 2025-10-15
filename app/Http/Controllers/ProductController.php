@@ -19,9 +19,87 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $products = Product::latest()->paginate(50);
+        $query = Product::query();
+
+        // الفلترة حسب الباركود
+        if ($request->barcode) {
+            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        }
+
+        // الفلترة حسب الاسم
+        if ($request->name) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // الفلترة حسب السعر
+        if ($request->price) {
+            $query->where('price', $request->price);
+        }
+
+        // الفلترة حسب الوزن
+        if ($request->weight) {
+            $query->where('weight', $request->weight);
+        }
+
+        // مع صورة
+        if ($request->have_image) {
+            $query->whereNotNull('image_path');
+        }
+
+        // بدون صورة
+        if ($request->no_image) {
+            $query->whereNull('image_path');
+        }
+
+        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
+        if ($request->date_from && $request->date_to) {
+            $query->whereBetween('created_at', [
+                $request->date_from . ' 00:00:00',
+                $request->date_to . ' 23:59:59',
+            ]);
+        }
+
+        // فلترة تاريخ اليوم
+        elseif ($request->has('date_today') && $request->date_today) {
+            $query->whereDate('created_at', today());
+        }
+
+        // فلترة تاريخ البارحة
+        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
+            $query->whereDate('created_at', today()->subDay());
+        }
+
+        // فلترة آخر أسبوع
+        elseif ($request->has('date_week') && $request->date_week) {
+            $query->whereBetween('created_at', [
+                now()->subWeek()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة آخر شهر
+        elseif ($request->has('date_month') && $request->date_month) {
+            $query->whereBetween('created_at', [
+                now()->subMonth()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة حسب سجلات الباركود - الجزء الجديد
+        if ($request->barcode_date_from && $request->barcode_date_to) {
+            $query->whereHas('barcodeLogs', function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->barcode_date_from . ' 00:00:00',
+                    $request->barcode_date_to . ' 23:59:59',
+                ]);
+            });
+        }
+
+        // الترتيب من الأحدث إلى الأقدم
+        $products = $query->latest()->paginate(50)->appends($request->all());
+        $products->withPath(url('/products'));
         return view('products.view', compact('products'));
     }
 
