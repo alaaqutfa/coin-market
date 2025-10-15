@@ -1074,7 +1074,7 @@
                 groups.forEach((group, index) => {
                     setTimeout(() => {
                         sendCatalogRequest(group);
-                    }, index * 100); // تأخير بسيط بين الطلبات
+                    }, index * 1000); // تأخير بسيط بين الطلبات
                 });
             }
 
