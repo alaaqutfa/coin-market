@@ -16,6 +16,7 @@ Route::delete('/product-barcode-log/{id}', [ProductController::class, 'destroyMi
 
 Route::post('/products/preview-images', [ProductController::class, 'previewImages'])->name('products.preview.images');
 Route::post('/products/save-images', [ProductController::class, 'saveImages'])->name('products.save.images');
+Route::delete('/products/clean-unused', [ProductController::class, 'cleanUnusedImages'])->name('products.cleanUnused');
 Route::get('/show-catalog', [ProductController::class, 'showCatalog'])->name('showCatalog');
 
 // Routes الموظفين

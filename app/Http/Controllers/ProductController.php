@@ -385,8 +385,7 @@ class ProductController extends Controller
 
     public function saveImages(Request $request)
     {
-        $items = $request->input('items'); // array of {id, tmp}
-
+        $items = $request->input('items');
         foreach ($items as $item) {
             $product = Product::find($item['id']);
             if ($product && isset($item['tmp'])) {
@@ -404,10 +403,18 @@ class ProductController extends Controller
                         mkdir(public_path('storage/products'), 0777, true);
                     }
 
-                    // نقل الملف
+                    // حذف الصورة القديمة إن وُجدت
+                    if ($product->image_path) {
+                        $oldPath = public_path('storage/' . $product->image_path);
+                        if (file_exists($oldPath)) {
+                            unlink($oldPath);
+                        }
+                    }
+
+                    // نقل الملف الجديد
                     rename($tmpPath, $newPath);
 
-                    // تحديث المنتج
+                    // تحديث المنتج في قاعدة البيانات
                     $product->update([
                         'image_path' => 'products/' . $newName,
                     ]);
@@ -415,7 +422,78 @@ class ProductController extends Controller
             }
         }
 
+        $this->clearTmpProducts();
+
         return response()->json(['status' => 'success']);
+    }
+
+    public function clearTmpProducts()
+    {
+        $tmpDir = public_path('storage/tmp_products');
+
+        if (! file_exists($tmpDir)) {
+            return response()->json(['status' => 'error', 'message' => 'مجلد tmp_products غير موجود']);
+        }
+
+        $files   = scandir($tmpDir);
+        $deleted = [];
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $filePath = $tmpDir . '/' . $file;
+            if (is_file($filePath)) {
+                unlink($filePath);
+                $deleted[] = $file;
+            }
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'deleted' => $deleted,
+            'count'   => count($deleted),
+        ]);
+    }
+
+    public function cleanUnusedImages()
+    {
+        $productsDir = public_path('storage/products');
+
+        if (! file_exists($productsDir)) {
+            return response()->json(['status' => 'error', 'message' => 'مجلد المنتجات غير موجود']);
+        }
+
+        // جميع الصور الموجودة في المجلد
+        $files = scandir($productsDir);
+
+        // جميع المسارات المستخدمة فعلاً في قاعدة البيانات
+        $usedImages = Product::pluck('image_path')->map(function ($path) {
+            return basename($path); // فقط اسم الملف بدون المسار
+        })->toArray();
+
+        $deleted = [];
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            if (! in_array($file, $usedImages)) {
+                $filePath = $productsDir . '/' . $file;
+                if (is_file($filePath)) {
+                    unlink($filePath);
+                    $deleted[] = $file;
+                }
+            }
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'deleted' => $deleted,
+            'count'   => count($deleted),
+        ]);
     }
 
     public function exportCatalog(Request $request)

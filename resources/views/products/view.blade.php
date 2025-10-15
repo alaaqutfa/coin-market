@@ -501,7 +501,7 @@
 
         <div class="nav-item products-images table-container bg-white rounded-lg" style="display: none;">
             <form id="previewForm" class="my-6" enctype="multipart/form-data">
-                <div class="flex items-center justify-center w-full">
+                <div class="flex items-center justify-center w-full p-4">
                     <label for="dropzone-file"
                         class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                         <div class="flex flex-col items-center justify-center pt-5 pb-6 m-4">
@@ -519,8 +519,10 @@
                         <input type="file" name="images[]" id="dropzone-file" class="hidden" multiple />
                     </label>
                 </div>
-
             </form>
+            <button id="cleanImages" class="m-4 bg-red-600 text-white px-4 py-2 rounded">
+                تنظيف الصور غير المرتبطة 🔥
+            </button>
 
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -614,7 +616,7 @@
                         <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200" data-id="${item.id ?? '-'}">
                             <td class="px-6 py-4">
                                 <div class="flex justify-center items-center" data-field="id">
-                                    ${rowIndex}
+                                    ${rowIndex + 1}
                                 </div>
                             </td>
                             <td class="px-6 py-4">
@@ -1078,7 +1080,7 @@
                 form.remove();
             }
 
-            function addRow(barcode = '', added_at = '',id = "") {
+            function addRow(barcode = '', added_at = '', id = "") {
                 let rowIndex = $('#new-products-body tr').length;
                 let rowHtml = `
                     <tr class="border-b hover:bg-gray-50">
@@ -1164,7 +1166,8 @@
                                         return $(this).find('.barcode-input').val() ==
                                             barcode['barcode'];
                                     }).length === 0) {
-                                    addRow(barcode['barcode'], barcode['added_at'],barcode['id']);
+                                    addRow(barcode['barcode'], barcode['added_at'], barcode[
+                                        'id']);
                                 }
                             });
                         },
@@ -1256,6 +1259,29 @@
 
                 // إعداد حدث النقر على زر التحديث التلقائي
                 $('#autoRefreshToggle').click(toggleAutoRefresh);
+
+                $('#cleanImages').on('click', function() {
+                    if (!confirm('هل أنت متأكد أنك تريد حذف الصور غير المرتبطة؟')) return;
+
+                    $.ajax({
+                        url: '{{ route("products.cleanUnused") }}',
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                alert(`تم حذف ${data.count} صورة غير ضرورية بنجاح ✅`);
+                            } else {
+                                alert('حدث خطأ أثناء تنظيف الصور ❌');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                            alert('فشل الاتصال بالسيرفر ❌');
+                        }
+                    });
+                });
             });
         </script>
     @endpush
