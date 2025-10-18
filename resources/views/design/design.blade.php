@@ -110,7 +110,8 @@
 
         .weight {
             color: var(--secondary);
-            font-size: 3rem;
+            /* font-size: 3rem; */
+            font-size: 2rem;
             font-weight: 800;
             line-height: 2rem;
         }
@@ -125,14 +126,16 @@
             width: 100%;
             padding: 1rem;
             color: var(--primary);
-            font-size: 2.25rem;
+            /* font-size: 2.25rem; */
+            font-size: 3rem;
             font-weight: 800;
             text-align: center;
         }
 
         .price {
             color: var(--secondary);
-            font-size: 3rem;
+            /* font-size: 3rem; */
+            font-size: 2rem;
             font-weight: 800;
         }
     </style>
