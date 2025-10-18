@@ -788,7 +788,7 @@
                                     </div>
                                 </th>
                                 <th class="px-6 py-4">
-                                    <div>
+                                    <div class="flex justify-center items-center gap-2">
                                         <button onclick="viewDayAttendance(${log['employee_id']},'${log['date']}')"
                                             class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded">
                                             <i class="fas fa-eye"></i>
