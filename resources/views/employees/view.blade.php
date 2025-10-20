@@ -824,7 +824,7 @@
             data._token = '{{ csrf_token() }}';
 
             $.ajax({
-                url: `/attendance/${logId}`,
+                url: `/admin/attendance/${logId}`,
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -842,7 +842,7 @@
             if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
 
             $.ajax({
-                url: `/attendance/${logId}`,
+                url: `/admin/attendance/${logId}`,
                 type: 'DELETE',
                 data: {
                     _token: '{{ csrf_token() }}'
@@ -864,7 +864,7 @@
             }
 
             $.ajax({
-                url: `/employees/${employeeId}`,
+                url: `/admin/employees/${employeeId}`,
                 type: 'DELETE',
                 data: {
                     _token: '{{ csrf_token() }}'
@@ -960,7 +960,7 @@
             data._token = '{{ csrf_token() }}';
 
             $.ajax({
-                url: `employees/${employeeId}`,
+                url: `admin/employees/${employeeId}`,
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
@@ -988,7 +988,7 @@
 
         function getMonthlySummary(year = null, month = null) {
             $.ajax({
-                url: "/attendance/monthly-summary/" + (year ?? new Date().getFullYear()) + "/" + (
+                url: "/admin/attendance/monthly-summary/" + (year ?? new Date().getFullYear()) + "/" + (
                     month ?? (new Date().getMonth() + 1)
                 ),
                 type: 'GET',
@@ -1032,7 +1032,7 @@
 
         function getMonthlySummaryByDate(id, year, month) {
             $.ajax({
-                url: `/attendance/monthly-report/${id}/${year}/${month}`,
+                url: `/admin/attendance/monthly-report/${id}/${year}/${month}`,
                 type: 'GET',
                 success: function(response) {
                     console.log(`Monthly Summary (${id}):`);
@@ -1115,7 +1115,7 @@
             }
 
             $.ajax({
-                url: '{{ route('attendance.viewDayAttendance') }}',
+                url: '{{ route("attendance.viewDayAttendance") }}',
                 method: 'GET',
                 data: {
                     employee_id: employeeId,
