@@ -12,15 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // إضافة CORS middleware لجميع طلبات API
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Http\Middleware\HandleCors::class, // هذا السطر مهم!
         ]);
-
-        // إضافة alias لـ CORS إذا لم يكن موجوداً
         $middleware->alias([
             'cors' => \Illuminate\Http\Middleware\HandleCors::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'superadmin' => \App\Http\Middleware\SuperAdminOnly::class,
         ]);
 
         // إستثناءات CSRF لـ API
