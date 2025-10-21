@@ -9,7 +9,12 @@
         </div>
         <div class="product-container w-full flex justify-evenly items-start gap-4 flex-wrap">
             @foreach ($products as $product)
-                {{-- @dd($product) --}}
+                @php
+                    $whatsappNumber = '+96171349793';
+                    $productName = $product['name'];
+                    $productLink = route('products.show', $product['id']); // رابط المنتج
+                    $whatsappMessage = urlencode("مرحباً، أريد الاستفسار عن المنتج: $productName\n$producLink");
+                @endphp
                 <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
                     <a href="#" class="flex justify-center items-center overflow-hidden">
                         <img class="h-64 p-8 rounded-t-lg object-contain"
@@ -67,7 +72,8 @@
                                     class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a href="#" title="أطلب الأن على واتساب"
+                                <a href="https://wa.me/{{ $whatsappNumber }}?text={{ $whatsappMessage }}" target="_blank"
+                                    title="أطلب الأن على واتساب"
                                     class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </a>
