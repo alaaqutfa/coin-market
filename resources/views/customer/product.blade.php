@@ -10,70 +10,47 @@
         <div class="product-container w-full flex justify-evenly items-start gap-4 flex-wrap">
             @foreach ($products as $product)
                 @php
-                    $whatsappNumber = '+96171349793';
-                    $productName = $product['name'];
-                    $productLink = route('customer.product.show', $product['id']); // رابط المنتج
-                    $whatsappMessage = urlencode("مرحباً، أريد الاستفسار عن المنتج: $productName\n$productLink");
+                    $whatsappNumber = '96171349793'; // بدون علامة + في الرابط
+                    $productName = $product->name;
+                    $productLink = route('customer.product.show', $product->id);
+                    $message =
+                        "مرحباً، أريد الاستفسار عن المنتج: {$productName}\n" .
+                        "السعر: {$product->price} {$product->symbol}\n" .
+                        "رابط المنتج: {$productLink}";
+                    $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . rawurlencode($message);
                 @endphp
+
                 <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <a href="#" class="flex justify-center items-center overflow-hidden">
-                        <img class="h-64 p-8 rounded-t-lg object-contain"
-                            src="{{ asset('storage/') . '/' . $product['image_path'] }}"
+                    <a href="{{ $productLink }}" class="flex justify-center items-center overflow-hidden">
+                        <img class="h-64 p-8 rounded-t-lg object-contain" src="{{ asset('storage/' . $product->image_path) }}"
                             onerror="this.src='{{ asset('assets/img/place-holder.png') }}'" alt="product image" />
                     </a>
                     <div class="px-5 pb-5">
                         <a href="{{ $productLink }}">
                             <h5 class="text-xl font-semibold tracking-tight text-gray-900">
-                                {{ $product['name'] }}
+                                {{ $product->name }}
                             </h5>
                         </a>
-                        @if ($product['weight'] > 0)
-                            <div class="flex items-center mt-2.5 mb-5">
-                                <div class="hidden items-center space-x-1 rtl:space-x-reverse">
-                                    <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                        <path
-                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                    </svg>
-                                    <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                        <path
-                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                    </svg>
-                                    <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                        <path
-                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                    </svg>
-                                    <svg class="w-4 h-4 text-yellow-300" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                        <path
-                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                    </svg>
-                                    <svg class="w-4 h-4 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor" viewBox="0 0 22 20">
-                                        <path
-                                            d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-                                    </svg>
-                                </div>
 
+                        @if ($product->weight > 0)
+                            <div class="flex items-center mt-2.5 mb-5">
                                 <span
                                     class="bg-yellow-100 text-yellow-500 text-base font-semibold px-2.5 py-0.5 rounded-sm">
-                                    {{ $product['weight'] }}
+                                    {{ $product->weight }}
                                 </span>
                             </div>
                         @endif
+
                         <div class="flex items-center justify-between">
                             <span class="text-3xl font-bold text-gray-900">
-                                {{ $product['price'] }} {{ $product['symbol'] ?? '$' }}
+                                {{ $product->price }} {{ $product->symbol ?? '$' }}
                             </span>
                             <div class="flex justify-center items-center gap-2">
                                 <a href="#" title="إضافة إلى السلة"
                                     class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a href="https://wa.me/{{ $whatsappNumber }}?text={{ $whatsappMessage }}" target="_blank"
-                                    title="أطلب الأن على واتساب"
+                                <a href="{{ $whatsappUrl }}" target="_blank" title="أطلب الآن على واتساب"
                                     class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </a>

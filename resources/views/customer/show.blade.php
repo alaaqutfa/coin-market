@@ -35,8 +35,15 @@
                             class="flex justify-center items-center text-center bg-yellow-400 hover:bg-yellow-500 text-white px-5 py-3 rounded-lg font-semibold">
                             <i class="fa-solid fa-cart-plus mr-2"></i> أضف إلى السلة
                         </a>
-
-                        <a href="https://wa.me/+96171349793?text={{ urlencode("مرحباً، أريد الاستفسار عن المنتج: $product->name\nالسعر: $product->price $product->symbol\n" . url()->current()) }}"
+                        @php
+                            $message =
+                                "مرحباً، أريد الاستفسار عن المنتج: {$product->name}\n" .
+                                "السعر: {$product->price} {$product->symbol}\n" .
+                                'رابط المنتج: ' .
+                                url()->current();
+                            $whatsappUrl = 'https://wa.me/+96171349793?text=' . rawurlencode($message);
+                        @endphp
+                        <a href="{{ $whatsappUrl }}"
                             target="_blank"
                             class="flex justify-center items-center text-center bg-green-400 hover:bg-green-500 text-white px-5 py-3 rounded-lg font-semibold">
                             <i class="fa-brands fa-whatsapp mr-2"></i> أطلب الآن على واتساب
