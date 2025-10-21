@@ -12,8 +12,8 @@
                 @php
                     $whatsappNumber = '+96171349793';
                     $productName = $product['name'];
-                    $productLink = route('products.show', $product['id']); // رابط المنتج
-                    $whatsappMessage = urlencode("مرحباً، أريد الاستفسار عن المنتج: $productName\n$producLink");
+                    $productLink = route('customer.product.show', $product['id']); // رابط المنتج
+                    $whatsappMessage = urlencode("مرحباً، أريد الاستفسار عن المنتج: $productName\n$productLink");
                 @endphp
                 <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
                     <a href="#" class="flex justify-center items-center overflow-hidden">
@@ -22,7 +22,7 @@
                             onerror="this.src='{{ asset('assets/img/place-holder.png') }}'" alt="product image" />
                     </a>
                     <div class="px-5 pb-5">
-                        <a href="#">
+                        <a href="{{ $productLink }}">
                             <h5 class="text-xl font-semibold tracking-tight text-gray-900">
                                 {{ $product['name'] }}
                             </h5>

@@ -76,3 +76,4 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
 });
 
 Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
+Route::get('/products/{id}', [CustomerController::class, 'show'])->name('customer.product.show');
