@@ -446,6 +446,16 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الفئة</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">العلامة التجارية</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">تاريخ الإضافة</span>
                                 </div>
                             </th>

@@ -50,6 +50,17 @@
             </div>
         </td>
         <td class="px-6 py-4">
+            <div class="editable-field category-field" contenteditable="true" data-field="category_name">
+                {{ $product->category ? $product->category->name : '' }}
+            </div>
+        </td>
+
+        <td class="px-6 py-4">
+            <div class="editable-field brand-field" contenteditable="true" data-field="brand_name">
+                {{ $product->brand ? $product->brand->name : '' }}
+            </div>
+        </td>
+        <td class="px-6 py-4">
             {{ $product->created_at->format('Y-m-d') }}
         </td>
         <td class="px-6 py-4">
@@ -59,9 +70,8 @@
                 </button>
 
                 <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' ' . $product->weight . ' high quality png image' }}"
-                    title="{{ $product->barcode }}"
-                    class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"
-                    onclick="copyTitle(this)">
+                    title="{{ $product->barcode }}" class="text-blue-600 hover:text-blue-800" target="_blank"
+                    rel="noopener noreferrer" onclick="copyTitle(this)">
                     <i class="fas fa-search"></i>
                 </a>
 

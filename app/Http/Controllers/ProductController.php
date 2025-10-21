@@ -2,10 +2,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBarcodeLog;
 // use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -329,8 +332,8 @@ class ProductController extends Controller
             'name'        => 'sometimes|max:255',
             'price'       => 'sometimes|numeric|min:0',
             'symbol'      => 'sometimes|string|max:5',
-            'category_id' => 'sometimes|exists:categories,id',
-            'brand_id'    => 'sometimes|exists:brands,id',
+            'category_id' => 'sometimes|nullable|exists:categories,id',
+            'brand_id'    => 'sometimes|nullable|exists:brands,id',
             'image'       => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -338,25 +341,40 @@ class ProductController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        // أخذ الحقول المسموح تحديثها
         $productData = $request->only([
             'barcode', 'name', 'description', 'price', 'symbol',
             'category_id', 'brand_id', 'weight', 'quantity',
         ]);
+
+        // التحقق من وجود category_id وإذا كان المستخدم سوبر أدمن يمكنه الإنشاء
+        if (empty($productData['category_id']) && Auth::user()->role_id == 1 && $request->filled('category_name')) {
+            $category = Category::firstOrCreate(
+                ['name' => $request->input('category_name')],
+                ['description' => $request->input('category_description')]
+            );
+            $productData['category_id'] = $category->id;
+        }
+
+        // التحقق من وجود brand_id وإذا كان المستخدم سوبر أدمن يمكنه الإنشاء
+        if (empty($productData['brand_id']) && Auth::user()->role_id == 1 && $request->filled('brand_name')) {
+            $brand = Brand::firstOrCreate(
+                ['name' => $request->input('brand_name')],
+                ['logo' => $request->input('brand_logo')]
+            );
+            $productData['brand_id'] = $brand->id;
+        }
 
         // التعامل مع الصورة
         if ($request->hasFile('image')) {
             if ($product->image_path && Storage::exists($product->image_path)) {
                 Storage::delete($product->image_path);
             }
-
             $imagePath                 = $this->storeImage($request->file('image'), $request->barcode);
             $productData['image_path'] = $imagePath;
         }
 
         $product->update($productData);
 
-        // تحميل العلاقة للفئة والبراند قبل الإرجاع
         $product->load('category', 'brand');
 
         return response()->json($product);
