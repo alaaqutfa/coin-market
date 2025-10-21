@@ -14,10 +14,13 @@ class Product extends Model
         'barcode',
         'name',
         'price',
+        'symbol',
         'quantity',
         'weight',
         'image_path',
         'social_media_urls',
+        'category_id',
+        'brand_id',
     ];
 
     protected $casts = [
@@ -28,5 +31,15 @@ class Product extends Model
     public function barcodeLogs()
     {
         return $this->hasMany(ProductBarcodeLog::class, 'barcode', 'barcode');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
     }
 }

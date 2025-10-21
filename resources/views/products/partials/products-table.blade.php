@@ -35,13 +35,18 @@
             </div>
         </td>
         <td class="px-6 py-4">
+            <div class="editable-field" contenteditable="true" data-field="weight">
+                {{ $product->weight }}
+            </div>
+        </td>
+        <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="price">
                 {{ $product->price }}
             </div>
         </td>
         <td class="px-6 py-4">
-            <div class="editable-field" contenteditable="true" data-field="weight">
-                {{ $product->weight }}
+            <div class="editable-field" contenteditable="true" data-field="symbol">
+                {{ $product->symbol }}
             </div>
         </td>
         <td class="px-6 py-4">

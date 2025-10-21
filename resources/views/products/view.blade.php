@@ -431,12 +431,17 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">الوزن</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">السعر</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
-                                    <span class="text-base">الوزن</span>
+                                    <span class="text-base">العملة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
