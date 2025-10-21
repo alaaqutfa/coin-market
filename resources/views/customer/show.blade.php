@@ -41,10 +41,11 @@
                                 "السعر: {$product->price} {$product->symbol}\n" .
                                 'رابط المنتج: ' .
                                 url()->current();
-                            $whatsappUrl = 'https://wa.me/+96171349793?text=' . rawurlencode($message);
+                            $whatsappNumber = '96171349793'; // بدون +
+                            $encodedMessage = urlencode($message);
+                            $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$encodedMessage}";
                         @endphp
-                        <a href="{{ $whatsappUrl }}"
-                            target="_blank"
+                        <a href="{{ $whatsappUrl }}" target="_blank"
                             class="flex justify-center items-center text-center bg-green-400 hover:bg-green-500 text-white px-5 py-3 rounded-lg font-semibold">
                             <i class="fa-brands fa-whatsapp mr-2"></i> أطلب الآن على واتساب
                         </a>

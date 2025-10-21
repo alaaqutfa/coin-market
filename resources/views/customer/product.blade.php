@@ -10,7 +10,7 @@
         <div class="product-container w-full flex justify-evenly items-start gap-4 flex-wrap">
             @foreach ($products as $product)
                 @php
-                    $whatsappNumber = '96171349793'; // بدون علامة + في الرابط
+                    $whatsappNumber = '96171349793';
                     $productName = $product->name;
                     $productLink = route('customer.product.show', $product->id);
                     $message =
