@@ -152,7 +152,7 @@
                             alt="product image" />
                         <div class="price-weight-shape">
                             <span class="price">
-                                {{ $product->price }}$
+                                {{ $product->price }}{{ $product->symbol ?? '$' }}
                             </span>
                             @if ($product->weight != 0)
                                 <span class="weight">
