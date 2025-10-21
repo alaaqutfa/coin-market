@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +20,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 });
-Route::prefix('admin')->middleware([ 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Routes الأساسية
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/products', [ProductController::class, 'list'])->name('products.list');
@@ -73,3 +74,5 @@ Route::prefix('admin')->middleware([ 'admin'])->group(function () {
 
     });
 });
+
+Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
