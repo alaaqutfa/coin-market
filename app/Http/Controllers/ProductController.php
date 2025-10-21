@@ -98,10 +98,10 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $filters = $request->all();
+        $filters  = $request->all();
         $products = $query->latest()->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
-        return view('products.view', compact('products','filters'));
+        return view('products.view', compact('products', 'filters'));
     }
 
     public function filter(Request $request)
@@ -183,35 +183,42 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $filters = $request->all();
+        $filters  = $request->all();
         $products = $query->latest()->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
 
-        return view('products.partials.products-table', compact('products','filters'))->render();
+        return view('products.partials.products-table', compact('products', 'filters'))->render();
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'barcode' => 'required|unique:products',
-            'name'    => 'required|max:255',
-            'price'   => 'required|numeric|min:0',
-            'image'   => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'barcode'     => 'required|unique:products',
+            'name'        => 'required|max:255',
+            'price'       => 'required|numeric|min:0',
+            'symbol'      => 'sometimes|string|max:5',
+            'category_id' => 'sometimes|exists:categories,id',
+            'brand_id'    => 'sometimes|exists:brands,id',
+            'image'       => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
+        $productData = $request->only([
+            'barcode', 'name', 'description', 'price', 'symbol',
+            'category_id', 'brand_id', 'weight', 'quantity',
+        ]);
 
-        // معالجة الصورة بدون Intervention
         if ($request->hasFile('image')) {
             $imagePath                 = $this->storeImage($request->file('image'), $request->barcode);
             $productData['image_path'] = $imagePath;
         }
 
         $product = Product::create($productData);
+
+        $product->load('category', 'brand'); // جلب العلاقة للفئة والبراند
 
         return response()->json($product, 201);
     }
@@ -220,10 +227,7 @@ class ProductController extends Controller
     {
         $products = $request->input('products', []);
 
-        // استخرج كل الباركودات المرسلة
-        $barcodes = collect($products)->pluck('barcode')->filter()->unique();
-
-        // جيب الباركودات الموجودة أصلاً
+        $barcodes         = collect($products)->pluck('barcode')->filter()->unique();
         $existingBarcodes = Product::whereIn('barcode', $barcodes)->pluck('barcode')->toArray();
 
         $insertData = [];
@@ -240,12 +244,16 @@ class ProductController extends Controller
 
                 if (! $exists) {
                     $insertData[] = [
-                        'barcode'    => $p['barcode'],
-                        'name'       => $p['name'],
-                        'price'      => $p['price'] ?? 0,
-                        'weight'     => $p['weight'] ?? null,
-                        'created_at' => now(),
-                        'updated_at' => now(),
+                        'barcode'     => $p['barcode'],
+                        'name'        => $p['name'],
+                        'price'       => $p['price'] ?? 0,
+                        'symbol'      => $p['symbol'] ?? '$',
+                        'category_id' => $p['category_id'] ?? null,
+                        'brand_id'    => $p['brand_id'] ?? null,
+                        'weight'      => $p['weight'] ?? null,
+                        'quantity'    => $p['quantity'] ?? 0,
+                        'created_at'  => now(),
+                        'updated_at'  => now(),
                     ];
                 }
             }
@@ -258,7 +266,7 @@ class ProductController extends Controller
         return response()->json([
             'success'  => true,
             'inserted' => count($insertData),
-            'skipped'  => count($existingBarcodes), // المنتجات اللي تم تخطيها
+            'skipped'  => count($existingBarcodes),
         ]);
     }
 
@@ -317,20 +325,27 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'barcode' => 'sometimes|unique:products,barcode,' . $id,
-            'name'    => 'sometimes|max:255',
-            'price'   => 'sometimes|numeric|min:0',
-            'image'   => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'barcode'     => 'sometimes|unique:products,barcode,' . $id,
+            'name'        => 'sometimes|max:255',
+            'price'       => 'sometimes|numeric|min:0',
+            'symbol'      => 'sometimes|string|max:5',
+            'category_id' => 'sometimes|exists:categories,id',
+            'brand_id'    => 'sometimes|exists:brands,id',
+            'image'       => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
+        // أخذ الحقول المسموح تحديثها
+        $productData = $request->only([
+            'barcode', 'name', 'description', 'price', 'symbol',
+            'category_id', 'brand_id', 'weight', 'quantity',
+        ]);
 
+        // التعامل مع الصورة
         if ($request->hasFile('image')) {
-            // حذف الصورة القديمة إذا كانت موجودة
             if ($product->image_path && Storage::exists($product->image_path)) {
                 Storage::delete($product->image_path);
             }
@@ -340,6 +355,9 @@ class ProductController extends Controller
         }
 
         $product->update($productData);
+
+        // تحميل العلاقة للفئة والبراند قبل الإرجاع
+        $product->load('category', 'brand');
 
         return response()->json($product);
     }
@@ -349,18 +367,26 @@ class ProductController extends Controller
         $product = Product::where('barcode', $barcode)->firstOrFail();
 
         $validator = Validator::make($request->all(), [
-            'barcode' => 'sometimes|unique:products,barcode,' . $product->id,
-            'name'    => 'sometimes|max:255',
-            'price'   => 'sometimes|numeric|min:0',
-            'image'   => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'barcode'     => 'sometimes|unique:products,barcode,' . $product->id,
+            'name'        => 'sometimes|max:255',
+            'price'       => 'sometimes|numeric|min:0',
+            'symbol'      => 'sometimes|string|max:5',
+            'category_id' => 'sometimes|exists:categories,id',
+            'brand_id'    => 'sometimes|exists:brands,id',
+            'image'       => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $productData = $request->only(['barcode', 'name', 'description', 'price', 'weight', 'quantity']);
+        // أخذ الحقول المسموح تحديثها
+        $productData = $request->only([
+            'barcode', 'name', 'description', 'price', 'symbol',
+            'category_id', 'brand_id', 'weight', 'quantity',
+        ]);
 
+        // معالجة الصورة
         if ($request->hasFile('image')) {
             if ($product->image_path && Storage::exists($product->image_path)) {
                 Storage::delete($product->image_path);
@@ -370,6 +396,9 @@ class ProductController extends Controller
         }
 
         $product->update($productData);
+
+        // تحميل العلاقات للفئة والبراند قبل الإرجاع
+        $product->load('category', 'brand');
 
         return response()->json($product);
     }
@@ -493,8 +522,6 @@ class ProductController extends Controller
 
         return response()->json(['status' => 'success']);
     }
-
-
 
     public function clearTmpProducts()
     {
