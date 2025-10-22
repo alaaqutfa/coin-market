@@ -7,7 +7,7 @@
 
     <title>{{ config('app.name', 'Coin Market Social Stock') }} - لوحة التحكم</title>
 
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo-light.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ asset('public/assets/img/logo-light.png') }}" sizes="32x32">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -122,7 +122,7 @@
             <div class="top-auth flex flex-col sm:flex-row justify-center items-center gap-6 relative z-10">
 
                 <div class="logo">
-                    <img src="{{ asset('assets/img/logo-light.png') }}"
+                    <img src="{{ asset('public/assets/img/logo-light.png') }}"
                          class="w-24 h-24 object-contain logo-glow"
                          alt="logo" />
                 </div>

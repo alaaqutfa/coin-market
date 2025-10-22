@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('assets/img/design-bg-2.png') }}') no-repeat center center;
+            background: url('{{ asset('public/assets/img/design-bg-2.png') }}') no-repeat center center;
             background-size: cover;
             padding: 20px;
             overflow: hidden;
@@ -145,7 +145,7 @@
     <div class="design-container">
         <div class="header flex justify-between items-center p-4" style="border-bottom: 7px solid #ECC631;">
             <div class="logo-side flex justify-center items-center flex-col gap-2">
-                <img src="{{ asset('assets/img/logo-light.png') }}" alt="Logo" />
+                <img src="{{ asset('public/assets/img/logo-light.png') }}" alt="Logo" />
                 <h2 class="font-bold text-nowrap" style="color:var(--secondary);font-size: 70px;">
                     Coin <span style="color: #ecc631;">Market</span>
                 </h2>
@@ -161,14 +161,14 @@
                 </div>
             </div>
             <div class="shape-side">
-                <img src="{{ asset('assets/img/design-shape-1.png') }}" alt="">
+                <img src="{{ asset('public/assets/img/design-shape-1.png') }}" alt="">
             </div>
         </div>
         <div class="products">
             @foreach ($products as $product)
                 <div class="product">
                     <div class="image-shape">
-                        <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
+                        <img class="product-image" src="{{ asset('public/storage/' . $product->image_path) }}"
                             alt="product image" />
                         @if ($product->weight != 0)
                             <span class="weight">

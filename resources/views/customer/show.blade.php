@@ -8,8 +8,8 @@
             <div class="md:flex">
                 <!-- الصورة -->
                 <div class="md:w-1/2 p-6 flex justify-center items-center">
-                    <img src="{{ asset('storage/' . $product->image_path) }}"
-                        onerror="this.src='{{ asset('assets/img/place-holder.png') }}'" alt="{{ $product->name }}"
+                    <img src="{{ asset('public/storage/' . $product->image_path) }}"
+                        onerror="this.src='{{ asset('public/assets/img/place-holder.png') }}'" alt="{{ $product->name }}"
                         class="w-full h-80 object-contain rounded">
                 </div>
 

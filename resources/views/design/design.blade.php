@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('assets/img/design-bg-3.png') }}') no-repeat center center;
+            background: url('{{ asset('public/assets/img/design-bg-3.png') }}') no-repeat center center;
             background-size: cover;
             overflow: hidden;
             display: flex;
@@ -148,7 +148,7 @@
             @foreach ($products as $product)
                 <div class="product">
                     <div class="image-shape">
-                        <img class="product-image" src="{{ asset('storage/' . $product->image_path) }}"
+                        <img class="product-image" src="{{ asset('public/storage/' . $product->image_path) }}"
                             alt="product image" />
                         <div class="price-weight-shape">
                             <span class="price">

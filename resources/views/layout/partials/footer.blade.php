@@ -3,7 +3,7 @@
         <div class="md:flex md:justify-between">
             <div class="mb-6 md:mb-0">
                 <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <img src="{{ asset('assets/img/logo-light.png') }}" class="h-8 me-3" alt="Coin Market Logo" />
+                    <img src="{{ asset('public/assets/img/logo-light.png') }}" class="h-8 me-3" alt="Coin Market Logo" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap">
                         Coin
                         <span style="color: var(--primary);">

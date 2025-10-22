@@ -74,7 +74,7 @@
 
         <div class="info-side">
 
-            <img src="{{ asset('assets/img/logo-light.png') }}" alt="coin-market-logo" />
+            <img src="{{ asset('public/assets/img/logo-light.png') }}" alt="coin-market-logo" />
 
             <h2>
                 {{ $employee['name'] }}

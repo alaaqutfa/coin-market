@@ -13,8 +13,8 @@
                 </svg>
             </button>
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <img src="{{ asset('assets/img/logo-light.png') }}"
-                    onerror="this.src='{{ asset('assets/img/place-holder.png') }}'" class="h-8"
+                <img src="{{ asset('public/assets/img/logo-light.png') }}"
+                    onerror="this.src='{{ asset('public/assets/img/place-holder.png') }}'" class="h-8"
                     alt="Coin Market Logo" />
                 <span class="self-center text-2xl font-semibold whitespace-nowrap">Coin <span
                         style="color: var(--primary);">Market</span></span>
@@ -28,7 +28,7 @@
                     data-dropdown-placement="bottom">
                     <span class="sr-only">Open user menu</span>
                     <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg"
-                        onerror="this.src='{{ asset('assets/img/profile-placeholder.jpg') }}'" alt="user photo">
+                        onerror="this.src='{{ asset('public/assets/img/profile-placeholder.jpg') }}'" alt="user photo">
                 </button>
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
