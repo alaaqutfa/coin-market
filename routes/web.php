@@ -20,7 +20,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('admin.login.submit');
     Route::get('/logout', [AuthController::class, 'logout'])->name('admin.logout');
 });
-Route::prefix('admin')->middleware(['admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     // Routes الأساسية
     Route::get('/', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/products', [ProductController::class, 'list'])->name('products.list');
