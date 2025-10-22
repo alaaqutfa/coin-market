@@ -325,7 +325,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request);
         $product = Product::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -348,7 +347,7 @@ class ProductController extends Controller
         ]);
 
         // التحقق من وجود category_id وإذا كان المستخدم سوبر أدمن يمكنه الإنشاء
-        if (empty($productData['category_id']) && Auth::user()->role_id == 1 && $request->filled('category_name')) {
+        if (empty($productData['category_id']) && $request->role_id == 1 && $request->filled('category_name')) {
             $category = Category::firstOrCreate(
                 ['name' => $request->input('category_name')],
                 ['description' => $request->input('category_description')]
@@ -357,7 +356,7 @@ class ProductController extends Controller
         }
 
         // التحقق من وجود brand_id وإذا كان المستخدم سوبر أدمن يمكنه الإنشاء
-        if (empty($productData['brand_id']) && Auth::user()->role_id == 1 && $request->filled('brand_name')) {
+        if (empty($productData['brand_id']) && $request->role_id == 1 && $request->filled('brand_name')) {
             $brand = Brand::firstOrCreate(
                 ['name' => $request->input('brand_name')],
                 ['logo' => $request->input('brand_logo')]
