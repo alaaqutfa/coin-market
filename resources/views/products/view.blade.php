@@ -942,7 +942,8 @@
                     type: 'PUT',
                     data: {
                         _token: '{{ csrf_token() }}',
-                        [field]: value
+                        [field]: value,
+                        role_id: {{ Auth::user()->role_id }},
                     },
                     success: function(response) {
                         showToast('تم تحديث المنتج بنجاح', 'success');
