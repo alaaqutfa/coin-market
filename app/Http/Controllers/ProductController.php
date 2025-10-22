@@ -325,6 +325,7 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        dd(Auth::user()->role_id);
         $product = Product::findOrFail($id);
 
         $validator = Validator::make($request->all(), [

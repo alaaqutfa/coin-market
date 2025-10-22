@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ config('app.name', 'Coin Market Social Stock') }}</title>
+    <title>@yield('title')</title>
 
     <link rel="icon" type="image/png" href="{{ asset('public/assets/img/logo-light.png') }}" sizes="32x32">
 
