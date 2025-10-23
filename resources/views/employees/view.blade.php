@@ -960,7 +960,7 @@
             data._token = '{{ csrf_token() }}';
 
             $.ajax({
-                url: `admin/employees/${employeeId}`,
+                url: `employees/${employeeId}`,
                 type: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(data),
