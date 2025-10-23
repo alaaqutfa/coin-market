@@ -14,7 +14,7 @@ Route::middleware(['auth', 'superadmin'])->prefix('admin/users')->group(function
     Route::post('/', [AuthController::class, 'store'])->name('admin.users.store');
     Route::delete('/{id}', [AuthController::class, 'destroy'])->name('admin.users.destroy');
 });
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::prefix('admin')->group(function () {
     // رووتس المصادقة
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
