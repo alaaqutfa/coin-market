@@ -168,11 +168,12 @@
                 </div>
 
                 <div>
-                    <label for="category" class="block mb-2 text-sm font-medium">العلامات التجارية</label>
-                    <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
+                    <label for="category" class="block mb-2 text-sm font-medium">التصنيفات</label>
+                    <select name="category" id="category"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                         <option value="">---</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}" @if ($category->id == $filters['category']) selected @endif>
+                            <option value="{{ $category->id }}" @if (isset($filters['category']) && $category->id == $filters['category']) selected @endif>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -181,10 +182,11 @@
 
                 <div>
                     <label for="brand" class="block mb-2 text-sm font-medium">العلامات التجارية</label>
-                    <select name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
+                    <select name="brand" id="brand"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                         <option value="">---</option>
                         @foreach ($brands as $brand)
-                            <option value="{{ $brand->id }}" @if ($brand->id == $filters['brand']) selected @endif>
+                            <option value="{{ $brand->id }}" @if (isset($filters['brand']) && $brand->id == $filters['brand']) selected @endif>
                                 {{ $brand->name }}
                             </option>
                         @endforeach
