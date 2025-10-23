@@ -172,7 +172,7 @@
                     <select name="category" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                         <option value="">---</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->id }}">
+                            <option value="{{ $category->id }}" @if ($category->id == $filters['category']) selected @endif>
                                 {{ $category->name }}
                             </option>
                         @endforeach
@@ -184,7 +184,7 @@
                     <select name="brand" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                         <option value="">---</option>
                         @foreach ($brands as $brand)
-                            <option value="{{ $brand->id }}">
+                            <option value="{{ $brand->id }}" @if ($brand->id == $filters['brand']) selected @endif>
                                 {{ $brand->name }}
                             </option>
                         @endforeach
