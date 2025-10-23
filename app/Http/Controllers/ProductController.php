@@ -100,9 +100,16 @@ class ProductController extends Controller
             });
         }
 
+        // الترتيب
+        if ($request->has('alphabetical') && $request->alphabetical) {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->latest();
+        }
+
         // الترتيب من الأحدث إلى الأقدم
         $filters  = $request->all();
-        $products = $query->latest()->paginate(50)->appends($filters);
+        $products = $query->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
         return view('products.view', compact('products', 'filters'));
     }
@@ -175,7 +182,7 @@ class ProductController extends Controller
             ]);
         }
 
-        // فلترة حسب سجلات الباركود - الجزء الجديد
+        // فلترة حسب سجلات الباركود
         if ($request->barcode_date_from && $request->barcode_date_to) {
             $query->whereHas('barcodeLogs', function ($q) use ($request) {
                 $q->whereBetween('created_at', [
@@ -185,9 +192,16 @@ class ProductController extends Controller
             });
         }
 
+        // الترتيب
+        if ($request->has('alphabetical') && $request->alphabetical) {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->latest();
+        }
+
         // الترتيب من الأحدث إلى الأقدم
         $filters  = $request->all();
-        $products = $query->latest()->paginate(50)->appends($filters);
+        $products = $query->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
 
         return view('products.partials.products-table', compact('products', 'filters'))->render();
