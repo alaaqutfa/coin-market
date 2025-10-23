@@ -2,63 +2,232 @@
 
 @section('title', 'Home')
 
+@push('css')
+    <style>
+        :root {
+            --primary: #ECC631;
+            --secondary: #333127;
+            --text: #222222;
+            --bg: #f0f0f0;
+        }
+
+        .filter-section {
+            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+            background: var(--secondary);
+            border-radius: 12px;
+        }
+
+        .quick-filter-btn {
+            transition: all 0.3s ease;
+        }
+
+        .quick-filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+            display: inline-block;
+        }
+
+        .pagination a {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .pagination a:hover {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .pagination .active a {
+            background-color: #667eea;
+            color: white;
+            border: 1px solid #667eea;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .new-product-indicator {
+            background-color: #10B981;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="container mx-auto py-8">
-        <div class="links w-full pb-8">
-            {{ $products->links() }}
-        </div>
-        <div class="product-container w-full flex justify-evenly items-start gap-4 flex-wrap">
-            @foreach ($products as $product)
-                @php
-                    $whatsappNumber = '96171349793';
-                    $productName = $product->name;
-                    $productLink = route('customer.product.show', $product->id);
-                    $message =
-                        "مرحباً، أريد الاستفسار عن المنتج: {$productName}\n" .
-                        "السعر: {$product->price} {$product->symbol}\n" .
-                        "رابط المنتج: {$productLink}";
-                    $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . rawurlencode($message);
-                @endphp
+        <!-- بطاقة الفلترة -->
+        <div dir="rtl" class="filter-section p-6 mb-8 text-white">
+            <h2 class="text-xl font-semibold mb-4 flex justify-start items-center gap-2">
+                <i class="fas fa-filter ml-2"></i>
+                <span>تصفية المنتجات</span>
+            </h2>
 
-                <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <a href="{{ $productLink }}" class="flex justify-center items-center overflow-hidden">
-                        <img class="h-64 p-8 rounded-t-lg object-contain" src="{{ asset('public/storage/' . $product->image_path) }}"
-                            onerror="this.src='{{ asset('public/assets/img/place-holder.png') }}'" alt="product image" />
-                    </a>
-                    <div class="px-5 pb-5">
-                        <a href="{{ $productLink }}">
-                            <h5 class="text-xl font-semibold tracking-tight text-gray-900">
-                                {{ $product->name }}
-                            </h5>
-                        </a>
+            <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-                        @if ($product->weight > 0)
-                            <div class="flex items-center mt-2.5 mb-5">
-                                <span
-                                    class="bg-yellow-100 text-yellow-500 text-base font-semibold px-2.5 py-0.5 rounded-sm">
-                                    {{ $product->weight }}
-                                </span>
-                            </div>
-                        @endif
-
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl font-bold text-gray-900">
-                                {{ $product->price }} {{ $product->symbol ?? '$' }}
-                            </span>
-                            <div class="flex justify-center items-center gap-2">
-                                <a href="#" title="إضافة إلى السلة"
-                                    class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a href="{{ $whatsappUrl }}" target="_blank" title="أطلب الآن على واتساب"
-                                    class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                                    <i class="fa-brands fa-whatsapp"></i>
-                                </a>
-                            </div>
+                <!-- حقل الاسم -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium">البحث بالاسم</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-tag text-gray-400"></i>
                         </div>
+                        <input type="text" name="name" placeholder="أدخل اسم المنتج"
+                            value="{{ $filters['name'] ?? '' }}"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                     </div>
                 </div>
-            @endforeach
+
+                <!-- حقل السعر -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium">السعر</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-dollar-sign text-gray-400"></i>
+                        </div>
+                        <input type="number" name="price" step="0.01" placeholder="السعر"
+                            value="{{ $filters['price'] ?? '' }}"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
+                    </div>
+                </div>
+
+                <!-- حقل الوزن -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium">الوزن</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-weight text-gray-400"></i>
+                        </div>
+                        <input type="number" name="weight" placeholder="الوزن" value="{{ $filters['weight'] ?? '' }}"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium">إلى تاريخ (سجلات الباركود)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-calendar-day text-gray-400"></i>
+                        </div>
+                        <input type="date" name="barcode_date_to" value="{{ $filters['barcode_date_to'] ?? '' }}"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
+                    </div>
+                </div>
+
+
+                <!-- زر التصفية -->
+                <div class="flex items-end">
+                    <button type="submit"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-filter ml-2"></i>
+                        تطبيق الفلترة
+                    </button>
+                </div>
+            </form>
+
+        </div>
+        <div class="product-container w-full flex justify-evenly items-start gap-4 flex-wrap">
+            @include('customer.partials.product-item', ['products' => $products])
         </div>
     </div>
 @endsection
+
+@push('script')
+    <script>
+        // تعريف الدالة في النطاق العام
+        window.applyFilters = function() {
+            $('#loadingOverlay').css('display', 'flex');
+            let data = {
+                name: $("input[name='name']").val(),
+                price: $("input[name='price']").val(),
+                weight: $("input[name='weight']").val(),
+                page: {{ $products->currentPage() }},
+                _token: '{{ csrf_token() }}'
+            };
+            $.ajax({
+                url: "{{ route('customer.filter') }}",
+                type: "GET",
+                data: data,
+                success: function(response) {
+                    $(".product-container").html('');
+                    $(".product-container").html(response);
+                    // إخفاء مؤشر التحميل
+                    $('#loadingOverlay').hide();
+                },
+                error: function(xhr, status, error) {
+                    console.log('حدث خطأ أثناء جلب البيانات:', error);
+                }
+            });
+        };
+
+        // منع إعادة تحميل الصفحة عند submit
+        $("#filter-form").on("submit", function(e) {
+            e.preventDefault();
+            applyFilters(false);
+        });
+    </script>
+@endpush

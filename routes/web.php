@@ -76,4 +76,5 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
 });
 
 Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
+Route::get('/filter', [CustomerController::class, 'filter'])->name('customer.filter');
 Route::get('/products/{id}', [CustomerController::class, 'show'])->name('customer.product.show');
