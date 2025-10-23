@@ -168,14 +168,25 @@
                 </div>
 
                 <div>
-                    <label class="block mb-2 text-sm font-medium">إلى تاريخ (سجلات الباركود)</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <i class="fas fa-calendar-day text-gray-400"></i>
-                        </div>
-                        <input type="date" name="barcode_date_to" value="{{ $filters['barcode_date_to'] ?? '' }}"
-                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
-                    </div>
+                    <label for="category" class="block mb-2 text-sm font-medium">العلامات التجارية</label>
+                    <select name="category" id="category">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="brand" class="block mb-2 text-sm font-medium">العلامات التجارية</label>
+                    <select name="brand" id="brand">
+                        @foreach ($brands as $brand)
+                            <option value="{{ $brand->id }}">
+                                {{ $brand->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
 
@@ -205,6 +216,8 @@
                 name: $("input[name='name']").val(),
                 price: $("input[name='price']").val(),
                 weight: $("input[name='weight']").val(),
+                brand: $("select[name='brand']").val(),
+                category: $("select[name='category']").val(),
                 page: {{ $products->currentPage() }},
                 _token: '{{ csrf_token() }}'
             };

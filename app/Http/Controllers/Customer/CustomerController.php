@@ -2,6 +2,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -9,6 +11,7 @@ class CustomerController extends Controller
 {
     public function home(Request $request)
     {
+
         $query = Product::query();
         $query->whereNotNull('image_path');
         // $query->whereNotNull('category_id');
@@ -29,11 +32,23 @@ class CustomerController extends Controller
             $query->where('weight', $request->weight);
         }
 
+        // // الفلترة حسب الفئة
+        // if ($request->category) {
+        //     $query->where('category_id', $request->category);
+        // }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->brand) {
+            $query->where('brand_id', $request->brand);
+        }
+
         // الترتيب من الأحدث إلى الأقدم
         $filters  = $request->all();
         $products = $query->latest()->paginate(27)->appends($filters);
         $products->withPath(url('/'));
-        return view('customer.product', compact('products'));
+        $categories = Category::all();
+        $brands     = Brand::all();
+        return view('customer.product', compact('products', 'categories', 'brands'));
     }
 
     public function filter(Request $request)
@@ -56,6 +71,16 @@ class CustomerController extends Controller
         // الفلترة حسب الوزن
         if ($request->weight) {
             $query->where('weight', $request->weight);
+        }
+
+        // // الفلترة حسب الفئة
+        // if ($request->category) {
+        //     $query->where('category_id', $request->category);
+        // }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->brand) {
+            $query->where('brand_id', $request->brand);
         }
 
         // الترتيب من الأحدث إلى الأقدم
