@@ -48,7 +48,7 @@ class CustomerController extends Controller
         $products->withPath(url('/'));
         $categories = Category::all();
         $brands     = Brand::all();
-        return view('customer.product', compact('products', 'categories', 'brands'));
+        return view('customer.product', compact('products', 'categories', 'brands','filters'));
     }
 
     public function filter(Request $request)
@@ -88,7 +88,7 @@ class CustomerController extends Controller
         $products = $query->latest()->paginate(27)->appends($filters);
         $products->withPath(url('/'));
 
-        return view('customer.partials.product-item', compact('products'));
+        return view('customer.partials.product-item', compact('products','filters'));
     }
 
     public function show($id)
