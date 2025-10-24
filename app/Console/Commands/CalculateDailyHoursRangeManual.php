@@ -57,6 +57,7 @@ class CalculateDailyHoursRangeManual extends Command
         );
 
         foreach ($period as $date) {
+            $date = Carbon::instance($date);
             $dayOfWeek = $date->dayOfWeek; // 0=Sunday ... 6=Saturday
             $this->line("\n📅 Processing date: {$date->toDateString()}");
 
