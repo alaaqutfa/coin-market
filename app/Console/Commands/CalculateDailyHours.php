@@ -10,60 +10,80 @@ use Illuminate\Console\Command;
 
 class CalculateDailyHours extends Command
 {
-    protected $signature   = 'attendance:calculate-daily-hours';
-    protected $description = 'Calculate Working Hours And Store In DailyWorkHour';
+    protected $signature   = 'attendance:calculate-daily-hours {--debug}';
+    protected $description = 'Calculate working hours for the previous day and store them in DailyWorkHour';
 
     public function handle()
     {
-        // $date      = Carbon::now('Asia/Beirut')->toDateString();
-        // $dayOfWeek = Carbon::now('Asia/Beirut')->dayOfWeek;
+        // نحدد اليوم السابق (أمس)
+        $date      = Carbon::now('Asia/Beirut')->subDay();
+        $dayOfWeek = $date->dayOfWeek;
 
-        $date      = Carbon::now('Asia/Beirut')->subDay()->toDateString();
-        $dayOfWeek = Carbon::now('Asia/Beirut')->subDay()->dayOfWeek;
-
-        $this->info("Start Calculate Working Hours - {$date} (Day: {$dayOfWeek})");
+        $this->info("🕒 Calculating working hours for {$date->toDateString()} (Day: {$dayOfWeek})");
 
         $employees = Employee::whereNull('end_date')->get();
+        $this->info("👥 Found {$employees->count()} active employees.");
 
         foreach ($employees as $employee) {
-            // حساب الساعات الفعلية
+            // ✅ تخطي الموظف إذا لم يبدأ العمل بعد
+            if ($employee->start_date && $date->lt(Carbon::parse($employee->start_date))) {
+                if ($this->option('debug')) {
+                    $this->warn("Skipping {$employee->employee_code} - {$employee->name}: not started yet (starts {$employee->start_date})");
+                }
+                continue;
+            }
+
+            // 🔽 السجلات اليومية
             $logs = AttendanceLog::where('employee_id', $employee->id)
-                ->whereDate('date', $date)
+                ->whereDate('date', $date->toDateString())
                 ->get();
 
             $totalMinutes = 0;
-
             foreach ($logs as $log) {
                 if ($log->check_in && $log->check_out) {
-                    $totalMinutes += Carbon::parse($log->check_in)
-                        ->diffInMinutes(Carbon::parse($log->check_out));
+                    $minutes = Carbon::parse($log->check_in)->diffInMinutes(Carbon::parse($log->check_out));
+                    $totalMinutes += $minutes;
+
+                    if ($this->option('debug')) {
+                        $this->line("{$employee->employee_code}: Log {$log->check_in} → {$log->check_out} = {$minutes} min");
+                    }
                 }
             }
 
-            $actualHours = $totalMinutes / 60;
+            $actualHours = round($totalMinutes / 60, 2);
 
-            // الحصول على الساعات المطلوبة من WorkSchedule
+            // ⏰ الساعات المطلوبة من جدول WorkSchedule
             $workSchedule = WorkSchedule::where('employee_id', $employee->id)
                 ->where('day_of_week', $dayOfWeek)
                 ->first();
 
             $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
-            // حفظ البيانات في DailyWorkHour
+            // ✅ التعامل مع الأيام المتناوبة المدفوعة
+            if ($requiredHours > 0 && $actualHours == 0 && $workSchedule && $workSchedule->is_alternate == 1) {
+                $actualHours = $requiredHours;
+                if ($this->option('debug')) {
+                    $this->warn("{$employee->employee_code} - {$employee->name}: Paid alternate day ({$requiredHours}h counted)");
+                }
+            }
+
+            // 🧾 الحفظ أو التحديث في DailyWorkHour
             DailyWorkHour::updateOrCreate(
                 [
                     'employee_id' => $employee->id,
-                    'date'        => $date,
+                    'date'        => $date->toDateString(),
                 ],
                 [
-                    'actual_hours'   => round($actualHours, 2),
+                    'actual_hours'   => $actualHours,
                     'required_hours' => $requiredHours,
                 ]
             );
 
-            $this->info("{$employee->employee_code}: Actual: {$actualHours}h, Required: {$requiredHours}h");
+            if ($this->option('debug')) {
+                $this->info("✅ {$employee->employee_code}: Actual {$actualHours}h / Required {$requiredHours}h");
+            }
         }
 
-        $this->info("Done ✅");
+        $this->info("✅ Daily calculation completed for {$date->toDateString()}!");
     }
 }
