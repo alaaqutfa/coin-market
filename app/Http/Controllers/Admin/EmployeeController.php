@@ -220,7 +220,6 @@ class EmployeeController extends Controller
             $selectedEmployee = Employee::find($request->employee_id);
 
             if ($selectedEmployee) {
-                // استخدام نفس الدالة السابقة لجلب بيانات الموظف
                 $data = $this->getEmployeeMonthlyData($selectedEmployee->employee_code);
             }
         }
