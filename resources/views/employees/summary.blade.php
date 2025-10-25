@@ -108,7 +108,7 @@
                         @endphp
                         @foreach ($months as $num => $name)
                             <option value="{{ $num }}" {{ request('month') == $num ? 'selected' : '' }}>
-                                {{ $name }}
+                                {{ $num }}
                             </option>
                         @endforeach
                     </select>
@@ -120,7 +120,7 @@
                         <option value="">-- اختر السنة --</option>
                         @php
                             $currentYear = \Carbon\Carbon::now()->year;
-                            $years = range($currentYear - 5, $currentYear + 1); // خمس سنوات للخلف وسنة مستقبلية
+                            $years = range($currentYear - 1, $currentYear + 5); // خمس سنوات للخلف وسنة مستقبلية
                         @endphp
                         @foreach ($years as $year)
                             <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>
