@@ -53,11 +53,21 @@ class EmployeeController extends Controller
 
     // ==================== EMPLOYEE DATA METHODS ====================
 
-    public function employeesData()
+    public function employeeAllData(Request $request)
     {
         $employees = Employee::whereNull('end_date')->get();
+
         $selectedEmployee = null;
         $data = null;
+
+        if ($request->has('employee_id')) {
+            $selectedEmployee = Employee::find($request->employee_id);
+
+            if ($selectedEmployee) {
+                $data = $this->getEmployeeMonthlyData($selectedEmployee->employee_code);
+            }
+        }
+
         return view('employees.summary', compact('employees', 'selectedEmployee', 'data'));
     }
 
