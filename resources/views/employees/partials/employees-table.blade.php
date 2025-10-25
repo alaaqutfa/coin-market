@@ -26,6 +26,14 @@
                 {{ $employee->phone ?? 'لا يوجد' }}
             </div>
         </td>
+        <td class="min-w-64 px-6 py-4">
+            <form id="resetPasswordForm{{ $employee->id }}" class="resetPasswordForm" method="POST" action="{{ route('employees.reset-password', $employee->id) }}">
+                @csrf
+                <input type="password" name="new_password" id="new_password" style="min-width: 200px;"
+                    class="min-w-64 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 sm:text-sm p-2.5"
+                    placeholder="أدخل كلمة المرور جديدة" required>
+            </form>
+        </td>
         <td class="px-6 py-4">
             <div class="editable-field" contenteditable="true" data-field="start_date">
                 {{ $employee->start_date->format('Y-m-d') }}

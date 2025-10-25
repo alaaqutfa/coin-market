@@ -1115,7 +1115,7 @@
             }
 
             $.ajax({
-                url: '{{ route("attendance.viewDayAttendance") }}',
+                url: '{{ route('attendance.viewDayAttendance') }}',
                 method: 'GET',
                 data: {
                     employee_id: employeeId,
@@ -1128,7 +1128,9 @@
                     tbody.empty();
 
                     if (response.records.length === 0) {
-                        tbody.append('<tr><td colspan="5" class="px-6 py-4 font-medium text-gray-900">لا توجد سجلات لهذا اليوم</td></tr>');
+                        tbody.append(
+                            '<tr><td colspan="5" class="px-6 py-4 font-medium text-gray-900">لا توجد سجلات لهذا اليوم</td></tr>'
+                        );
                         return;
                     }
 
@@ -1211,6 +1213,32 @@
             $('#scheduleForm').on('submit', function(e) {
                 e.preventDefault();
                 submitScheduleForm();
+            });
+
+            $('.resetPasswordForm input[name="new_password"]').on('change', function() {
+                let form = $(this).closest('form'); // الفورم القريب من الحقل
+                let formData = form.serialize(); // جمع البيانات
+
+                $.ajax({
+                    url: form.attr('action'),
+                    method: form.attr('method'),
+                    data: formData,
+                    success: function(response) {
+                        // عرض رسالة النجاح
+                        showToast(response.message,'success');
+                        // يمكنك مسح الحقل بعد الإرسال إذا أردت
+                        form.find('input[name="new_password"]').val('');
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            // عرض أخطاء Validation
+                            let errors = xhr.responseJSON.errors;
+                            showToast(Object.values(errors).flat().join('\n'),'error');
+                        } else {
+                            showToast('حدث خطأ غير متوقع.','error');
+                        }
+                    }
+                });
             });
 
             for (let y = new Date().getFullYear(); y >= 2020; y--) {

@@ -88,14 +88,14 @@ class AuthController extends Controller
             case 'employee':
                 $request->validate([
                     'employee_code' => 'required|string',
-                    'password'      => 'required|string|min:6',
+                    'password'      => 'required|string|min:4',
                 ]);
 
                 $employee = Employee::where('employee_code', $request->employee_code)->first();
 
                 if ($employee && Hash::check($request->password, $employee->password)) {
                     session(['employee_id' => $employee->id]);
-                    return redirect()->route('attendance.dashboard.today')->with('success', 'تم تسجيل دخول الموظف بنجاح.');
+                    return redirect()->route('employee.show',$request->employee_code)->with('success', 'تم تسجيل دخول الموظف بنجاح.');
                 }
 
                 return back()->with('error', 'الرمز الوظيفي أو كلمة المرور غير صحيحة.');
@@ -113,10 +113,10 @@ class AuthController extends Controller
                 if (filter_var($loginInput, FILTER_VALIDATE_EMAIL)) {
                     $user = User::where('email', $loginInput)->first();
                 } else {
-                    // التحقق من رقم لبناني صالح
+                    // التحقق من رقم صالح
                     $phone = preg_replace('/\D/', '', $loginInput);
                     if (! preg_match('/^(961|0)?(3\d{6}|7\d{7}|81\d{6})$/', $phone)) {
-                        return back()->with('error', 'رقم الهاتف اللبناني غير صالح.');
+                        return back()->with('error', 'رقم الهاتف غير صالح.');
                     }
                     $phone = ltrim($phone, '0');
                     if (! str_starts_with($phone, '961')) {

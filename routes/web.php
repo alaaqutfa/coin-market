@@ -28,7 +28,11 @@ Route::middleware(['auth', 'superadmin'])
 |--------------------------------------------------------------------------
 */
 Route::get('/login', [AuthController::class, 'showCustomerLogin'])->name('login');
-Route::get('/employee/login', [AuthController::class, 'showEmployeeLogin'])->name('employee.login');
+
+Route::prefix('employee')->group(function () {
+    Route::get('/login', [AuthController::class, 'showEmployeeLogin'])->name('employee.login');
+    Route::get('/employee/{employee_code}', [EmployeeController::class, 'employeeData'])->name('employee.show');
+});
 
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
@@ -78,7 +82,7 @@ Route::prefix('admin')
         Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
         Route::delete('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
         Route::get('/employee/qr/{id}', [EmployeeController::class, 'showQr'])->name('employee.qr');
-
+        Route::post('/employees/{id}/reset-password', [EmployeeController::class, 'resetPassword'])->name('employees.reset-password');
         /*
         |--------------------------------------------------------------------------
         | Attendance Management
