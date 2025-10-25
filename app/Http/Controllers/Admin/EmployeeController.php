@@ -53,7 +53,7 @@ class EmployeeController extends Controller
 
     // ==================== EMPLOYEE DATA METHODS ====================
 
-    public function employeeAllData()
+    public function employeesData()
     {
         $employees = Employee::whereNull('end_date')->get();
         $selectedEmployee = null;
