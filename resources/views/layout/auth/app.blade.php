@@ -129,7 +129,7 @@
 
                 <div class="name text-center sm:text-right">
                     <h1 class="text-3xl font-bold gradient-text">Coin Market</h1>
-                    <p class="text-gray-600 text-sm mt-2">لوحة تحكم الأدمن</p>
+                    <p class="text-gray-600 text-sm mt-2">Fresh Choices, Great Prices</p>
                 </div>
 
             </div>

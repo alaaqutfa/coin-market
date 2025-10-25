@@ -4,19 +4,22 @@
 
 @section('content')
 
-    <form class="w-full max-w-sm mx-auto" method="POST" action="{{ route('admin.login.submit') }}">
+    <form class="w-full max-w-sm mx-auto" method="POST" action="{{ route('login.submit') }}">
         @csrf
+        <input type="hidden" name="type" value="admin" />
 
         <!-- الرسائل -->
-        @if(session('success'))
-            <div class="flex p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+        @if (session('success'))
+            <div class="flex p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                role="alert">
                 <i class="fas fa-check-circle mt-0.5 ml-2"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
-        @if(session('error'))
-            <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+        @if (session('error'))
+            <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                role="alert">
                 <i class="fas fa-exclamation-circle mt-0.5 ml-2"></i>
                 <span>{{ session('error') }}</span>
             </div>
@@ -30,10 +33,7 @@
             </label>
             <input type="email" id="email" name="email"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                placeholder="name@company.com"
-                value="{{ old('email') }}"
-                required
-                autofocus />
+                placeholder="name@company.com" value="{{ old('email') }}" required autofocus />
             @error('email')
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <i class="fas fa-exclamation-triangle ml-1"></i>
@@ -50,8 +50,7 @@
             </label>
             <input type="password" id="password" name="password"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                placeholder="••••••••"
-                required />
+                placeholder="••••••••" required />
             @error('password')
                 <p class="mt-2 text-sm text-red-600 dark:text-red-500">
                     <i class="fas fa-exclamation-triangle ml-1"></i>
