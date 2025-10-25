@@ -120,7 +120,7 @@
                 <span class="text-2xl font-bold text-yellow-600">{{ $summary['achievement_rate'] }}%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-4">
-                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 h-4 rounded-full"
+                <div class="max-w-full bg-gradient-to-r from-yellow-400 to-yellow-500 h-4 rounded-full"
                     style="width: {{ $summary['achievement_rate'] }}%"></div>
             </div>
         </div>

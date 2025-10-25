@@ -2,14 +2,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
-use App\Models\DailyWorkHour;
 use App\Models\AttendanceLog;
+use App\Models\DailyWorkHour;
+use App\Models\Employee;
 use App\Models\WorkSchedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
-use Carbon\Carbon;
 
 class EmployeeController extends Controller
 {
@@ -63,7 +63,7 @@ class EmployeeController extends Controller
             'employee_code' => ['nullable', 'string', 'max:50', Rule::unique('employees', 'employee_code')],
             'salary'        => 'required|numeric',
             'start_date'    => 'required|date',
-            'end_date' => 'nullable|date',
+            'end_date'      => 'nullable|date',
             'email'         => ['nullable', 'email', 'max:255', Rule::unique('employees', 'email')],
             'phone'         => ['nullable', 'string', 'max:30', Rule::unique('employees', 'phone')],
             'password'      => 'required|string|min:6',
@@ -76,7 +76,7 @@ class EmployeeController extends Controller
             'employee_code' => $employeeCode,
             'salary'        => $data['salary'],
             'start_date'    => $data['start_date'],
-            'end_date' => $data['end_date'] ?? null,
+            'end_date'      => $data['end_date'] ?? null,
             'email'         => $data['email'] ?? null,
             'phone'         => $data['phone'] ?? null,
             'password'      => Hash::make($data['password']),
@@ -99,7 +99,7 @@ class EmployeeController extends Controller
             'employee_code' => ['sometimes', 'nullable', 'string', 'max:50', Rule::unique('employees', 'employee_code')->ignore($employee->id)],
             'salary'        => 'sometimes|required|numeric',
             'start_date'    => 'sometimes|required|date',
-            'end_date' => 'nullable|date',
+            'end_date'      => 'nullable|date',
             'email'         => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('employees', 'email')->ignore($employee->id)],
             'phone'         => ['sometimes', 'nullable', 'string', 'max:30', Rule::unique('employees', 'phone')->ignore($employee->id)],
             'password'      => 'sometimes|nullable|string|min:6',
@@ -161,11 +161,11 @@ class EmployeeController extends Controller
         ]);
 
         $employee->update([
-            'password' => Hash::make($request->new_password)
+            'password' => Hash::make($request->new_password),
         ]);
 
         return response()->json([
-            'message' => 'تم إعادة تعيين كلمة السر بنجاح'
+            'message' => 'تم إعادة تعيين كلمة السر بنجاح',
         ], 200);
     }
 
@@ -187,7 +187,7 @@ class EmployeeController extends Controller
             ->get();
 
         foreach ($schedule as $rule) {
-            if (!$rule->is_alternate) {
+            if (! $rule->is_alternate) {
                 return true; // دوام ثابت
             }
 
@@ -209,46 +209,65 @@ class EmployeeController extends Controller
         return view('design.qr', compact('employee'));
     }
 
-     public function employeeData(Request $request, $employee_code)
+    public function employeeAllData(Request $request)
+    {
+        $employees = Employee::whereNull('end_date')->get();
+
+        $selectedEmployee = null;
+        $data             = null;
+
+        if ($request->has('employee_id')) {
+            $selectedEmployee = Employee::find($request->employee_id);
+
+            if ($selectedEmployee) {
+                // استخدام نفس الدالة السابقة لجلب بيانات الموظف
+                $data = $this->getEmployeeMonthlyData($selectedEmployee->employee_code);
+            }
+        }
+
+        return view('employees.summary', compact('employees', 'selectedEmployee', 'data'));
+    }
+
+    public function employeeData(Request $request, $employee_code)
     {
         // التحقق من أن الموظف مسجل دخول
-        if (!session('employee_id')) {
+        if (! session('employee_id')) {
             return redirect()->route('login')->with('error', 'يجب تسجيل الدخول أولاً');
         }
 
         // البحث عن الموظف باستخدام employee_code
         $employee = Employee::where('employee_code', $employee_code)->first();
 
-        if (!$employee) {
+        if (! $employee) {
             return redirect()->back()->with('error', 'الموظف غير موجود');
         }
 
         // التاريخ الحالي
-        $now = Carbon::now('Asia/Beirut');
+        $now          = Carbon::now('Asia/Beirut');
         $currentMonth = $now->month;
-        $currentYear = $now->year;
+        $currentYear  = $now->year;
 
         // اسم الشهر الحالي بالعربية
         $monthNames = [
-            1 => 'يناير',
-            2 => 'فبراير',
-            3 => 'مارس',
-            4 => 'أبريل',
-            5 => 'مايو',
-            6 => 'يونيو',
-            7 => 'يوليو',
-            8 => 'أغسطس',
-            9 => 'سبتمبر',
+            1  => 'يناير',
+            2  => 'فبراير',
+            3  => 'مارس',
+            4  => 'أبريل',
+            5  => 'مايو',
+            6  => 'يونيو',
+            7  => 'يوليو',
+            8  => 'أغسطس',
+            9  => 'سبتمبر',
             10 => 'أكتوبر',
             11 => 'نوفمبر',
-            12 => 'ديسمبر'
+            12 => 'ديسمبر',
         ];
 
         $currentMonthName = $monthNames[$currentMonth] . ' ' . $currentYear;
 
         // حساب الفترة الزمنية للشهر الحالي
         $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
-        $endDate = Carbon::create($currentYear, $currentMonth, 1)->endOfMonth();
+        $endDate   = Carbon::create($currentYear, $currentMonth, 1)->endOfMonth();
 
         // حساب عدد أيام الحضور والغياب
         $attendanceDays = DailyWorkHour::where('employee_id', $employee->id)
@@ -279,9 +298,9 @@ class EmployeeController extends Controller
             ->pluck('date')
             ->map(function ($date) {
                 return [
-                    'date' => $date,
-                    'day_name' => Carbon::parse($date, 'Asia/Beirut')->translatedFormat('l'),
-                    'formatted_date' => Carbon::parse($date, 'Asia/Beirut')->format('d/m/Y')
+                    'date'           => $date,
+                    'day_name'       => Carbon::parse($date, 'Asia/Beirut')->translatedFormat('l'),
+                    'formatted_date' => Carbon::parse($date, 'Asia/Beirut')->format('d/m/Y'),
                 ];
             });
 
@@ -291,50 +310,50 @@ class EmployeeController extends Controller
             ->orderBy('date', 'desc')
             ->get()
             ->map(function ($record) use ($employee) {
-                $requiredHours = $this->getRequiredHours($employee->id, $record->date);
+                $requiredHours  = $this->getRequiredHours($employee->id, $record->date);
                 $attendanceLogs = AttendanceLog::where('employee_id', $employee->id)
                     ->whereDate('date', $record->date)
                     ->orderBy('check_in', 'asc')
                     ->get();
 
                 return [
-                    'date' => $record->date,
-                    'day_name' => Carbon::parse($record->date, 'Asia/Beirut')->translatedFormat('l'),
-                    'required_hours' => $requiredHours,
-                    'actual_hours' => $record->actual_hours,
-                    'difference' => round($record->actual_hours - $requiredHours, 2),
-                    'status' => $record->actual_hours > 0 ? 'حاضر' : ($requiredHours > 0 ? 'غائب' : 'إجازة'),
+                    'date'            => $record->date,
+                    'day_name'        => Carbon::parse($record->date, 'Asia/Beirut')->translatedFormat('l'),
+                    'required_hours'  => $requiredHours,
+                    'actual_hours'    => $record->actual_hours,
+                    'difference'      => round($record->actual_hours - $requiredHours, 2),
+                    'status'          => $record->actual_hours > 0 ? 'حاضر' : ($requiredHours > 0 ? 'غائب' : 'إجازة'),
                     'attendance_logs' => $attendanceLogs->map(function ($log) {
                         return [
-                            'check_in' => $log->check_in ? Carbon::parse($log->check_in, 'Asia/Beirut')->format('H:i') : '-',
+                            'check_in'  => $log->check_in ? Carbon::parse($log->check_in, 'Asia/Beirut')->format('H:i') : '-',
                             'check_out' => $log->check_out ? Carbon::parse($log->check_out, 'Asia/Beirut')->format('H:i') : '-',
-                            'note' => $log->note
+                            'note'      => $log->note,
                         ];
-                    })
+                    }),
                 ];
             });
 
         // تجميع البيانات لإرسالها للواجهة
         $data = [
-            'employee' => [
-                'id' => $employee->id,
-                'name' => $employee->name,
+            'employee'      => [
+                'id'            => $employee->id,
+                'name'          => $employee->name,
                 'employee_code' => $employee->employee_code,
             ],
             'current_month' => $currentMonthName,
-            'summary' => [
-                'attendance_days' => $attendanceDays,
-                'absent_days' => $absentDays,
-                'total_actual_hours' => round($totalActualHours, 2),
+            'summary'       => [
+                'attendance_days'      => $attendanceDays,
+                'absent_days'          => $absentDays,
+                'total_actual_hours'   => round($totalActualHours, 2),
                 'total_required_hours' => round($totalRequiredHours, 2),
-                'achievement_rate' => $totalRequiredHours > 0 ? round(($totalActualHours / $totalRequiredHours) * 100, 2) : 0,
+                'achievement_rate'     => $totalRequiredHours > 0 ? round(($totalActualHours / $totalRequiredHours) * 100, 2) : 0,
             ],
-            'absent_dates' => $absentDates,
+            'absent_dates'  => $absentDates,
             'daily_records' => $dailyRecords,
-            'period' => [
+            'period'        => [
                 'start_date' => $startDate->format('Y-m-d'),
-                'end_date' => $endDate->format('Y-m-d')
-            ]
+                'end_date'   => $endDate->format('Y-m-d'),
+            ],
         ];
         // إذا كان الطلب عبر AJAX يرجع JSON، وإلا يرجع view
         // if ($request->ajax()) {
@@ -342,6 +361,127 @@ class EmployeeController extends Controller
         // }
 
         return view('employees.dashboard', compact('data'));
+    }
+
+    // دالة مساعدة لجلب بيانات الموظف (نفس منطق employeeData)
+    private function getEmployeeMonthlyData($employee_code)
+    {
+        $employee = Employee::where('employee_code', $employee_code)->first();
+
+        if (! $employee) {
+            return null;
+        }
+
+        $now          = Carbon::now('Asia/Beirut');
+        $currentMonth = $now->month;
+        $currentYear  = $now->year;
+
+        $monthNames = [
+            1  => 'يناير',
+            2  => 'فبراير',
+            3  => 'مارس',
+            4  => 'أبريل',
+            5  => 'مايو',
+            6  => 'يونيو',
+            7  => 'يوليو',
+            8  => 'أغسطس',
+            9  => 'سبتمبر',
+            10 => 'أكتوبر',
+            11 => 'نوفمبر',
+            12 => 'ديسمبر',
+        ];
+
+        $currentMonthName = $monthNames[$currentMonth] . ' ' . $currentYear;
+
+        $startDate = Carbon::create($currentYear, $currentMonth, 1)->startOfMonth();
+        $endDate   = Carbon::create($currentYear, $currentMonth, 1)->endOfMonth();
+
+        // حساب عدد أيام الحضور والغياب
+        $attendanceDays = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->where('actual_hours', '>', 0)
+            ->count();
+
+        $absentDays = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->where('required_hours', '>', 0)
+            ->where('actual_hours', 0)
+            ->count();
+
+        // حساب الساعات المنجزة والمطلوبة
+        $totalActualHours = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->sum('actual_hours');
+
+        $totalRequiredHours = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->sum('required_hours');
+
+        // الحصول على تواريخ أيام الغياب
+        $absentDates = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->where('required_hours', '>', 0)
+            ->where('actual_hours', 0)
+            ->pluck('date')
+            ->map(function ($date) {
+                return [
+                    'date'           => $date,
+                    'day_name'       => Carbon::parse($date, 'Asia/Beirut')->translatedFormat('l'),
+                    'formatted_date' => Carbon::parse($date, 'Asia/Beirut')->format('d/m/Y'),
+                ];
+            });
+
+        // السجل اليومي للموظف لهذا الشهر
+        $dailyRecords = DailyWorkHour::where('employee_id', $employee->id)
+            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+            ->orderBy('date', 'desc')
+            ->get()
+            ->map(function ($record) use ($employee) {
+                $requiredHours  = $this->getRequiredHours($employee->id, $record->date);
+                $attendanceLogs = AttendanceLog::where('employee_id', $employee->id)
+                    ->whereDate('date', $record->date)
+                    ->orderBy('check_in', 'asc')
+                    ->get();
+
+                return [
+                    'date'            => $record->date,
+                    'day_name'        => Carbon::parse($record->date, 'Asia/Beirut')->translatedFormat('l'),
+                    'formatted_date'  => Carbon::parse($record->date, 'Asia/Beirut')->format('d/m/Y'),
+                    'required_hours'  => $requiredHours,
+                    'actual_hours'    => $record->actual_hours,
+                    'difference'      => round($record->actual_hours - $requiredHours, 2),
+                    'status'          => $record->actual_hours > 0 ? 'حاضر' : ($requiredHours > 0 ? 'غائب' : 'إجازة'),
+                    'attendance_logs' => $attendanceLogs->map(function ($log) {
+                        return [
+                            'check_in'  => $log->check_in ? Carbon::parse($log->check_in, 'Asia/Beirut')->format('H:i') : '-',
+                            'check_out' => $log->check_out ? Carbon::parse($log->check_out, 'Asia/Beirut')->format('H:i') : '-',
+                            'note'      => $log->note,
+                        ];
+                    }),
+                ];
+            });
+
+        return [
+            'employee'      => [
+                'id'            => $employee->id,
+                'name'          => $employee->name,
+                'employee_code' => $employee->employee_code,
+            ],
+            'current_month' => $currentMonthName,
+            'summary'       => [
+                'attendance_days'      => $attendanceDays,
+                'absent_days'          => $absentDays,
+                'total_actual_hours'   => round($totalActualHours, 2),
+                'total_required_hours' => round($totalRequiredHours, 2),
+                'achievement_rate'     => $totalRequiredHours > 0 ? round(($totalActualHours / $totalRequiredHours) * 100, 2) : 0,
+            ],
+            'absent_dates'  => $absentDates,
+            'daily_records' => $dailyRecords,
+            'period'        => [
+                'start_date' => $startDate->format('Y-m-d'),
+                'end_date'   => $endDate->format('Y-m-d'),
+            ],
+        ];
     }
 
     private function isEvenWeek($date)
@@ -352,7 +492,7 @@ class EmployeeController extends Controller
 
     private function getRequiredHours($employeeId, $date)
     {
-        $dayOfWeek = Carbon::parse($date)->dayOfWeek;
+        $dayOfWeek  = Carbon::parse($date)->dayOfWeek;
         $isEvenWeek = $this->isEvenWeek($date);
 
         $schedule = WorkSchedule::where('employee_id', $employeeId)

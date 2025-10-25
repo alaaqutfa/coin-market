@@ -32,6 +32,7 @@ Route::get('/login', [AuthController::class, 'showCustomerLogin'])->name('login'
 Route::prefix('employee')->group(function () {
     Route::get('/login', [AuthController::class, 'showEmployeeLogin'])->name('employee.login');
     Route::get('/{employee_code}', [EmployeeController::class, 'employeeData'])->name('employee.show');
+    Route::get('/summary', [EmployeeController::class, 'employeeAllData'])->name('employee.all');
 });
 
 Route::prefix('admin')->group(function () {
