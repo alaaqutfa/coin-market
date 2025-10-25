@@ -74,7 +74,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <div class="absolute right-3 top-8 transform -translate-y-1/2 text-gray-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
