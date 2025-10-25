@@ -17,7 +17,7 @@
             padding: 0.25rem 0.75rem;
         }
 
-        .employee-select {
+        select {
             background: white;
             border: 2px solid #e5e7eb;
             border-radius: 0.75rem;
@@ -27,7 +27,7 @@
             transition: all 0.3s ease;
         }
 
-        .employee-select:focus {
+        select:focus {
             outline: none;
             border-color: #f59e0b;
             ring: 2px;
