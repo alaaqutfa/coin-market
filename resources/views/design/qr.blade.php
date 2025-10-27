@@ -82,7 +82,7 @@
 
         </div>
 
-        <div class="qr-side w-1/2 flex justify-center items-center flex-col gap-2">
+        <div class="qr-side p-8 flex justify-center items-center flex-col gap-2">
             {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(400)->generate($employee['employee_code']) !!}
             <h1 class="text-2xl">
                 {{ $employee['employee_code'] }}
