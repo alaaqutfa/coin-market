@@ -285,6 +285,7 @@
 
                         <div class="space-y-4 max-h-96 overflow-y-auto">
                             @foreach ($data['daily_records'] as $record)
+                                @dd($record)
                                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                                     <div class="flex justify-between items-center mb-2">
                                         <div class="flex items-center">
