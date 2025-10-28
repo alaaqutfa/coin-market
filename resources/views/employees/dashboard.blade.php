@@ -30,7 +30,7 @@
 @endpush
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
+    <div dir="rtl" class="container mx-auto px-4 py-8">
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl shadow-lg p-6 mb-8">
             <div class="flex flex-col md:flex-row justify-between items-center">

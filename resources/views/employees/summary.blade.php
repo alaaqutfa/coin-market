@@ -37,7 +37,7 @@
 @endpush
 
 @section('content')
-    <div class="container mx-auto px-4 py-8">
+    <div dir="rtl" class="container mx-auto px-4 py-8">
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl shadow-lg p-6 mb-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -285,7 +285,6 @@
 
                         <div class="space-y-4 max-h-96 overflow-y-auto">
                             @foreach ($data['daily_records'] as $record)
-                                @dd($record)
                                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                                     <div class="flex justify-between items-center mb-2">
                                         <div class="flex items-center">
@@ -321,6 +320,17 @@
                                                     <span>خروج: {{ $log['check_out'] }}</span>
                                                 </div>
                                             @endforeach
+                                            @php
+                                                $lastLog = collect($record['attendance_logs'])->last();
+                                            @endphp
+                                            @if ($lastLog)
+                                                <div class="flex justify-between items-center text-xs text-gray-600 mb-1">
+                                                    <span
+                                                        class="text-justify font-medium text-gray-900 whitespace-pre-line">
+                                                        الملاحظات: <br /> {{ $lastLog['note'] }}
+                                                    </span>
+                                                </div>
+                                            @endif
                                         </div>
                                     @endif
                                 </div>
