@@ -6,7 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>1</title>
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
@@ -111,8 +110,8 @@
 
         .weight {
             color: var(--secondary);
-            /* font-size: 3rem; */
-            font-size: 2rem;
+            font-size: 3rem;
+            /* font-size: 2rem; */
             font-weight: 800;
             line-height: 2rem;
         }
@@ -127,16 +126,16 @@
             width: 100%;
             padding: 1rem;
             color: var(--primary);
-            /* font-size: 2.25rem; */
-            font-size: 3rem;
+            font-size: 2.25rem;
+            /* font-size: 3rem; */
             font-weight: 800;
             text-align: center;
         }
 
         .price {
             color: var(--secondary);
-            /* font-size: 3rem; */
-            font-size: 2rem;
+            font-size: 3rem;
+            /* font-size: 2rem; */
             font-weight: 800;
         }
     </style>
