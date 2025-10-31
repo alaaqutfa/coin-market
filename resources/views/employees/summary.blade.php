@@ -314,12 +314,12 @@
 
                                     @if (isset($record['attendance_logs']) && $record['attendance_logs']->count() > 0)
                                         <div class="mt-3 pt-3 border-t border-gray-200">
-                                            @foreach ($record['attendance_logs'] as $log)
+                                            {{-- @foreach ($record['attendance_logs'] as $log)
                                                 <div class="flex justify-between items-center text-xs text-gray-600 mb-1">
                                                     <span>دخول: {{ $log['check_in'] }}</span>
                                                     <span>خروج: {{ $log['check_out'] }}</span>
                                                 </div>
-                                            @endforeach
+                                            @endforeach --}}
                                             @php
                                                 $lastLog = collect($record['attendance_logs'])->last();
                                             @endphp
