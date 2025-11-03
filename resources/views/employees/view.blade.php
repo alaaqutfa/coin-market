@@ -383,6 +383,11 @@
                             </th>
                             <th scope="col" class="px-6 py-4">
                                 <div class="flex justify-center items-center flex-col gap-2">
+                                    <span class="text-base">كلمة المرور</span>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-4">
+                                <div class="flex justify-center items-center flex-col gap-2">
                                     <span class="text-base">تاريخ البدء بالعمل</span>
                                 </div>
                             </th>
@@ -1225,7 +1230,7 @@
                     data: formData,
                     success: function(response) {
                         // عرض رسالة النجاح
-                        showToast(response.message,'success');
+                        showToast(response.message, 'success');
                         // يمكنك مسح الحقل بعد الإرسال إذا أردت
                         form.find('input[name="new_password"]').val('');
                     },
@@ -1233,9 +1238,9 @@
                         if (xhr.status === 422) {
                             // عرض أخطاء Validation
                             let errors = xhr.responseJSON.errors;
-                            showToast(Object.values(errors).flat().join('\n'),'error');
+                            showToast(Object.values(errors).flat().join('\n'), 'error');
                         } else {
-                            showToast('حدث خطأ غير متوقع.','error');
+                            showToast('حدث خطأ غير متوقع.', 'error');
                         }
                     }
                 });
