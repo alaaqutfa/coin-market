@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CalculateDailyHoursRangeManual extends Command
 {
-    // php artisan attendance:calculate-daily-hours-range-manual "2025-09-24" "2025-10-29" --truncate
+    // php artisan attendance:calculate-daily-hours-range-manual "2025-09-24" "2025-11-02" --truncate
     protected $signature   = 'attendance:calculate-daily-hours-range-manual {date_from} {date_to} {--truncate} {--debug}';
     protected $description = 'Calculate working hours for a range of dates and store them in DailyWorkHour';
 
@@ -54,7 +54,7 @@ class CalculateDailyHoursRangeManual extends Command
         $period = new \DatePeriod(
             $dateFrom,
             new \DateInterval('P1D'),
-            $dateTo->copy()->addDay()
+            $dateTo->addSecond()
         );
 
         foreach ($period as $date) {
