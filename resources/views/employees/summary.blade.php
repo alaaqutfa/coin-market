@@ -284,7 +284,7 @@
                         </div>
 
                         <div class="space-y-4 max-h-96 overflow-y-auto">
-                            {{-- @dd($data['daily_records']) --}}
+                            @dd($data['daily_records'])
                             @foreach ($data['daily_records'] as $record)
                                 <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                                     <div class="flex justify-between items-center mb-2">
