@@ -19,8 +19,9 @@ class CalculateDailyHoursManual extends Command
         $dateInput = $this->argument('date');
 
         try {
-            $date      = Carbon::parse($dateInput, 'Asia/Beirut')->toDateString();
-            $dayOfWeek = Carbon::parse($dateInput, 'Asia/Beirut')->dayOfWeek;
+            $dateObj   = Carbon::parse($dateInput, 'Asia/Beirut')->startOfDay();
+            $date      = $dateObj->toDateString(); // نص فقط للطباعة أو where
+            $dayOfWeek = $dateObj->dayOfWeek;
         } catch (\Exception $e) {
             $this->error("❌ Invalid date format. Please use YYYY-MM-DD format.");
             return 1;
@@ -42,10 +43,10 @@ class CalculateDailyHoursManual extends Command
             }
         }
 
-        $employees = Employee::whereNull('end_date')->get();
-        $totalEmployees = $employees->count();
+        $employees         = Employee::whereNull('end_date')->get();
+        $totalEmployees    = $employees->count();
         $employeesWithLogs = 0;
-        $totalActualHours = 0;
+        $totalActualHours  = 0;
 
         $this->info("👥 Found {$totalEmployees} active employees.");
         $progressBar = $this->output->createProgressBar($totalEmployees);
@@ -93,11 +94,29 @@ class CalculateDailyHoursManual extends Command
 
             $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
-            // ✅ التعامل مع الأيام المتناوبة (مدفوعة الأجر)
+            // ✅ التعامل مع نظام العمل المتناوب بناءً على الأسبوع السابق
             if ($requiredHours > 0 && $actualHours == 0 && $workSchedule && $workSchedule->is_alternate == 1) {
-                $actualHours = $requiredHours;
-                if ($this->option('debug')) {
-                    $this->warn("{$employee->employee_code} - {$employee->name}: Paid alternate day ({$requiredHours}h counted)");
+                $previousWeekDate = $dateObj->copy()->subWeek();
+
+                $previousRecord = DailyWorkHour::where('employee_id', $employee->id)
+                    ->where(DB::raw('DATE(`date`)'), '=', $previousWeekDate->toDateString())
+                    ->first();
+
+                $previousActual   = $previousRecord ? $previousRecord->actual_hours : 0;
+                $previousRequired = $previousRecord ? $previousRecord->required_hours : 0;
+
+                // ✅ منطق التناوب: إذا الأسبوع الماضي كانت الساعات المنجزة = الساعات المطلوبة → هذا الأسبوع راحة
+                // أما إذا كانت مختلفة → هذا الأسبوع عمل
+                if ($previousActual == $previousRequired && $previousRequired > 0) {
+                    $actualHours = 0;
+                    if ($this->option('debug')) {
+                        $this->warn("{$employee->employee_code} - {$employee->name}: alternate rest week (previous week was full work {$previousActual}h)");
+                    }
+                } else {
+                    $actualHours = $requiredHours;
+                    if ($this->option('debug')) {
+                        $this->info("{$employee->employee_code} - {$employee->name}: alternate work week (no logs but counted {$requiredHours}h)");
+                    }
                 }
             }
 

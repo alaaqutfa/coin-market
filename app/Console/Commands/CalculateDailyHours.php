@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 
 class CalculateDailyHours extends Command
 {
@@ -59,11 +60,29 @@ class CalculateDailyHours extends Command
 
             $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
-            // ✅ التعامل مع الأيام المتناوبة المدفوعة
+            // ✅ التعامل مع نظام العمل المتناوب بناءً على الأسبوع السابق
             if ($requiredHours > 0 && $actualHours == 0 && $workSchedule && $workSchedule->is_alternate == 1) {
-                $actualHours = $requiredHours;
-                if ($this->option('debug')) {
-                    $this->warn("{$employee->employee_code} - {$employee->name}: Paid alternate day ({$requiredHours}h counted)");
+                $previousWeekDate = $date->copy()->subWeek();
+
+                $previousRecord = DailyWorkHour::where('employee_id', $employee->id)
+                    ->where(DB::raw('DATE(`date`)'), '=', $previousWeekDate->toDateString())
+                    ->first();
+
+                $previousActual   = $previousRecord ? $previousRecord->actual_hours : 0;
+                $previousRequired = $previousRecord ? $previousRecord->required_hours : 0;
+
+                // ✅ منطق التناوب: إذا الأسبوع الماضي كانت الساعات المنجزة = الساعات المطلوبة → هذا الأسبوع راحة
+                // أما إذا كانت مختلفة → هذا الأسبوع عمل
+                if ($previousActual == $previousRequired && $previousRequired > 0) {
+                    $actualHours = 0;
+                    if ($this->option('debug')) {
+                        $this->warn("{$employee->employee_code} - {$employee->name}: alternate rest week (previous week was full work {$previousActual}h)");
+                    }
+                } else {
+                    $actualHours = $requiredHours;
+                    if ($this->option('debug')) {
+                        $this->info("{$employee->employee_code} - {$employee->name}: alternate work week (no logs but counted {$requiredHours}h)");
+                    }
                 }
             }
 

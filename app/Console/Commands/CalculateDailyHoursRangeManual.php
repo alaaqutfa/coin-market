@@ -58,7 +58,7 @@ class CalculateDailyHoursRangeManual extends Command
         );
 
         foreach ($period as $date) {
-            $date = Carbon::instance($date);
+            $date      = Carbon::instance($date);
             $dayOfWeek = $date->dayOfWeek; // 0=Sunday ... 6=Saturday
             $this->line("\n📅 Processing date: {$date->toDateString()}");
 
@@ -116,12 +116,28 @@ class CalculateDailyHoursRangeManual extends Command
 
                 $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
-                // ✅ التعامل مع الأيام المتناوبة
-                if ($requiredHours > 0 && $actualHours == 0) {
-                    if ($workSchedule->is_alternate == 1) {
+                // ✅ التعامل مع نظام العمل المتناوب بناءً على الأسبوع السابق
+                if ($requiredHours > 0 && $actualHours == 0 && $workSchedule && $workSchedule->is_alternate == 1) {
+                    $previousWeekDate = $date->copy()->subWeek();
+
+                    $previousRecord = DailyWorkHour::where('employee_id', $employee->id)
+                        ->where(DB::raw('DATE(`date`)'), '=', $previousWeekDate->toDateString())
+                        ->first();
+
+                    $previousActual   = $previousRecord ? $previousRecord->actual_hours : 0;
+                    $previousRequired = $previousRecord ? $previousRecord->required_hours : 0;
+
+                    // ✅ منطق التناوب: إذا الأسبوع الماضي كانت الساعات المنجزة = الساعات المطلوبة → هذا الأسبوع راحة
+                    // أما إذا كانت مختلفة → هذا الأسبوع عمل
+                    if ($previousActual == $previousRequired && $previousRequired > 0) {
+                        $actualHours = 0;
+                        if ($this->option('debug')) {
+                            $this->warn("{$employee->employee_code} - {$employee->name}: alternate rest week (previous week was full work {$previousActual}h)");
+                        }
+                    } else {
                         $actualHours = $requiredHours;
                         if ($this->option('debug')) {
-                            $this->warn("{$employee->employee_code} - {$employee->name}: paid day (no logs but counted as worked {$requiredHours}h)");
+                            $this->info("{$employee->employee_code} - {$employee->name}: alternate work week (no logs but counted {$requiredHours}h)");
                         }
                     }
                 }
