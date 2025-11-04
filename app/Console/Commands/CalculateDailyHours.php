@@ -60,8 +60,8 @@ class CalculateDailyHours extends Command
 
             $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
-            if($requiredHours == $actualHours) {
-                $actualHours++;
+            if ($requiredHours == $actualHours) {
+                $actualHours += (1 / 60); // زيادة دقيقة واحدة (1 دقيقة = 1/60 من الساعة)
             }
 
             // ✅ التعامل مع نظام العمل المتناوب بناءً على الأسبوع السابق
