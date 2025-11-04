@@ -287,7 +287,7 @@ class EmployeeController extends Controller
                     'actual_hours'    => $record->actual_hours,
                     'difference'      => round($record->actual_hours - $requiredHours, 2),
                     'status'          =>
-                    $record->actual_hours > 0
+                    $record->actual_hours > 0 && $record->actual_hours != $requiredHours
                         ? 'حاضر'
                         : (
                         $requiredHours > 0
