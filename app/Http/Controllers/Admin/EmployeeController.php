@@ -291,7 +291,7 @@ class EmployeeController extends Controller
                         ? 'حاضر'
                         : (
                         $requiredHours > 0
-                            ? ($record->actual_hours == $requiredHours ? 'إجازة' : 'غائب')
+                            ? ($record->actual_hours == $requiredHours ? 'إجازة مدفوعة' : 'غائب')
                             : 'إجازة'
                     ),
                     'attendance_logs' => $attendanceLogs->map(function ($log) {
