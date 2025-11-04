@@ -296,8 +296,12 @@
                                         <span
                                             class="attendance-badge rounded-full px-3 py-1 text-xs font-medium
                                             @if ($record['status'] == 'حاضر') bg-green-100 text-green-800
-                                            @elseif($record['status'] == 'غائب') bg-red-100 text-red-800
-                                            @else bg-yellow-100 text-yellow-800 @endif">
+                                            @elseif($record['status'] == 'غائب')
+                                                bg-red-100 text-red-800
+                                            @elseif($record['status'] == 'إجازة')
+                                                bg-blue-100 text-blue-800
+                                            @else
+                                                bg-yellow-100 text-yellow-800 @endif">
                                             {{ $record['status'] }}
                                         </span>
                                     </div>

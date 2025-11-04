@@ -286,7 +286,14 @@ class EmployeeController extends Controller
                     'required_hours'  => $requiredHours,
                     'actual_hours'    => $record->actual_hours,
                     'difference'      => round($record->actual_hours - $requiredHours, 2),
-                    'status'          => $record->actual_hours > 0 ? 'حاضر' : ($requiredHours > 0 ? 'غائب' : 'إجازة'),
+                    'status'          =>
+                    $record->actual_hours > 0
+                        ? 'حاضر'
+                        : (
+                        $requiredHours > 0
+                            ? ($record->actual_hours == $requiredHours ? 'إجازة' : 'غائب')
+                            : 'إجازة'
+                    ),
                     'attendance_logs' => $attendanceLogs->map(function ($log) {
                         return [
                             'check_in'  => $log->check_in ? Carbon::parse($log->check_in, 'Asia/Beirut')->format('H:i') : '-',
