@@ -116,6 +116,10 @@ class CalculateDailyHoursRangeManual extends Command
 
                 $requiredHours = $workSchedule ? $workSchedule->work_hours : 0;
 
+                if ($requiredHours == $actualHours) {
+                    $actualHours++;
+                }
+
                 // ✅ التعامل مع نظام العمل المتناوب بناءً على الأسبوع السابق
                 if ($requiredHours > 0 && $actualHours == 0 && $workSchedule && $workSchedule->is_alternate == 1) {
                     $previousWeekDate = $date->copy()->subWeek();
