@@ -31,6 +31,66 @@
 
 @section('content')
     <div dir="rtl" class="container mx-auto px-4 py-8">
+
+        <!-- Month & Year Selection -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <svg class="w-6 h-6 text-yellow-600 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z" />
+                </svg>
+                <h2 class="text-xl font-bold text-gray-800">عرض تقرير الشهر</h2>
+            </div>
+
+            <form method="GET" action="{{ route('employee.show', $data['employee']['employee_code']) }}"
+                id="monthYearForm" class="space-y-4 md:space-y-0 md:flex md:items-end md:gap-4">
+                <!-- اختيار الشهر -->
+                <div class="relative flex-1">
+                    <label for="month" class="block text-sm font-medium text-gray-700 mb-1">الشهر</label>
+                    <select id="month" name="month"
+                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pr-8">
+                        @for ($m = 1; $m <= 12; $m++)
+                            <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                            </option>
+                        @endfor
+                    </select>
+                    <div class="absolute right-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- اختيار السنة -->
+                <div class="relative flex-1">
+                    <label for="year" class="block text-sm font-medium text-gray-700 mb-1">السنة</label>
+                    <select id="year" name="year"
+                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pr-8">
+                        @for ($y = now()->year; $y >= now()->year - 3; $y--)
+                            <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endfor
+                    </select>
+                    <div class="absolute right-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- زر العرض -->
+                <div class="flex-shrink-0 mt-4 md:mt-0">
+                    <button type="submit"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium px-6 py-2.5 rounded-lg shadow-md transition duration-150 ease-in-out">
+                        عرض التقرير
+                    </button>
+                </div>
+            </form>
+        </div>
+
+
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl shadow-lg p-6 mb-8">
             <div class="flex flex-col md:flex-row justify-between items-center">
@@ -44,36 +104,6 @@
                 </div>
             </div>
         </div>
-
-        <form method="GET" action="{{ route('employee.show', $data['employee']['employee_code']) }}"
-            class="flex items-center gap-3 mb-6">
-            <div>
-                <label for="month" class="block text-sm font-medium text-gray-700">الشهر</label>
-                <select id="month" name="month" class="border rounded-lg p-2">
-                    @for ($m = 1; $m <= 12; $m++)
-                        <option value="{{ $m }}" {{ isset($month) && $month == $m ? 'selected' : '' }}>
-                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
-                        </option>
-                    @endfor
-                </select>
-            </div>
-
-            <div>
-                <label for="year" class="block text-sm font-medium text-gray-700">السنة</label>
-                <select id="year" name="year" class="border rounded-lg p-2">
-                    @for ($y = now()->year; $y >= now()->year - 3; $y--)
-                        <option value="{{ $y }}" {{ isset($year) && $year == $y ? 'selected' : '' }}>
-                            {{ $y }}</option>
-                    @endfor
-                </select>
-            </div>
-
-            <div class="mt-5">
-                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                    عرض التقرير
-                </button>
-            </div>
-        </form>
 
         <!-- Summary Statistics -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
