@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <form method="GET" action="{{ route('employee.data', $data['employee']['employee_code']) }}"
+        <form method="GET" action="{{ route('employee.show', $data['employee']['employee_code']) }}"
             class="flex items-center gap-3 mb-6">
             <div>
                 <label for="month" class="block text-sm font-medium text-gray-700">الشهر</label>
