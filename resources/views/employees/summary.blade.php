@@ -224,6 +224,19 @@
                     </div>
                 </div>
 
+                <!-- Achievement Rate -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">معدل الإنجاز</h2>
+                        <span
+                            class="text-2xl font-bold text-yellow-600">{{ $data['summary']['achievement_rate'] }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div class="max-w-full bg-gradient-to-r from-yellow-400 to-yellow-500 h-4 rounded-full"
+                            style="width: {{ $data['summary']['achievement_rate'] }}%"></div>
+                    </div>
+                </div>
+
                 <!-- Salary Calculation Section -->
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
                     <div class="flex items-center mb-4">
@@ -269,19 +282,6 @@
                         <div id="result"
                             class="hidden mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
                         </div>
-                    </div>
-                </div>
-
-                <!-- Achievement Rate -->
-                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold text-gray-800">معدل الإنجاز</h2>
-                        <span
-                            class="text-2xl font-bold text-yellow-600">{{ $data['summary']['achievement_rate'] }}%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-4">
-                        <div class="max-w-full bg-gradient-to-r from-yellow-400 to-yellow-500 h-4 rounded-full"
-                            style="width: {{ $data['summary']['achievement_rate'] }}%"></div>
                     </div>
                 </div>
 
