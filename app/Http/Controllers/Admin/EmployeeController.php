@@ -86,9 +86,13 @@ class EmployeeController extends Controller
             return redirect()->back()->with('error', 'الموظف غير موجود');
         }
 
-        $data = $this->getEmployeeMonthlyData($employee_code);
+        // نقرأ الشهر والسنة من الطلب (أو نأخذ الشهر الحالي إن لم يُرسل شيء)
+        $month = $request->input('month') ?? null;
+        $year  = $request->input('year') ?? null;
 
-        return view('employees.dashboard', compact('data'));
+        $data = $this->getEmployeeMonthlyData($employee_code, $month, $year);
+
+        return view('employees.dashboard', compact('data', 'month', 'year'));
     }
 
     // ==================== CRUD OPERATIONS ====================

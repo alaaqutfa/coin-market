@@ -45,6 +45,75 @@
             </div>
         </div>
 
+        <form method="GET" action="{{ route('employee.data', $data['employee']['employee_code']) }}"
+            class="flex items-center gap-3 mb-6">
+            <div>
+                <label for="month" class="block text-sm font-medium text-gray-700">الشهر</label>
+                <select id="month" name="month" class="border rounded-lg p-2">
+                    @for ($m = 1; $m <= 12; $m++)
+                        <option value="{{ $m }}" {{ isset($month) && $month == $m ? 'selected' : '' }}>
+                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+
+            <div>
+                <label for="year" class="block text-sm font-medium text-gray-700">السنة</label>
+                <select id="year" name="year" class="border rounded-lg p-2">
+                    @for ($y = now()->year; $y >= now()->year - 3; $y--)
+                        <option value="{{ $y }}" {{ isset($year) && $year == $y ? 'selected' : '' }}>
+                            {{ $y }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <div class="mt-5">
+                <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                    عرض التقرير
+                </button>
+            </div>
+        </form>
+        <!-- Salary Calculator Section -->
+        <div class="mt-12 bg-white rounded-xl shadow-lg p-6 max-w-xl mx-auto">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">💰 حساب المستحقات</h2>
+
+            <div class="space-y-4">
+                <div class="bg-white shadow-md rounded-xl p-6 border border-gray-100">
+                    <label for="salary" class="block text-lg font-semibold text-gray-800 mb-3">
+                        💰 أدخل الراتب الشهري (بالدولار)
+                    </label>
+
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-3 flex items-center text-yellow-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v10m0-10a9 9 0 110 18 9 9 0 010-18z" />
+                            </svg>
+                        </span>
+                        <input type="number" id="salary" placeholder="مثلاً: 400"
+                            class="w-full text-lg font-medium text-gray-700 rounded-lg border border-yellow-300
+                   focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 pl-4 pr-10 py-2.5
+                   transition-all duration-200 ease-in-out placeholder:text-gray-400">
+                    </div>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        أدخل المبلغ بالدولار الأمريكي لحساب المستحقات بناءً على ساعات العمل المنجزة.
+                    </p>
+                </div>
+
+                <button id="calculate-btn"
+                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    حساب المستحقات
+                </button>
+
+                <div id="result"
+                    class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 text-gray-800 text-center">
+                </div>
+            </div>
+        </div>
+
         <!-- Summary Statistics -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Attendance Days -->
@@ -233,45 +302,6 @@
                 {{ \Carbon\Carbon::parse($period['end_date'])->format('d/m/Y') }}</p>
         </div>
 
-        <!-- Salary Calculator Section -->
-        <div class="mt-12 bg-white rounded-xl shadow-lg p-6 max-w-xl mx-auto">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">💰 حساب المستحقات</h2>
-
-            <div class="space-y-4">
-                <div class="bg-white shadow-md rounded-xl p-6 border border-gray-100">
-                    <label for="salary" class="block text-lg font-semibold text-gray-800 mb-3">
-                        💰 أدخل الراتب الشهري (بالدولار)
-                    </label>
-
-                    <div class="relative">
-                        <span class="absolute inset-y-0 right-3 flex items-center text-yellow-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v10m0-10a9 9 0 110 18 9 9 0 010-18z" />
-                            </svg>
-                        </span>
-                        <input type="number" id="salary" placeholder="مثلاً: 400"
-                            class="w-full text-lg font-medium text-gray-700 rounded-lg border border-yellow-300
-                   focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 pl-4 pr-10 py-2.5
-                   transition-all duration-200 ease-in-out placeholder:text-gray-400">
-                    </div>
-
-                    <p class="text-sm text-gray-500 mt-2">
-                        أدخل المبلغ بالدولار الأمريكي لحساب المستحقات بناءً على ساعات العمل المنجزة.
-                    </p>
-                </div>
-
-                <button id="calculate-btn"
-                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
-                    حساب المستحقات
-                </button>
-
-                <div id="result"
-                    class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 text-gray-800 text-center">
-                </div>
-            </div>
-        </div>
     </div>
 @endsection
 
