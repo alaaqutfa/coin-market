@@ -33,9 +33,9 @@
     <div dir="rtl" class="container mx-auto px-4 py-8">
 
         <!-- Month & Year Selection -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8" dir="rtl">
             <div class="flex items-center mb-4">
-                <svg class="w-6 h-6 text-yellow-600 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2v-7H3v7a2 2 0 002 2z" />
                 </svg>
@@ -44,18 +44,19 @@
 
             <form method="GET" action="{{ route('employee.show', $data['employee']['employee_code']) }}"
                 id="monthYearForm" class="space-y-4 md:space-y-0 md:flex md:items-end md:gap-4">
+
                 <!-- اختيار الشهر -->
                 <div class="relative flex-1">
                     <label for="month" class="block text-sm font-medium text-gray-700 mb-1">الشهر</label>
                     <select id="month" name="month"
-                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pr-8">
+                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pl-8 text-right">
                         @for ($m = 1; $m <= 12; $m++)
                             <option value="{{ $m }}" {{ request('month') == $m ? 'selected' : '' }}>
                                 {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
                             </option>
                         @endfor
                     </select>
-                    <div class="absolute right-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <div class="absolute left-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -66,14 +67,14 @@
                 <div class="relative flex-1">
                     <label for="year" class="block text-sm font-medium text-gray-700 mb-1">السنة</label>
                     <select id="year" name="year"
-                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pr-8">
+                        class="block w-full appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 p-2.5 pl-8 text-right">
                         @for ($y = now()->year; $y >= now()->year - 3; $y--)
                             <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
                                 {{ $y }}
                             </option>
                         @endfor
                     </select>
-                    <div class="absolute right-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <div class="absolute left-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
@@ -89,7 +90,6 @@
                 </div>
             </form>
         </div>
-
 
         <!-- Header Section -->
         <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-2xl shadow-lg p-6 mb-8">
