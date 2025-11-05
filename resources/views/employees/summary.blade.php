@@ -447,8 +447,8 @@
             const resultDiv = document.getElementById('result');
 
             const salary = parseFloat(salaryInput.value);
-            const required = parseFloat("{{ $summary['total_required_hours'] }}");
-            const actual = parseFloat("{{ $summary['total_actual_hours'] }}");
+            const required = parseFloat("{{ $data['summary']['total_required_hours'] ?? 0 }}");
+            const actual = parseFloat("{{ $data['summary']['total_actual_hours'] ?? 0 }}");
 
             if (isNaN(salary) || salary <= 0) {
                 resultDiv.textContent = "الرجاء إدخال راتب صالح أولاً.";
