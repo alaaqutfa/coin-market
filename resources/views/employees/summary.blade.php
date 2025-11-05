@@ -145,10 +145,28 @@
             </div>
 
             <div class="space-y-4">
-                <div>
-                    <label for="salary" class="block text-gray-700 font-medium mb-2">أدخل الراتب الشهري (بالدولار)</label>
-                    <input type="number" id="salary" placeholder="مثلاً: 400"
-                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400">
+                <div class="bg-white shadow-md rounded-xl p-6 border border-gray-100">
+                    <label for="salary" class="block text-lg font-semibold text-gray-800 mb-3">
+                        💰 أدخل الراتب الشهري (بالدولار)
+                    </label>
+
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-3 flex items-center text-yellow-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v10m0-10a9 9 0 110 18 9 9 0 010-18z" />
+                            </svg>
+                        </span>
+                        <input type="number" id="salary" placeholder="مثلاً: 400"
+                            class="w-full text-lg font-medium text-gray-700 rounded-lg border border-yellow-300
+                   focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 pl-4 pr-10 py-2.5
+                   transition-all duration-200 ease-in-out placeholder:text-gray-400">
+                    </div>
+
+                    <p class="text-sm text-gray-500 mt-2">
+                        أدخل المبلغ بالدولار الأمريكي لحساب المستحقات بناءً على ساعات العمل المنجزة.
+                    </p>
                 </div>
 
                 <button id="calculate-btn"
@@ -466,13 +484,34 @@
             const totalEarned = hourRate * actual;
 
             resultDiv.innerHTML = `
-                <p class="font-medium mb-2">📘 العملية الحسابية:</p>
-                <p class="text-sm text-gray-700">
-                    (${salary} ÷ ${required}) × ${actual} =
-                    <span class="font-bold text-yellow-600">${totalEarned.toFixed(2)}</span>
-                </p>
-                <p class="mt-2 text-green-700 font-bold">إجمالي المستحق: ${totalEarned.toFixed(2)} 💵</p>
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-center shadow-sm">
+                    <p class="text-lg font-semibold text-gray-800 mb-4">📘 تفاصيل العملية الحسابية:</p>
+
+                    <p class="text-base text-gray-700 leading-relaxed mb-3">
+                        <span class="font-bold text-yellow-700">سعر الساعة =</span>
+                        <span class="text-gray-900 font-semibold">الراتب ÷ الساعات المطلوبة</span><br>
+                        <span class="text-gray-600">(${salary} ÷ ${required}) =
+                            <span class="text-blue-700 font-bold">${(salary / required).toFixed(2)}</span>
+                        </span>
+                    </p>
+
+                    <p class="text-base text-gray-700 leading-relaxed mb-3">
+                        <span class="font-bold text-yellow-700">المستحق =</span>
+                        <span class="text-gray-900 font-semibold">سعر الساعة × الساعات المنجزة</span><br>
+                        <span class="text-gray-600">
+                            (${(salary / required).toFixed(2)} × ${actual}) =
+                            <span class="text-green-700 font-bold">${totalEarned.toFixed(2)}</span>
+                        </span>
+                    </p>
+
+                    <div class="mt-5 border-t border-yellow-300 pt-3">
+                        <p class="text-xl font-extrabold text-green-700">
+                            💵 إجمالي المستحق: <span class="text-green-800">${totalEarned.toFixed(2)}</span>
+                        </p>
+                    </div>
+                </div>
             `;
+
             resultDiv.classList.remove('hidden');
         });
     </script>
