@@ -56,11 +56,6 @@
                             </option>
                         @endfor
                     </select>
-                    <div class="absolute left-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
                 </div>
 
                 <!-- اختيار السنة -->
@@ -74,11 +69,6 @@
                             </option>
                         @endfor
                     </select>
-                    <div class="absolute left-3 top-9 transform -translate-y-1/2 text-gray-400 pointer-events-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </div>
                 </div>
 
                 <!-- زر العرض -->
