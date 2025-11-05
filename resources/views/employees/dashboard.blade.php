@@ -156,7 +156,7 @@
         </div>
 
         <!-- Salary Calculator Section -->
-        <div class="mt-12 bg-white rounded-xl shadow-lg p-6 max-w-xl mx-auto">
+        <div class="my-8 bg-white rounded-xl shadow-lg p-6 max-w-2xl mx-auto">
             <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">💰 حساب المستحقات</h2>
 
             <div class="space-y-4">
