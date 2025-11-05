@@ -133,6 +133,35 @@
 
         </div>
 
+        <!-- Salary Calculation Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <div class="flex items-center mb-4">
+                <svg class="w-6 h-6 text-green-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-3.866 0-7 1.79-7 4v4h14v-4c0-2.21-3.134-4-7-4zM5 16v1a3 3 0 003 3h8a3 3 0 003-3v-1">
+                    </path>
+                </svg>
+                <h2 class="text-xl font-bold text-gray-800">حساب المستحقات المالية</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="salary" class="block text-gray-700 font-medium mb-2">أدخل الراتب الشهري (بالدولار)</label>
+                    <input type="number" id="salary" placeholder="مثلاً: 400"
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400">
+                </div>
+
+                <button id="calculate-btn"
+                    class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-6 py-2 rounded-lg shadow hover:from-yellow-500 hover:to-yellow-600 transition-all">
+                    احسب المستحق 💰
+                </button>
+
+                <div id="result" class="hidden mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
+                </div>
+            </div>
+        </div>
+
+
         @if ($selectedEmployee && $data)
             <!-- Employee Data Section -->
             <div id="employeeData">
@@ -178,7 +207,8 @@
                                 <p class="text-3xl font-bold text-gray-800 mt-2">{{ $data['summary']['absent_days'] }}</p>
                             </div>
                             <div class="bg-red-100 p-3 rounded-full">
-                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -371,6 +401,7 @@
                 <p class="text-blue-600">يرجى اختيار موظف من القائمة المنسدلة أعلاه لعرض تقريره الشهري.</p>
             </div>
         @endif
+
     </div>
 @endsection
 
@@ -408,6 +439,41 @@
                 }
             });
             */
+        });
+
+        // حساب المستحقات بناءً على الراتب
+        document.getElementById('calculate-btn').addEventListener('click', function() {
+            const salaryInput = document.getElementById('salary');
+            const resultDiv = document.getElementById('result');
+
+            const salary = parseFloat(salaryInput.value);
+            const required = parseFloat("{{ $summary['total_required_hours'] }}");
+            const actual = parseFloat("{{ $summary['total_actual_hours'] }}");
+
+            if (isNaN(salary) || salary <= 0) {
+                resultDiv.textContent = "الرجاء إدخال راتب صالح أولاً.";
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (required === 0) {
+                resultDiv.textContent = "لا يمكن الحساب لأن الساعات المطلوبة تساوي صفر.";
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            const hourRate = salary / required;
+            const totalEarned = hourRate * actual;
+
+            resultDiv.innerHTML = `
+                <p class="font-medium mb-2">📘 العملية الحسابية:</p>
+                <p class="text-sm text-gray-700">
+                    (${salary} ÷ ${required}) × ${actual} =
+                    <span class="font-bold text-yellow-600">${totalEarned.toFixed(2)}</span>
+                </p>
+                <p class="mt-2 text-green-700 font-bold">إجمالي المستحق: ${totalEarned.toFixed(2)} 💵</p>
+            `;
+            resultDiv.classList.remove('hidden');
         });
     </script>
 @endpush

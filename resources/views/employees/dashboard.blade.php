@@ -232,6 +232,29 @@
             <p>فترة التقرير: من {{ \Carbon\Carbon::parse($period['start_date'])->format('d/m/Y') }} إلى
                 {{ \Carbon\Carbon::parse($period['end_date'])->format('d/m/Y') }}</p>
         </div>
+
+        <!-- Salary Calculator Section -->
+        <div class="mt-12 bg-white rounded-xl shadow-lg p-6 max-w-xl mx-auto">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">💰 حساب المستحقات</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label for="salary" class="block text-gray-700 mb-2 text-sm font-medium">أدخل الراتب الشهري</label>
+                    <input id="salary" type="number" min="0" step="0.01"
+                        class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 text-center"
+                        placeholder="مثال: 450" />
+                </div>
+
+                <button id="calculate-btn"
+                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                    حساب المستحقات
+                </button>
+
+                <div id="result"
+                    class="hidden bg-gray-50 border border-gray-200 rounded-lg p-4 text-gray-800 text-center">
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -253,6 +276,41 @@
                     this.style.boxShadow = '';
                 });
             });
+        });
+
+        // حساب المستحقات بناءً على الراتب
+        document.getElementById('calculate-btn').addEventListener('click', function() {
+            const salaryInput = document.getElementById('salary');
+            const resultDiv = document.getElementById('result');
+
+            const salary = parseFloat(salaryInput.value);
+            const required = parseFloat("{{ $summary['total_required_hours'] }}");
+            const actual = parseFloat("{{ $summary['total_actual_hours'] }}");
+
+            if (isNaN(salary) || salary <= 0) {
+                resultDiv.textContent = "الرجاء إدخال راتب صالح أولاً.";
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            if (required === 0) {
+                resultDiv.textContent = "لا يمكن الحساب لأن الساعات المطلوبة تساوي صفر.";
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            const hourRate = salary / required;
+            const totalEarned = hourRate * actual;
+
+            resultDiv.innerHTML = `
+                <p class="font-medium mb-2">📘 العملية الحسابية:</p>
+                <p class="text-sm text-gray-700">
+                    (${salary} ÷ ${required}) × ${actual} =
+                    <span class="font-bold text-yellow-600">${totalEarned.toFixed(2)}</span>
+                </p>
+                <p class="mt-2 text-green-700 font-bold">إجمالي المستحق: ${totalEarned.toFixed(2)} 💵</p>
+            `;
+            resultDiv.classList.remove('hidden');
         });
     </script>
 @endpush
