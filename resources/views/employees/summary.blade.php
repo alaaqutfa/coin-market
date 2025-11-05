@@ -133,53 +133,6 @@
 
         </div>
 
-        <!-- Salary Calculation Section -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <div class="flex items-center mb-4">
-                <svg class="w-6 h-6 text-green-500 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8c-3.866 0-7 1.79-7 4v4h14v-4c0-2.21-3.134-4-7-4zM5 16v1a3 3 0 003 3h8a3 3 0 003-3v-1">
-                    </path>
-                </svg>
-                <h2 class="text-xl font-bold text-gray-800">حساب المستحقات المالية</h2>
-            </div>
-
-            <div class="space-y-4">
-                <div class="bg-white shadow-md rounded-xl p-6 border border-gray-100">
-                    <label for="salary" class="block text-lg font-semibold text-gray-800 mb-3">
-                        💰 أدخل الراتب الشهري (بالدولار)
-                    </label>
-
-                    <div class="relative">
-                        <span class="absolute inset-y-0 right-3 flex items-center text-yellow-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v10m0-10a9 9 0 110 18 9 9 0 010-18z" />
-                            </svg>
-                        </span>
-                        <input type="number" id="salary" placeholder="مثلاً: 400"
-                            class="w-full text-lg font-medium text-gray-700 rounded-lg border border-yellow-300
-                   focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 pl-4 pr-10 py-2.5
-                   transition-all duration-200 ease-in-out placeholder:text-gray-400">
-                    </div>
-
-                    <p class="text-sm text-gray-500 mt-2">
-                        أدخل المبلغ بالدولار الأمريكي لحساب المستحقات بناءً على ساعات العمل المنجزة.
-                    </p>
-                </div>
-
-                <button id="calculate-btn"
-                    class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-6 py-2 rounded-lg shadow hover:from-yellow-500 hover:to-yellow-600 transition-all">
-                    احسب المستحق 💰
-                </button>
-
-                <div id="result" class="hidden mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
-                </div>
-            </div>
-        </div>
-
-
         @if ($selectedEmployee && $data)
             <!-- Employee Data Section -->
             <div id="employeeData">
@@ -225,8 +178,7 @@
                                 <p class="text-3xl font-bold text-gray-800 mt-2">{{ $data['summary']['absent_days'] }}</p>
                             </div>
                             <div class="bg-red-100 p-3 rounded-full">
-                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -268,6 +220,54 @@
                                     </path>
                                 </svg>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Salary Calculation Section -->
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <div class="flex items-center mb-4">
+                        <svg class="w-6 h-6 text-green-500 ml-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-3.866 0-7 1.79-7 4v4h14v-4c0-2.21-3.134-4-7-4zM5 16v1a3 3 0 003 3h8a3 3 0 003-3v-1">
+                            </path>
+                        </svg>
+                        <h2 class="text-xl font-bold text-gray-800">حساب المستحقات المالية</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="bg-white shadow-md rounded-xl p-6 border border-gray-100">
+                            <label for="salary" class="block text-lg font-semibold text-gray-800 mb-3">
+                                💰 أدخل الراتب الشهري (بالدولار)
+                            </label>
+
+                            <div class="relative">
+                                <span class="absolute inset-y-0 right-3 flex items-center text-yellow-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8v10m0-10a9 9 0 110 18 9 9 0 010-18z" />
+                                    </svg>
+                                </span>
+                                <input type="number" id="salary" placeholder="مثلاً: 400"
+                                    class="w-full text-lg font-medium text-gray-700 rounded-lg border border-yellow-300
+                   focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 pl-4 pr-10 py-2.5
+                   transition-all duration-200 ease-in-out placeholder:text-gray-400">
+                            </div>
+
+                            <p class="text-sm text-gray-500 mt-2">
+                                أدخل المبلغ بالدولار الأمريكي لحساب المستحقات بناءً على ساعات العمل المنجزة.
+                            </p>
+                        </div>
+
+                        <button id="calculate-btn"
+                            class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white px-6 py-2 rounded-lg shadow hover:from-yellow-500 hover:to-yellow-600 transition-all">
+                            احسب المستحق 💰
+                        </button>
+
+                        <div id="result"
+                            class="hidden mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-gray-800">
                         </div>
                     </div>
                 </div>
