@@ -7,6 +7,7 @@ use App\Models\DailyWorkHour;
 use App\Models\Employee;
 use App\Models\WorkSchedule;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -249,9 +250,22 @@ class EmployeeController extends Controller
             ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
             ->sum('actual_hours');
 
-        $totalRequiredHours = DailyWorkHour::where('employee_id', $employee->id)
-            ->whereBetween('date', [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-            ->sum('required_hours');
+        // احصل على الجدول الأسبوعي للموظف
+        $workSchedule = WorkSchedule::where('employee_id', $employee->id)->get()->keyBy('day_of_week');
+
+        // توليد كل أيام الشهر
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        // حساب مجموع الساعات المطلوبة في الشهر بناءً على الجدول
+        $totalRequiredHours = 0;
+
+        foreach ($period as $date) {
+            $dayOfWeek = $date->dayOfWeek; // 0 = الأحد, 1 = الاثنين ... 6 = السبت
+
+            if (isset($workSchedule[$dayOfWeek])) {
+                $totalRequiredHours += $workSchedule[$dayOfWeek]->work_hours;
+            }
+        }
 
         // Get absent dates
         $absentDates = DailyWorkHour::where('employee_id', $employee->id)
