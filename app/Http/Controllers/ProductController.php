@@ -8,11 +8,12 @@ use App\Models\Product;
 use App\Models\ProductBarcodeLog;
 // use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Spatie\Browsershot\Browsershot;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -285,6 +286,12 @@ class ProductController extends Controller
             'inserted' => count($insertData),
             'skipped'  => count($existingBarcodes),
         ]);
+    }
+
+    public function importProducts()
+    {
+        Excel::import(new ProductsImport, request()->file('file'));
+        return back()->with('success', 'تم رفع وتحديث البيانات بنجاح');
     }
 
     public function getMissingProducts()

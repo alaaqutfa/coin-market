@@ -69,6 +69,7 @@ Route::prefix('admin')
         Route::post('/products/save-images', [ProductController::class, 'saveImages'])->name('products.save.images');
         Route::delete('/products/clean-unused', [ProductController::class, 'cleanUnusedImages'])->name('products.cleanUnused');
         Route::get('/show-catalog', [ProductController::class, 'showCatalog'])->name('showCatalog');
+        Route::post('/import-products', [ProductController::class, 'importProducts'])->name('products.import');
 
         /*
         |--------------------------------------------------------------------------

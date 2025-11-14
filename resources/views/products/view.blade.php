@@ -409,6 +409,14 @@
                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
                         إنشاء تصميم
                     </button>
+                    <form class="importFileForm hidden" action="/import-products" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" class="importFileInput" accept=".csv,.xlsx" required>
+                    </form>
+                    <button onclick="importFile()"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">رفع منتجات
+                        (Excel)</button>
                     <span
                         class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex justify-center items-center gap-2">
                         <i class="fas fa-boxes ml-2"></i>
@@ -1179,7 +1187,19 @@
                 $('#new-products-body').append(rowHtml);
             }
 
+            function importFile() {
+                $('.importFileInput').trigger('click');
+            }
+
+
             $(document).ready(function() {
+
+                $('.importFileInput').on('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        // بإمكانك إضافة تحقق على نوع الملف لو بدك
+                        $('.importFileForm').submit();
+                    }
+                });
 
                 // حدث تحديد/إلغاء تحديد الكل
                 $('#check-all-page-items').change(function() {
