@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Imports;
 
 use App\Models\Product;
@@ -11,7 +10,7 @@ class ProductsImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         // التحقق من وجود code
-        if (!isset($row['code']) || empty($row['code'])) {
+        if (! isset($row['code']) || empty($row['code'])) {
             return null;
         }
 
@@ -24,6 +23,7 @@ class ProductsImport implements ToModel, WithHeadingRow
                 // 'name'     => $row['description'] ?? $product->name,
                 'price'    => $row['price'] ?? $product->price,
                 'quantity' => $row['qty'] ?? $product->quantity,
+                'weight'   => 0,
             ]);
 
             return null;
@@ -35,6 +35,7 @@ class ProductsImport implements ToModel, WithHeadingRow
             'name'     => $row['description'] ?? '',
             'price'    => $row['price'] ?? 0,
             'quantity' => $row['qty'] ?? 0,
+            'weight'   => 0,
         ]);
     }
 }
