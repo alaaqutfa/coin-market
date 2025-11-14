@@ -13,7 +13,6 @@ class ProductsImport implements ToModel, WithHeadingRow
         if (! isset($row['code']) || empty($row['code'])) {
             return null;
         }
-        dd($row);
 
         // ابحث عن المنتج
         $product = Product::where('barcode', $row['code'])->first();
