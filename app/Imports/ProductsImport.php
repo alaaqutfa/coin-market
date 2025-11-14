@@ -9,6 +9,7 @@ class ProductsImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+        dd($row);
         // التحقق من وجود code
         if (! isset($row['code']) || empty($row['code'])) {
             return null;
