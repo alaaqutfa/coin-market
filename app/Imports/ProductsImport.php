@@ -21,7 +21,7 @@ class ProductsImport implements ToModel, WithHeadingRow
         if ($product) {
             // تحديث المنتج الموجود
             $product->update([
-                'name'     => $row['description'] ?? $product->name,
+                // 'name'     => $row['description'] ?? $product->name,
                 'price'    => $row['price'] ?? $product->price,
                 'quantity' => $row['qty'] ?? $product->quantity,
             ]);
