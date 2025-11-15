@@ -1156,7 +1156,7 @@
                 let rowIndex = $('#new-products-body tr').length;
                 let rowHtml = `
                     <tr class="border-b hover:bg-gray-50">
-                        <td class="px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
+                        <td id="rowIndex${rowIndex}" class="rowIndex px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
                         <td class="px-4 py-3 flex justify-center items-center gap-4">
                             <button type="button" class="remove-row text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
                                 x
@@ -1165,7 +1165,7 @@
                         </td>
                         <td class="px-4 py-3">
                             <div class="flex flex-col">
-                                <input type="text" name="products[${rowIndex}][barcode]" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
+                                <input type="text" name="products[${rowIndex}][barcode]" data-row="${rowIndex}" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
                                 <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">⚠️ الباركود موجود مسبقاً</span>
                             </div>
                         </td>
@@ -1281,22 +1281,46 @@
                     let barcode = input.val();
                     let errorSpan = input.siblings(".barcode-error");
 
+                    let row = parseInt(input.attr("data-row"));
+                    let nextRow = row + 1;
+
+                    addRow(); // إضافة صف جديد
+
                     if (barcode.trim() !== "") {
-                        var barcodeRoute = "{{ route('products.findByBarcode', ':barcode') }}";
-                        let url = barcodeRoute.replace(':barcode', barcode);
+                        let barcodeRoute = "{{ route('products.findByBarcode', ':barcode') }}";
+                        let url = barcodeRoute.replace(":barcode", barcode);
+
                         $.ajax({
                             url: url,
                             type: "GET",
+
                             success: function(response) {
-                                // إذا رجع منتج يعني الباركود موجود
-                                input.val(""); // افرغ الحقل
+
+                                // تعبئة بيانات الصف الحالي
+                                input.val(response['barcode']);
+
+                                $(`input[name="products[${row}][name]"]`).val(response['name'] ??
+                                    "");
+                                $(`input[name="products[${row}][price]"]`).val(response['price'] ??
+                                    "");
+                                $(`input[name="products[${row}][weight]"]`).val(response[
+                                    'weight'] ?? "");
+
+                                // اظهار رسالة الخطأ
                                 errorSpan.removeClass("hidden").text("⚠️ الباركود موجود مسبقاً");
+
+                                // وضع المؤشر على الصف التالي
+                                $(`input[name="products[${nextRow}][barcode]"]`).focus();
                             },
+
                             error: function(xhr) {
                                 if (xhr.status === 404) {
-                                    // الباركود غير موجود → خبّي رسالة الخطأ
+                                    // الباركود غير موجود → اخفاء الخطأ
                                     errorSpan.addClass("hidden");
                                 }
+
+                                // انتقال إلى الباركود في الصف التالي
+                                $(`input[name="products[${nextRow}][barcode]"]`).focus();
                             }
                         });
                     }

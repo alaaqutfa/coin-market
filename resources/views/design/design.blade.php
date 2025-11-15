@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('public/assets/img/design-bg-3.png') }}') no-repeat center center;
+            background: url('{{ asset('public/assets/img/design-bg-3-ice.png') }}') no-repeat center center;
             background-size: cover;
             overflow: hidden;
             display: flex;
@@ -59,6 +59,9 @@
                 width: 50%;
             @else
                 width: 45%;
+            @endif
+            @if (count($products) == 1)
+                transform: scale(1.5);
             @endif
             display: flex;
             justify-content: center;
@@ -112,13 +115,14 @@
             color: var(--secondary);
             font-size: 3rem;
             /* font-size: 2rem; */
+            line-height: 2.75rem;
             font-weight: 800;
-            line-height: 2rem;
+            text-align: center;
         }
 
         .price-shape {
             width: 100%;
-            height: 150px;
+            min-height: 150px;
             box-shadow: 20px 10px 10px #22222280;
         }
 
@@ -127,6 +131,7 @@
             padding: 1rem;
             color: var(--primary);
             font-size: 2.25rem;
+            line-height: 2.5rem;
             /* font-size: 3rem; */
             font-weight: 800;
             text-align: center;
@@ -136,6 +141,7 @@
             color: var(--secondary);
             font-size: 3rem;
             /* font-size: 2rem; */
+            line-height: 2.75rem;
             font-weight: 800;
         }
     </style>
