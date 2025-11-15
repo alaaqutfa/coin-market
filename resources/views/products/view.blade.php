@@ -1173,10 +1173,10 @@
                             <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
                         </td>
                         <td class="px-4 py-3">
-                            <input type="number" step="0.01" name="products[${rowIndex}][price]" class="w-32 border rounded-lg px-3 py-2" placeholder="السعر" required>
+                            <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
                         </td>
                         <td class="px-4 py-3">
-                            <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
+                            <input type="number" step="0.01" name="products[${rowIndex}][price]" class="w-32 border rounded-lg px-3 py-2" placeholder="السعر" required>
                         </td>
                         <td class="px-4 py-3 text-center">
                             <button type="button" class="delete-row-new-products bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition" data-id="${id}">
