@@ -2,18 +2,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Imports\ProductsImport;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\ProductBarcodeLog;
 // use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ProductBarcodeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Spatie\Browsershot\Browsershot;
-use App\Imports\ProductsImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Browsershot\Browsershot;
 
 class ProductController extends Controller
 {
@@ -245,24 +245,43 @@ class ProductController extends Controller
     {
         $products = $request->input('products', []);
 
-        $barcodes         = collect($products)->pluck('barcode')->filter()->unique();
-        $existingBarcodes = Product::whereIn('barcode', $barcodes)->pluck('barcode')->toArray();
+        $barcodes = collect($products)->pluck('barcode')->filter()->unique();
 
-        $insertData = [];
+        // اجلب المنتجات الموجودة مسبقاً مع كامل بياناتها
+        $existingProducts = Product::whereIn('barcode', $barcodes)->get()->keyBy('barcode');
+
+        $insertData   = [];
+        $updatedCount = 0;
+
         foreach ($products as $p) {
             if (! empty($p['barcode']) && ! empty($p['name'])) {
-                $exists = in_array($p['barcode'], $existingBarcodes);
+
+                $barcode = $p['barcode'];
 
                 // سجل اللوج
                 ProductBarcodeLog::create([
-                    'barcode' => $p['barcode'],
-                    'exists'  => ! $exists,
+                    'barcode' => $barcode,
+                    'exists'  => isset($existingProducts[$barcode]), // true إذا موجود
                     'source'  => 'bulkStore',
                 ]);
 
-                if (! $exists) {
+                // إذا كان المنتج موجود → حدث
+                if (isset($existingProducts[$barcode])) {
+                    $existingProducts[$barcode]->update([
+                        'name'        => $p['name'],
+                        'price'       => $p['price'] ?? $existingProducts[$barcode]->price,
+                        'symbol'      => $p['symbol'] ?? $existingProducts[$barcode]->symbol,
+                        'category_id' => $p['category_id'] ?? $existingProducts[$barcode]->category_id,
+                        'brand_id'    => $p['brand_id'] ?? $existingProducts[$barcode]->brand_id,
+                        'weight'      => $p['weight'] ?? $existingProducts[$barcode]->weight,
+                        'quantity'    => $p['quantity'] ?? $existingProducts[$barcode]->quantity,
+                    ]);
+
+                    $updatedCount++;
+                } else {
+                    // غير موجود → أضفه
                     $insertData[] = [
-                        'barcode'     => $p['barcode'],
+                        'barcode'     => $barcode,
                         'name'        => $p['name'],
                         'price'       => $p['price'] ?? 0,
                         'symbol'      => $p['symbol'] ?? '$',
@@ -284,7 +303,8 @@ class ProductController extends Controller
         return response()->json([
             'success'  => true,
             'inserted' => count($insertData),
-            'skipped'  => count($existingBarcodes),
+            'updated'  => $updatedCount,
+            'skipped'  => 0,
         ]);
     }
 
