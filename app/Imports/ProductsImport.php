@@ -23,7 +23,7 @@ class ProductsImport implements ToModel, WithHeadingRow
                 // 'name'     => $row['description'] ?? $product->name,
                 'price'    => $row['price'] ?? $product->price,
                 'quantity' => $row['qty'] ?? $product->quantity,
-                'weight'   => 0,
+                // 'weight'   => 0,
             ]);
 
             return null;
