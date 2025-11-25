@@ -256,7 +256,9 @@
                                 </tr>
                             </thead>
                             <tbody id="recentMovementsTable">
-                                <tr><td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td></tr>
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -280,7 +282,9 @@
                                 </tr>
                             </thead>
                             <tbody id="currentStockTable">
-                                <tr><td colspan="3" class="px-6 py-4 text-center">جاري التحميل...</td></tr>
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -321,7 +325,9 @@
                                 </tr>
                             </thead>
                             <tbody id="productsManagementTable">
-                                <tr><td colspan="6" class="px-6 py-4 text-center">جاري التحميل...</td></tr>
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -432,7 +438,9 @@
                                 </tr>
                             </thead>
                             <tbody id="purchaseInvoicesTable">
-                                <tr><td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td></tr>
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -818,7 +826,8 @@
                 success: function(response) {
                     let tableBody = '';
                     if (response.length === 0) {
-                        tableBody = '<tr><td colspan="6" class="px-6 py-4 text-center">لا توجد منتجات</td></tr>';
+                        tableBody =
+                            '<tr><td colspan="6" class="px-6 py-4 text-center">لا توجد منتجات</td></tr>';
                     } else {
                         response.forEach(product => {
                             tableBody += `
@@ -1001,7 +1010,8 @@
                 success: function(response) {
                     let tableBody = '';
                     if (response.length === 0) {
-                        tableBody = '<tr><td colspan="5" class="px-6 py-4 text-center">لا توجد فواتير شراء</td></tr>';
+                        tableBody =
+                            '<tr><td colspan="5" class="px-6 py-4 text-center">لا توجد فواتير شراء</td></tr>';
                     } else {
                         response.forEach(invoice => {
                             tableBody += `
@@ -1170,9 +1180,8 @@
                     $('#soldWeight').text((response.sold_weight || 0).toFixed(2) + ' كغ');
                     $('#wasteWeight').text((response.waste_weight || 0).toFixed(2) + ' كغ');
 
-                    // حساب الربح الصافي (مثال بسيط)
-                    const netProfit = (response.total_sales || 0) * 0.3; // افتراضي 30% ربح
-                    $('#netProfit').text(netProfit.toFixed(2) + ' $');
+                    // 🔥 جديد: استخدام الربح الصافي الحقيقي
+                    $('#netProfit').text((response.net_profit || 0).toFixed(2) + ' $');
                 },
                 error: function(xhr) {
                     console.error('Error loading daily report');
@@ -1187,7 +1196,8 @@
                 success: function(response) {
                     let tableBody = '';
                     if (response.length === 0) {
-                        tableBody = '<tr><td colspan="5" class="px-6 py-4 text-center">لا توجد حركات حديثة</td></tr>';
+                        tableBody =
+                            '<tr><td colspan="5" class="px-6 py-4 text-center">لا توجد حركات حديثة</td></tr>';
                     } else {
                         response.forEach(movement => {
                             let badgeClass = '';
@@ -1239,7 +1249,8 @@
                 success: function(response) {
                     let tableBody = '';
                     if (response.length === 0) {
-                        tableBody = '<tr><td colspan="3" class="px-6 py-4 text-center">لا توجد منتجات في المخزون</td></tr>';
+                        tableBody =
+                            '<tr><td colspan="3" class="px-6 py-4 text-center">لا توجد منتجات في المخزون</td></tr>';
                     } else {
                         response.forEach(product => {
                             tableBody += `
@@ -1278,8 +1289,6 @@
             const startDate = $('#startDate').val();
             const endDate = $('#endDate').val();
 
-            // في هذه الحالة نستخدم البيانات المتاحة
-            // يمكنك إنشاء route منفصل للتقارير إذا أردت
             $.ajax({
                 url: '{{ route('meat-inventory.inventory.reports.daily') }}',
                 type: 'GET',
@@ -1289,21 +1298,52 @@
                 },
                 success: function(response) {
                     let reportHtml = `
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-semibold text-gray-700 mb-2">إجمالي المبيعات</h3>
-                                <p class="text-2xl font-bold text-green-600">${(response.total_sales || 0).toFixed(2)} $</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-semibold text-gray-700 mb-2">إجمالي الهدر</h3>
-                                <p class="text-2xl font-bold text-red-600">${(response.waste_weight || 0).toFixed(2)} كغ</p>
-                            </div>
-                            <div class="bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-semibold text-gray-700 mb-2">صافي الربح</h3>
-                                <p class="text-2xl font-bold text-blue-600">${((response.total_sales || 0) * 0.3).toFixed(2)} $</p>
-                            </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-semibold text-gray-700 mb-2">إجمالي المبيعات</h3>
+                        <p class="text-2xl font-bold text-green-600">${(response.total_sales || 0).toFixed(2)} $</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-semibold text-gray-700 mb-2">إجمالي الهدر</h3>
+                        <p class="text-2xl font-bold text-red-600">${(response.waste_weight || 0).toFixed(2)} كغ</p>
+                        <p class="text-sm text-gray-600">تكلفة: ${(response.waste_cost || 0).toFixed(2)} $</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-semibold text-gray-700 mb-2">إجمالي التكلفة</h3>
+                        <p class="text-2xl font-bold text-orange-600">${(response.total_cost || 0).toFixed(2)} $</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-semibold text-gray-700 mb-2">صافي الربح</h3>
+                        <p class="text-2xl font-bold ${(response.net_profit || 0) >= 0 ? 'text-blue-600' : 'text-red-600'}">
+                            ${(response.net_profit || 0).toFixed(2)} $
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow mb-4">
+                    <h3 class="font-semibold text-gray-700 mb-3">تفاصيل الأداء</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <p class="text-sm text-gray-600">اللحم المباع</p>
+                            <p class="font-bold">${(response.actual_sold_weight || 0).toFixed(2)} كغ</p>
                         </div>
-                    `;
+                        <div>
+                            <p class="text-sm text-gray-600">الإرجاعات</p>
+                            <p class="font-bold">${(response.returned_weight || 0).toFixed(2)} كغ</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">الربح الإجمالي</p>
+                            <p class="font-bold ${(response.gross_profit || 0) >= 0 ? 'text-green-600' : 'text-red-600'}">
+                                ${(response.gross_profit || 0).toFixed(2)} $
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">عدد المبيعات</p>
+                            <p class="font-bold">${response.sales_count || 0}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
 
                     $('#reportsResults').html(reportHtml);
                     hideLoading();
@@ -1348,7 +1388,7 @@
 
         function showLoading() {
             $('.loading-overlay').fadeIn();
-            $('.loading-overlay').css('display','flex');
+            $('.loading-overlay').css('display', 'flex');
         }
 
         function hideLoading() {

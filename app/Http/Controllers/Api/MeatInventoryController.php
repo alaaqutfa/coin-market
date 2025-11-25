@@ -84,16 +84,20 @@ class MeatInventoryController extends Controller
             'quantity'        => 'required|numeric|min:0.1',
             'movement_date'   => 'required|date',
             'notes'           => 'nullable|string',
+            'waste_cost'      => 'nullable|numeric|min:0', // 🔥 جديد
         ]);
 
         $product = MeatProduct::find($request->meat_product_id);
+
+        // 🔥 جديد: استخدام سعر محدد أو سعر التكلفة
+        $wasteCost = $request->waste_cost ?? $product->cost_price;
 
         $movement = MeatInventoryMovement::create([
             'meat_product_id' => $request->meat_product_id,
             'movement_type'   => 'waste',
             'quantity'        => $request->quantity,
-            'unit_price'      => $product->cost_price, // تكلفة الهدر
-            'total_price'     => $request->quantity * $product->cost_price,
+            'unit_price'      => $wasteCost,
+            'total_price'     => $request->quantity * $wasteCost,
             'movement_date'   => $request->movement_date,
             'notes'           => $request->notes ?? 'هدر',
         ]);
@@ -105,6 +109,7 @@ class MeatInventoryController extends Controller
     }
 
     // التقارير اليومية
+    // التقارير اليومية - معدلة
     public function dailyReport(Request $request)
     {
         $date = $request->date ?? now()->format('Y-m-d');
@@ -127,10 +132,23 @@ class MeatInventoryController extends Controller
         $totalSales          = $sales->sum('total_price');
         $totalWeightSold     = $sales->sum('quantity');
         $totalWeightReturned = $returns->sum('quantity');
-        $totalWaste          = $waste->sum('quantity');
+        $totalWasteWeight    = $waste->sum('quantity');
 
-        // حساب المبيع الفعلي (الخروج - الإرجاع)
+        // 🔥 جديد: حساب تكلفة الهدر
+        $totalWasteCost = $waste->sum('total_price');
+
+        // 🔥 جديد: حساب الربح الحقيقي
+        $totalCost = 0;
+        foreach ($sales as $sale) {
+            $product = $sale->product;
+            if ($product) {
+                $totalCost += $sale->quantity * $product->cost_price;
+            }
+        }
+
         $actualSoldWeight = $totalWeightSold - $totalWeightReturned;
+        $grossProfit      = $totalSales - $totalCost;
+        $netProfit        = $grossProfit - $totalWasteCost; // 🔥 خصم تكلفة الهدر
 
         return response()->json([
             'date'               => $date,
@@ -138,7 +156,11 @@ class MeatInventoryController extends Controller
             'sold_weight'        => $totalWeightSold,
             'returned_weight'    => $totalWeightReturned,
             'actual_sold_weight' => $actualSoldWeight,
-            'waste_weight'       => $totalWaste,
+            'waste_weight'       => $totalWasteWeight,
+            'waste_cost'         => $totalWasteCost, // 🔥 جديد
+            'total_cost'         => $totalCost,      // 🔥 جديد
+            'gross_profit'       => $grossProfit,    // 🔥 جديد
+            'net_profit'         => $netProfit,      // 🔥 جديد
             'sales_count'        => $sales->count(),
             'sales'              => $sales,
             'returns'            => $returns,
