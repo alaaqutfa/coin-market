@@ -182,59 +182,59 @@
             </ul>
         </div>
 
-        <!-- الإحصائيات -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="stat-card bg-white rounded-lg shadow p-4 border-r-blue-500">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-600 text-sm">إجمالي المبيعات اليوم</p>
-                        <p class="text-2xl font-bold text-gray-800" id="totalSales">0 $</p>
-                    </div>
-                    <div class="text-blue-500">
-                        <i class="fas fa-dollar-sign fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card bg-white rounded-lg shadow p-4 border-r-green-500">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-600 text-sm">اللحم المباع</p>
-                        <p class="text-2xl font-bold text-gray-800" id="soldWeight">0 كغ</p>
-                    </div>
-                    <div class="text-green-500">
-                        <i class="fas fa-weight fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card bg-white rounded-lg shadow p-4 border-r-yellow-500">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-600 text-sm">الهدر</p>
-                        <p class="text-2xl font-bold text-gray-800" id="wasteWeight">0 كغ</p>
-                    </div>
-                    <div class="text-yellow-500">
-                        <i class="fas fa-trash fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card bg-white rounded-lg shadow p-4 border-r-purple-500">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <p class="text-gray-600 text-sm">الربح الصافي</p>
-                        <p class="text-2xl font-bold text-gray-800" id="netProfit">0 $</p>
-                    </div>
-                    <div class="text-purple-500">
-                        <i class="fas fa-chart-line fa-2x"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- قسم لوحة التحكم -->
         <div class="nav-item dashboard-section">
+            <!-- الإحصائيات -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-white rounded-lg shadow p-4 border-r-blue-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-600 text-sm">إجمالي المبيعات اليوم</p>
+                            <p class="text-2xl font-bold text-gray-800" id="totalSales">0 $</p>
+                        </div>
+                        <div class="text-blue-500">
+                            <i class="fas fa-dollar-sign fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white rounded-lg shadow p-4 border-r-green-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-600 text-sm">اللحم المباع</p>
+                            <p class="text-2xl font-bold text-gray-800" id="soldWeight">0 كغ</p>
+                        </div>
+                        <div class="text-green-500">
+                            <i class="fas fa-weight fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white rounded-lg shadow p-4 border-r-yellow-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-600 text-sm">الهدر</p>
+                            <p class="text-2xl font-bold text-gray-800" id="wasteWeight">0 كغ</p>
+                        </div>
+                        <div class="text-yellow-500">
+                            <i class="fas fa-trash fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white rounded-lg shadow p-4 border-r-purple-500">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-gray-600 text-sm">الربح الصافي</p>
+                            <p class="text-2xl font-bold text-gray-800" id="netProfit">0 $</p>
+                        </div>
+                        <div class="text-purple-500">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- الحركات الأخيرة -->
                 <div class="table-container bg-white rounded-lg">
@@ -294,46 +294,6 @@
 
         <!-- قسم إدارة المنتجات -->
         <div class="nav-item products-management-section" style="display: none;">
-            <div class="table-container bg-white rounded-lg">
-                <div class="p-4 border-b bg-indigo-50">
-                    <h2 class="text-xl font-semibold text-indigo-800 flex items-center gap-2">
-                        <i class="fas fa-cube ml-2"></i>
-                        إدارة منتجات اللحم
-                    </h2>
-                </div>
-                <div class="p-6">
-                    <!-- زر إضافة منتج جديد -->
-                    <div class="mb-6">
-                        <button onclick="showProductForm()"
-                            class="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-plus ml-2"></i>
-                            إضافة منتج جديد
-                        </button>
-                    </div>
-
-                    <!-- جدول المنتجات -->
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                                <tr>
-                                    <th class="px-6 py-4">الاسم</th>
-                                    <th class="px-6 py-4">الوزن الحالي</th>
-                                    <th class="px-6 py-4">سعر التكلفة</th>
-                                    <th class="px-6 py-4">سعر البيع</th>
-                                    <th class="px-6 py-4">نسبة الهدر</th>
-                                    <th class="px-6 py-4">الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="productsManagementTable">
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center">جاري التحميل...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
             <!-- نموذج إضافة/تعديل المنتج -->
             <div id="productFormSection" class="table-container bg-white rounded-lg mt-6" style="display: none;">
                 <div class="p-4 border-b bg-indigo-50">
@@ -404,48 +364,49 @@
                     </form>
                 </div>
             </div>
-        </div>
-
-        <!-- قسم فواتير الشراء -->
-        <div class="nav-item purchases-section" style="display: none;">
             <div class="table-container bg-white rounded-lg">
-                <div class="p-4 border-b bg-teal-50">
-                    <h2 class="text-xl font-semibold text-teal-800 flex items-center gap-2">
-                        <i class="fas fa-file-invoice ml-2"></i>
-                        فواتير الشراء
+                <div class="p-4 border-b bg-indigo-50">
+                    <h2 class="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+                        <i class="fas fa-cube ml-2"></i>
+                        إدارة منتجات اللحم
                     </h2>
                 </div>
                 <div class="p-6">
-                    <!-- زر إنشاء فاتورة جديدة -->
+                    <!-- زر إضافة منتج جديد -->
                     <div class="mb-6">
-                        <button onclick="showPurchaseInvoiceForm()"
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
+                        <button onclick="showProductForm()"
+                            class="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-plus ml-2"></i>
-                            إنشاء فاتورة شراء جديدة
+                            إضافة منتج جديد
                         </button>
                     </div>
 
-                    <!-- قائمة الفواتير -->
+                    <!-- جدول المنتجات -->
                     <div class="relative overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                                 <tr>
-                                    <th class="px-6 py-4">رقم الفاتورة</th>
-                                    <th class="px-6 py-4">المورد</th>
-                                    <th class="px-6 py-4">التاريخ</th>
-                                    <th class="px-6 py-4">المبلغ الإجمالي</th>
+                                    <th class="px-6 py-4">الاسم</th>
+                                    <th class="px-6 py-4">الوزن الحالي</th>
+                                    <th class="px-6 py-4">سعر التكلفة</th>
+                                    <th class="px-6 py-4">سعر البيع</th>
+                                    <th class="px-6 py-4">نسبة الهدر</th>
                                     <th class="px-6 py-4">الإجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody id="purchaseInvoicesTable">
+                            <tbody id="productsManagementTable">
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                    <td colspan="6" class="px-6 py-4 text-center">جاري التحميل...</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- قسم فواتير الشراء -->
+        <div class="nav-item purchases-section" style="display: none;">
 
             <!-- نموذج إنشاء فاتورة شراء -->
             <div id="purchaseInvoiceFormSection" class="table-container bg-white rounded-lg mt-6" style="display: none;">
@@ -538,6 +499,45 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            <div class="table-container bg-white rounded-lg">
+                <div class="p-4 border-b bg-teal-50">
+                    <h2 class="text-xl font-semibold text-teal-800 flex items-center gap-2">
+                        <i class="fas fa-file-invoice ml-2"></i>
+                        فواتير الشراء
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <!-- زر إنشاء فاتورة جديدة -->
+                    <div class="mb-6">
+                        <button onclick="showPurchaseInvoiceForm()"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-plus ml-2"></i>
+                            إنشاء فاتورة شراء جديدة
+                        </button>
+                    </div>
+
+                    <!-- قائمة الفواتير -->
+                    <div class="relative overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                <tr>
+                                    <th class="px-6 py-4">رقم الفاتورة</th>
+                                    <th class="px-6 py-4">المورد</th>
+                                    <th class="px-6 py-4">التاريخ</th>
+                                    <th class="px-6 py-4">المبلغ الإجمالي</th>
+                                    <th class="px-6 py-4">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchaseInvoicesTable">
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center">جاري التحميل...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
