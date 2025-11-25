@@ -413,7 +413,7 @@
                     <!-- زر إنشاء فاتورة جديدة -->
                     <div class="mb-6">
                         <button onclick="showPurchaseInvoiceForm()"
-                            class="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-plus ml-2"></i>
                             إنشاء فاتورة شراء جديدة
                         </button>
