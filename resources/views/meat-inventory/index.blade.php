@@ -527,7 +527,7 @@
 
                         <div class="flex gap-3">
                             <button type="submit"
-                                class="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
+                                class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                 <i class="fas fa-save ml-2"></i>
                                 حفظ الفاتورة
                             </button>
