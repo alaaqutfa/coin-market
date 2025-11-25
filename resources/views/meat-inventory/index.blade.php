@@ -494,11 +494,21 @@
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                                         <tr>
                                             <th class="px-2 py-3 w-12 text-center">#</th>
-                                            <th style="min-width: 220px;" class="px-2 py-3 min-w-[120px] whitespace-nowrap">المنتج</th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 w-28 whitespace-nowrap text-center">الكمية (كغ)</th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 w-28 whitespace-nowrap text-center">سعر الوحدة ($)</th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 w-28 whitespace-nowrap text-center">الإجمالي ($)</th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 w-28 text-center">إجراء</th>
+                                            <th style="min-width: 220px;" class="px-2 py-3 whitespace-nowrap text-center">
+                                                المنتج
+                                            </th>
+                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
+                                                الكمية (كغ)
+                                            </th>
+                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
+                                                سعر الوحدة ($)
+                                            </th>
+                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
+                                                الإجمالي ($)
+                                            </th>
+                                            <th style="min-width: 120px;" class="px-2 py-3 text-center">
+                                                إجراء
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody id="purchaseItemsTable">
