@@ -1348,10 +1348,12 @@
 
         function showLoading() {
             $('.loading-overlay').fadeIn();
+            $('.loading-overlay').css('display','flex');
         }
 
         function hideLoading() {
             $('.loading-overlay').fadeOut();
+            $('.loading-overlay').css('display','none');
         }
 
         // إضافة CSRF token لجميع طلبات AJAX
