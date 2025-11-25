@@ -493,12 +493,12 @@
                                 <table class="w-full text-sm text-left text-gray-500 dynamic-table">
                                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                                         <tr>
-                                            <th class="px-4 py-3">#</th>
-                                            <th class="px-4 py-3">المنتج</th>
-                                            <th class="px-4 py-3">الكمية (كغ)</th>
-                                            <th class="px-4 py-3">سعر الوحدة ($)</th>
-                                            <th class="px-4 py-3">الإجمالي ($)</th>
-                                            <th class="px-4 py-3">إجراء</th>
+                                            <th class="px-2 py-3 w-12 text-center">#</th>
+                                            <th style="min-width: 120px;" class="px-2 py-3 min-w-[120px] whitespace-nowrap">المنتج</th>
+                                            <th class="px-2 py-3 w-24 whitespace-nowrap text-center">الكمية (كغ)</th>
+                                            <th class="px-2 py-3 w-28 whitespace-nowrap text-center">سعر الوحدة ($)</th>
+                                            <th class="px-2 py-3 w-28 whitespace-nowrap text-center">الإجمالي ($)</th>
+                                            <th class="px-2 py-3 w-20 text-center">إجراء</th>
                                         </tr>
                                     </thead>
                                     <tbody id="purchaseItemsTable">
