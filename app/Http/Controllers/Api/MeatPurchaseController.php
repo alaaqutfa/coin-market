@@ -16,6 +16,12 @@ class MeatPurchaseController extends Controller
 
     public function store(Request $request)
     {
+
+        if ($request->isJson()) {
+            $data = $request->json()->all();
+            $request->merge($data);
+        }
+
         $request->validate([
             'supplier_name'           => 'nullable|string|max:255',
             'purchase_date'           => 'required|date',

@@ -1052,17 +1052,23 @@
 
         function savePurchaseInvoice() {
             showLoading();
-            const formData = new FormData($('#purchaseInvoiceForm')[0]);
+
+            const formData = {
+                _token: $('input[name="_token"]').val(),
+                supplier_name: $('input[name="supplier_name"]').val(),
+                purchase_date: $('input[name="purchase_date"]').val(),
+                notes: $('textarea[name="notes"]').val(),
+                items: []
+            };
 
             // جمع بيانات العناصر
-            const items = [];
             $('.purchase-item-row').each(function() {
                 const productId = $(this).find('.product-select').val();
                 const quantity = $(this).find('.quantity-input').val();
                 const unitCost = $(this).find('.unit-price-input').val();
 
                 if (productId && quantity && unitCost) {
-                    items.push({
+                    formData.items.push({
                         meat_product_id: productId,
                         quantity: parseFloat(quantity),
                         unit_cost: parseFloat(unitCost)
@@ -1070,20 +1076,18 @@
                 }
             });
 
-            if (items.length === 0) {
+            if (formData.items.length === 0) {
                 showNotification('يجب إضافة عنصر واحد على الأقل', 'error');
                 hideLoading();
                 return;
             }
 
-            formData.append('items', JSON.stringify(items));
-
             $.ajax({
                 url: '{{ route('meat-inventory.purchases.store') }}',
                 type: 'POST',
-                data: formData,
+                data: JSON.stringify(formData),
                 processData: false,
-                contentType: false,
+                contentType: 'application/json',
                 success: function(response) {
                     hidePurchaseInvoiceForm();
                     loadPurchaseInvoices();
