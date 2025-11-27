@@ -133,48 +133,231 @@
             background-color: #f8fafc;
             font-weight: bold;
         }
+
+        /* تحسينات RTSL والاستجابة */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .table-responsive table {
+            min-width: 100%;
+            width: auto;
+        }
+
+        .table-responsive th,
+        .table-responsive td {
+            white-space: nowrap;
+            min-width: 120px;
+            padding: 12px 8px;
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+
+            .nav-btn {
+                font-size: 0.8rem;
+                padding: 0.75rem 0.5rem;
+            }
+
+            .table-responsive th,
+            .table-responsive td {
+                padding: 8px 6px;
+                font-size: 0.875rem;
+                min-width: 100px;
+            }
+
+            .grid-cols-1 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .md\:grid-cols-2,
+            .md\:grid-cols-3,
+            .md\:grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* تحسينات للشاشات المتوسطة */
+        @media (min-width: 769px) and (max-width: 1024px) {
+
+            .table-responsive th,
+            .table-responsive td {
+                min-width: 110px;
+                padding: 10px 8px;
+            }
+        }
+
+        /* تحسينات للجداول */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            text-align: center;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .data-table td {
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        /* تحسينات للأزرار في الجداول */
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .table-actions button {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* تحسينات للنماذج */
+        .form-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        /* تحسينات للعناوين */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        /* تحسينات للبطاقات */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background-color: #f8fafc;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* تحسينات للشريط التنقل */
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* تحسينات للمودال */
+        .modal-content {
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+        }
     </style>
 @endpush
 
 @section('content')
-    <div dir="rtl" class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">نظام إدارة الملحمه</h1>
-        <p class="text-center text-gray-600 mb-8">إدارة المخزون والحسابات اليومية للحم</p>
+    <div dir="rtl" class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 mb-2">نظام إدارة الملحمه</h1>
+        <p class="text-center text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base">إدارة المخزون والحسابات اليومية للحم</p>
 
         <!-- تبويبات التنقل -->
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
-            <ul class="flex flex-wrap -mb-px">
-                <li class="me-2">
+            <ul class="flex flex-wrap -mb-px overflow-x-auto">
+                <li class="me-2 flex-shrink-0">
                     <button type="button"
-                        class="nav-btn inline-block p-4 text-yellow-400 border-b-2 border-yellow-400 rounded-t-lg active"
+                        class="nav-btn inline-block p-3 sm:p-4 text-yellow-400 border-b-2 border-yellow-400 rounded-t-lg active"
                         data-target="dashboard-section">
                         <i class="fas fa-chart-pie ml-2"></i>لوحة التحكم
                     </button>
                 </li>
-                <li class="me-2">
+                <li class="me-2 flex-shrink-0">
                     <button type="button"
-                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target="products-management-section">
                         <i class="fas fa-cube ml-2"></i>إدارة المنتجات
                     </button>
                 </li>
-                <li class="me-2">
+                <li class="me-2 flex-shrink-0">
                     <button type="button"
-                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target="purchases-section">
                         <i class="fas fa-file-invoice ml-2"></i>فواتير الشراء
                     </button>
                 </li>
-                <li class="me-2">
+                <li class="me-2 flex-shrink-0">
                     <button type="button"
-                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target="inventory-section">
                         <i class="fas fa-warehouse ml-2"></i>إدارة المخزون
                     </button>
                 </li>
-                <li class="me-2">
+                <li class="me-2 flex-shrink-0">
                     <button type="button"
-                        class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target="reports-section">
                         <i class="fas fa-chart-bar ml-2"></i>التقارير
                     </button>
@@ -182,19 +365,18 @@
             </ul>
         </div>
 
-
         <!-- قسم لوحة التحكم -->
         <div class="nav-item dashboard-section">
             <!-- الإحصائيات -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
                 <div class="stat-card bg-white rounded-lg shadow p-4 border-r-blue-500">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-gray-600 text-sm">إجمالي المبيعات اليوم</p>
-                            <p class="text-2xl font-bold text-gray-800" id="totalSales">0 $</p>
+                            <p class="text-gray-600 text-xs sm:text-sm">إجمالي المبيعات اليوم</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="totalSales">0 $</p>
                         </div>
                         <div class="text-blue-500">
-                            <i class="fas fa-dollar-sign fa-2x"></i>
+                            <i class="fas fa-dollar-sign text-lg sm:text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -202,11 +384,11 @@
                 <div class="stat-card bg-white rounded-lg shadow p-4 border-r-green-500">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-gray-600 text-sm">اللحم المباع</p>
-                            <p class="text-2xl font-bold text-gray-800" id="soldWeight">0 كغ</p>
+                            <p class="text-gray-600 text-xs sm:text-sm">اللحم المباع</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="soldWeight">0 كغ</p>
                         </div>
                         <div class="text-green-500">
-                            <i class="fas fa-weight fa-2x"></i>
+                            <i class="fas fa-weight text-lg sm:text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -214,11 +396,11 @@
                 <div class="stat-card bg-white rounded-lg shadow p-4 border-r-yellow-500">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-gray-600 text-sm">الهدر</p>
-                            <p class="text-2xl font-bold text-gray-800" id="wasteWeight">0 كغ</p>
+                            <p class="text-gray-600 text-xs sm:text-sm">الهدر</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="wasteWeight">0 كغ</p>
                         </div>
                         <div class="text-yellow-500">
-                            <i class="fas fa-trash fa-2x"></i>
+                            <i class="fas fa-trash text-lg sm:text-2xl"></i>
                         </div>
                     </div>
                 </div>
@@ -226,33 +408,34 @@
                 <div class="stat-card bg-white rounded-lg shadow p-4 border-r-purple-500">
                     <div class="flex justify-between items-center">
                         <div>
-                            <p class="text-gray-600 text-sm">الربح الصافي</p>
-                            <p class="text-2xl font-bold text-gray-800" id="netProfit">0 $</p>
+                            <p class="text-gray-600 text-xs sm:text-sm">الربح الصافي</p>
+                            <p class="text-xl sm:text-2xl font-bold text-gray-800" id="netProfit">0 $</p>
                         </div>
                         <div class="text-purple-500">
-                            <i class="fas fa-chart-line fa-2x"></i>
+                            <i class="fas fa-chart-line text-lg sm:text-2xl"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <!-- الحركات الأخيرة -->
                 <div class="table-container bg-white rounded-lg">
                     <div class="p-4 border-b">
-                        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 flex items-center gap-2">
                             <i class="fas fa-history ml-2"></i>
                             آخر الحركات
                         </h2>
                     </div>
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <div class="table-responsive">
+                        <table class="data-table w-full">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-4">التاريخ</th>
-                                    <th class="px-6 py-4">المنتج</th>
-                                    <th class="px-6 py-4">نوع الحركة</th>
-                                    <th class="px-6 py-4">الكمية</th>
-                                    <th class="px-6 py-4">الإجمالي</th>
+                                    <th class="px-3 sm:px-6 py-3">التاريخ</th>
+                                    <th class="px-3 sm:px-6 py-3">المنتج</th>
+                                    <th class="px-3 sm:px-6 py-3">نوع الحركة</th>
+                                    <th class="px-3 sm:px-6 py-3">الكمية</th>
+                                    <th class="px-3 sm:px-6 py-3">الإجمالي</th>
                                 </tr>
                             </thead>
                             <tbody id="recentMovementsTable">
@@ -267,18 +450,18 @@
                 <!-- المخزون الحالي -->
                 <div class="table-container bg-white rounded-lg">
                     <div class="p-4 border-b">
-                        <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                        <h2 class="text-lg sm:text-xl font-semibold text-gray-800 flex items-center gap-2">
                             <i class="fas fa-boxes ml-2"></i>
                             المخزون الحالي
                         </h2>
                     </div>
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <div class="table-responsive">
+                        <table class="data-table w-full">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-4">المنتج</th>
-                                    <th class="px-6 py-4">الوزن المتوفر</th>
-                                    <th class="px-6 py-4">سعر البيع</th>
+                                    <th class="px-3 sm:px-6 py-3">المنتج</th>
+                                    <th class="px-3 sm:px-6 py-3">الوزن المتوفر</th>
+                                    <th class="px-3 sm:px-6 py-3">سعر البيع</th>
                                 </tr>
                             </thead>
                             <tbody id="currentStockTable">
@@ -297,16 +480,16 @@
             <!-- نموذج إضافة/تعديل المنتج -->
             <div id="productFormSection" class="table-container bg-white rounded-lg mt-6" style="display: none;">
                 <div class="p-4 border-b bg-indigo-50">
-                    <h2 class="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-indigo-800 flex items-center gap-2">
                         <i class="fas fa-edit ml-2"></i>
                         <span id="productFormTitle">إضافة منتج جديد</span>
                     </h2>
                 </div>
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <form id="productForm" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="id" id="productId">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-grid">
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-700">اسم المنتج</label>
                                 <input type="text" name="name" id="productName" required
@@ -349,7 +532,7 @@
                                     placeholder="وصف المنتج"></textarea>
                             </div>
                         </div>
-                        <div class="mt-6 flex gap-3">
+                        <div class="mt-6 flex gap-3 flex-wrap">
                             <button type="submit"
                                 class="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                 <i class="fas fa-save ml-2"></i>
@@ -364,14 +547,15 @@
                     </form>
                 </div>
             </div>
+
             <div class="table-container bg-white rounded-lg">
                 <div class="p-4 border-b bg-indigo-50">
-                    <h2 class="text-xl font-semibold text-indigo-800 flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-indigo-800 flex items-center gap-2">
                         <i class="fas fa-cube ml-2"></i>
                         إدارة منتجات اللحم
                     </h2>
                 </div>
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <!-- زر إضافة منتج جديد -->
                     <div class="mb-6">
                         <button onclick="showProductForm()"
@@ -382,16 +566,16 @@
                     </div>
 
                     <!-- جدول المنتجات -->
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <div class="table-responsive">
+                        <table class="data-table w-full">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-4">الاسم</th>
-                                    <th class="px-6 py-4">الوزن الحالي</th>
-                                    <th class="px-6 py-4">سعر التكلفة</th>
-                                    <th class="px-6 py-4">سعر البيع</th>
-                                    <th class="px-6 py-4">نسبة الهدر</th>
-                                    <th class="px-6 py-4">الإجراءات</th>
+                                    <th class="px-3 sm:px-6 py-3">الاسم</th>
+                                    <th class="px-3 sm:px-6 py-3">الوزن الحالي</th>
+                                    <th class="px-3 sm:px-6 py-3">سعر التكلفة</th>
+                                    <th class="px-3 sm:px-6 py-3">سعر البيع</th>
+                                    <th class="px-3 sm:px-6 py-3">نسبة الهدر</th>
+                                    <th class="px-3 sm:px-6 py-3">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody id="productsManagementTable">
@@ -407,20 +591,19 @@
 
         <!-- قسم فواتير الشراء -->
         <div class="nav-item purchases-section" style="display: none;">
-
             <!-- نموذج إنشاء فاتورة شراء -->
             <div id="purchaseInvoiceFormSection" class="table-container bg-white rounded-lg mt-6" style="display: none;">
                 <div class="p-4 border-b bg-teal-50">
-                    <h2 class="text-xl font-semibold text-teal-800 flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-teal-800 flex items-center gap-2">
                         <i class="fas fa-receipt ml-2"></i>
                         إنشاء فاتورة شراء جديدة
                     </h2>
                 </div>
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <form id="purchaseInvoiceForm">
                         @csrf
                         <!-- معلومات الفاتورة -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="form-grid mb-6">
                             <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-700">اسم المورد</label>
                                 <input type="text" name="supplier_name"
@@ -441,7 +624,7 @@
 
                         <!-- جدول العناصر الديناميكي -->
                         <div class="mb-6">
-                            <div class="flex justify-between items-center mb-4">
+                            <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
                                 <h3 class="text-lg font-semibold text-gray-800">عناصر الفاتورة</h3>
                                 <button type="button" onclick="addPurchaseItemRow()"
                                     class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
@@ -450,26 +633,16 @@
                                 </button>
                             </div>
 
-                            <div class="relative overflow-x-auto">
-                                <table class="w-full text-sm text-left text-gray-500 dynamic-table">
-                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <div class="table-responsive">
+                                <table class="data-table dynamic-table w-full">
+                                    <thead>
                                         <tr>
                                             <th class="px-2 py-3 w-12 text-center">#</th>
-                                            <th style="min-width: 220px;" class="px-2 py-3 whitespace-nowrap text-center">
-                                                المنتج
-                                            </th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
-                                                الكمية (كغ)
-                                            </th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
-                                                سعر الوحدة ($)
-                                            </th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 whitespace-nowrap text-center">
-                                                الإجمالي ($)
-                                            </th>
-                                            <th style="min-width: 120px;" class="px-2 py-3 text-center">
-                                                إجراء
-                                            </th>
+                                            <th class="px-2 py-3 min-w-[200px]">المنتج</th>
+                                            <th class="px-2 py-3 min-w-[120px]">الكمية (كغ)</th>
+                                            <th class="px-2 py-3 min-w-[120px]">سعر الوحدة ($)</th>
+                                            <th class="px-2 py-3 min-w-[120px]">الإجمالي ($)</th>
+                                            <th class="px-2 py-3 min-w-[80px] text-center">إجراء</th>
                                         </tr>
                                     </thead>
                                     <tbody id="purchaseItemsTable">
@@ -486,7 +659,7 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-3">
+                        <div class="flex gap-3 flex-wrap">
                             <button type="submit"
                                 class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                 <i class="fas fa-save ml-2"></i>
@@ -504,12 +677,12 @@
 
             <div class="table-container bg-white rounded-lg">
                 <div class="p-4 border-b bg-teal-50">
-                    <h2 class="text-xl font-semibold text-teal-800 flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-teal-800 flex items-center gap-2">
                         <i class="fas fa-file-invoice ml-2"></i>
                         فواتير الشراء
                     </h2>
                 </div>
-                <div class="p-6">
+                <div class="p-4 sm:p-6">
                     <!-- زر إنشاء فاتورة جديدة -->
                     <div class="mb-6">
                         <button onclick="showPurchaseInvoiceForm()"
@@ -520,15 +693,15 @@
                     </div>
 
                     <!-- قائمة الفواتير -->
-                    <div class="relative overflow-x-auto">
-                        <table class="w-full text-sm text-left text-gray-500">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <div class="table-responsive">
+                        <table class="data-table w-full">
+                            <thead>
                                 <tr>
-                                    <th class="px-6 py-4">رقم الفاتورة</th>
-                                    <th class="px-6 py-4">المورد</th>
-                                    <th class="px-6 py-4">التاريخ</th>
-                                    <th class="px-6 py-4">المبلغ الإجمالي</th>
-                                    <th class="px-6 py-4">الإجراءات</th>
+                                    <th class="px-3 sm:px-6 py-3">رقم الفاتورة</th>
+                                    <th class="px-3 sm:px-6 py-3">المورد</th>
+                                    <th class="px-3 sm:px-6 py-3">التاريخ</th>
+                                    <th class="px-3 sm:px-6 py-3">المبلغ الإجمالي</th>
+                                    <th class="px-3 sm:px-6 py-3">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody id="purchaseInvoicesTable">
@@ -542,39 +715,41 @@
             </div>
         </div>
 
+        <!-- باقي الأقسام بنفس النمط... -->
         <!-- قسم إدارة المخزون -->
         <div class="nav-item inventory-section" style="display: none;">
-            <div class="grid grid-cols-1 gap-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="grid grid-cols-1 gap-4 sm:gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
                     <button onclick="showSection('sale')"
-                        class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                        class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition text-sm sm:text-base">
                         <i class="fas fa-sign-out-alt ml-2"></i>
                         تسجيل خروج للبيع
                     </button>
                     <button onclick="showSection('return')"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition text-sm sm:text-base">
                         <i class="fas fa-undo ml-2"></i>
                         تسجيل إرجاع
                     </button>
                     <button onclick="showSection('waste')"
-                        class="bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+                        class="bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition text-sm sm:text-base">
                         <i class="fas fa-trash ml-2"></i>
                         تسجيل هدر
                     </button>
                 </div>
 
+                <!-- باقي محتوى قسم إدارة المخزون بنفس النمط المحسن... -->
                 <!-- تسجيل خروج للبيع -->
                 <div id="saleSection" class="content-section table-container bg-white rounded-lg">
                     <div class="p-4 border-b bg-green-50">
-                        <h2 class="text-xl font-semibold text-green-800 flex items-center gap-2">
+                        <h2 class="text-lg sm:text-xl font-semibold text-green-800 flex items-center gap-2">
                             <i class="fas fa-sign-out-alt ml-2"></i>
                             تسجيل خروج بضاعة للبيع
                         </h2>
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <form id="saleForm">
                             @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="form-grid">
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">المنتج</label>
                                     <select name="meat_product_id" required
@@ -595,7 +770,12 @@
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                         placeholder="مثال: 15.5">
                                 </div>
-                                <div class="md:col-span-3">
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">التاريخ</label>
+                                    <input type="date" name="movement_date" value="{{ date('Y-m-d') }}" required
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2" />
+                                </div>
+                                <div class="md:col-span-2">
                                     <button type="submit"
                                         class="bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                         <i class="fas fa-check ml-2"></i>
@@ -611,15 +791,15 @@
                 <div id="returnSection" class="content-section table-container bg-white rounded-lg"
                     style="display: none;">
                     <div class="p-4 border-b bg-yellow-50">
-                        <h2 class="text-xl font-semibold text-yellow-800 flex items-center gap-2">
+                        <h2 class="text-lg sm:text-xl font-semibold text-yellow-800 flex items-center gap-2">
                             <i class="fas fa-undo ml-2"></i>
                             تسجيل إرجاع باقي للمستودع
                         </h2>
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <form id="returnForm">
                             @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-grid">
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">المنتج</label>
                                     <select name="meat_product_id" required
@@ -634,6 +814,11 @@
                                     <input type="number" name="quantity" step="0.1" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                         placeholder="مثال: 5.2">
+                                </div>
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">التاريخ</label>
+                                    <input type="date" name="movement_date" value="{{ date('Y-m-d') }}" required
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2" />
                                 </div>
                                 <div class="md:col-span-2">
                                     <button type="submit"
@@ -651,15 +836,15 @@
                 <div id="wasteSection" class="content-section table-container bg-white rounded-lg"
                     style="display: none;">
                     <div class="p-4 border-b bg-red-50">
-                        <h2 class="text-xl font-semibold text-red-800 flex items-center gap-2">
+                        <h2 class="text-lg sm:text-xl font-semibold text-red-800 flex items-center gap-2">
                             <i class="fas fa-trash ml-2"></i>
                             تسجيل هدر
                         </h2>
                     </div>
-                    <div class="p-6">
+                    <div class="p-4 sm:p-6">
                         <form id="wasteForm">
                             @csrf
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-grid">
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">المنتج</label>
                                     <select name="meat_product_id" required
@@ -673,6 +858,11 @@
                                     <input type="number" name="quantity" step="0.1" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                         placeholder="مثال: 1.5">
+                                </div>
+                                <div>
+                                    <label class="block mb-2 text-sm font-medium text-gray-700">التاريخ</label>
+                                    <input type="date" name="movement_date" value="{{ date('Y-m-d') }}" required
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2" />
                                 </div>
                                 <div class="md:col-span-2">
                                     <button type="submit"
@@ -692,13 +882,13 @@
         <div class="nav-item reports-section" style="display: none;">
             <div class="table-container bg-white rounded-lg">
                 <div class="p-4 border-b bg-purple-50">
-                    <h2 class="text-xl font-semibold text-purple-800 flex items-center gap-2">
+                    <h2 class="text-lg sm:text-xl font-semibold text-purple-800 flex items-center gap-2">
                         <i class="fas fa-chart-bar ml-2"></i>
                         التقارير والإحصائيات
                     </h2>
                 </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="p-4 sm:p-6">
+                    <div class="form-grid mb-6">
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-700">من تاريخ</label>
                             <input type="date" id="startDate"
@@ -716,7 +906,7 @@
                         عرض التقارير
                     </button>
 
-                    <div id="reportsResults" class="bg-gray-50 rounded-lg p-6">
+                    <div id="reportsResults" class="bg-gray-50 rounded-lg p-4 sm:p-6">
                         <p class="text-center text-gray-500">اختر الفترة ثم انقر على "عرض التقارير"</p>
                     </div>
                 </div>
@@ -1123,7 +1313,7 @@
         function showPurchaseInvoiceModal(invoice) {
             // إنشاء محتوى المودال
             const modalContent = `
-                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div dir="rtl" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div class="bg-white rounded-lg w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
                         <!-- الهيدر -->
                         <div class="bg-teal-500 text-white p-6 rounded-t-lg">
@@ -1164,16 +1354,16 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                    <tr class="border-b hover:bg-gray-50">
-                                                        <td class="px-6 py-4">${index + 1}</td>
-                                                        <td class="px-6 py-4 font-medium text-gray-900">
-                                                            ${item.product?.name || 'منتج محذوف'}
-                                                        </td>
-                                                        <td class="px-6 py-4">${item.quantity}</td>
-                                                        <td class="px-6 py-4">${item.unit_cost}</td>
-                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                    </tr>
-                                                `).join('')}
+                                                                    <tr class="border-b hover:bg-gray-50">
+                                                                        <td class="px-6 py-4">${index + 1}</td>
+                                                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                                                            ${item.product?.name || 'منتج محذوف'}
+                                                                        </td>
+                                                                        <td class="px-6 py-4">${item.quantity}</td>
+                                                                        <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                    </tr>
+                                                                `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
@@ -1327,6 +1517,8 @@
                         response.forEach(movement => {
                             let badgeClass = '';
                             let typeText = '';
+                            const dateObj = new Date(movement.movement_date);
+                            const movementDate = dateObj.toISOString().split('T')[0];
 
                             switch (movement.movement_type) {
                                 case 'out':
@@ -1348,7 +1540,7 @@
 
                             tableBody += `
                                 <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-6 py-4">${movement.movement_date}</td>
+                                    <td class="px-6 py-4">${movementDate}</td>
                                     <td class="px-6 py-4">${movement.product?.name || 'غير معروف'}</td>
                                     <td class="px-6 py-4">
                                         <span class="movement-badge ${badgeClass}">${typeText}</span>
