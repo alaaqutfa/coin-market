@@ -1053,6 +1053,7 @@
         function savePurchaseInvoice() {
             showLoading();
 
+            // جمع البيانات الرئيسية من الفورم
             const formData = {
                 _token: $('input[name="_token"]').val(),
                 supplier_name: $('input[name="supplier_name"]').val(),
@@ -1103,8 +1104,118 @@
         }
 
         function viewPurchaseInvoice(id) {
-            // يمكنك تنفيذ عرض تفاصيل الفاتورة هنا
-            alert('عرض تفاصيل الفاتورة: ' + id);
+            showLoading();
+
+            $.ajax({
+                url: `/api/meat-inventory/purchases/${id}/details`,
+                type: 'GET',
+                success: function(response) {
+                    showPurchaseInvoiceModal(response.invoice);
+                    hideLoading();
+                },
+                error: function(xhr) {
+                    showNotification('خطأ في تحميل تفاصيل الفاتورة', 'error');
+                    hideLoading();
+                }
+            });
+        }
+
+        function showPurchaseInvoiceModal(invoice) {
+            // إنشاء محتوى المودال
+            const modalContent = `
+                <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-lg w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+                        <!-- الهيدر -->
+                        <div class="bg-teal-500 text-white p-6 rounded-t-lg">
+                            <div class="flex justify-between items-center">
+                                <h2 class="text-2xl font-bold">فاتورة الشراء #${invoice.invoice_number}</h2>
+                                <button onclick="closeModal()" class="text-white hover:text-gray-200 text-2xl">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-sm">
+                                <div>
+                                    <strong>المورد:</strong> ${invoice.supplier_name || 'غير محدد'}
+                                </div>
+                                <div>
+                                    <strong>التاريخ:</strong> ${invoice.purchase_date}
+                                </div>
+                                <div>
+                                    <strong>المبلغ الإجمالي:</strong> ${invoice.total_amount} $
+                                </div>
+                            </div>
+                            ${invoice.notes ? `<div class="mt-2"><strong>ملاحظات:</strong> ${invoice.notes}</div>` : ''}
+                        </div>
+
+                        <!-- محتوى المودال -->
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800">عناصر الفاتورة</h3>
+
+                            <div class="relative overflow-x-auto">
+                                <table class="w-full text-sm text-left text-gray-500">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                                        <tr>
+                                            <th class="px-6 py-3">#</th>
+                                            <th class="px-6 py-3">المنتج</th>
+                                            <th class="px-6 py-3">الكمية (كغ)</th>
+                                            <th class="px-6 py-3">سعر الوحدة ($)</th>
+                                            <th class="px-6 py-3">الإجمالي ($)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${invoice.items.map((item, index) => `
+                                                    <tr class="border-b hover:bg-gray-50">
+                                                        <td class="px-6 py-4">${index + 1}</td>
+                                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                                            ${item.product?.name || 'منتج محذوف'}
+                                                        </td>
+                                                        <td class="px-6 py-4">${item.quantity}</td>
+                                                        <td class="px-6 py-4">${item.unit_cost}</td>
+                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                    </tr>
+                                                `).join('')}
+                                    </tbody>
+                                    <tfoot class="bg-gray-50">
+                                        <tr>
+                                            <td colspan="4" class="px-6 py-4 text-right font-bold">المجموع الكلي:</td>
+                                            <td class="px-6 py-4 font-bold text-lg text-teal-600">${invoice.total_amount} $</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="mt-6 flex justify-between items-center">
+                                <div class="text-sm text-gray-600">
+                                    <strong>عدد العناصر:</strong> ${invoice.items.length}
+                                </div>
+                                <div class="flex gap-2">
+                                    <button onclick="printInvoice(${invoice.id})"
+                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                                        <i class="fas fa-print"></i>
+                                        طباعة
+                                    </button>
+                                    <button onclick="closeModal()"
+                                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg">
+                                        إغلاق
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // إضافة المودال إلى الصفحة
+            $('body').append(modalContent);
+        }
+
+        function closeModal() {
+            $('.fixed.inset-0').remove();
+        }
+
+        function printInvoice(invoiceId) {
+            // استخدام المسار الجديد
+            window.open(`/api/meat-inventory/purchases/${invoiceId}/print`, '_blank');
         }
 
         // ========== إدارة المخزون ==========
@@ -1198,7 +1309,7 @@
                     $('#netProfit').text((response.net_profit || 0).toFixed(2) + ' $');
                 },
                 error: function(xhr) {
-                    console.error('Error loading daily report');
+                    console.log('Error loading daily report');
                 }
             });
         }
@@ -1251,7 +1362,7 @@
                     $('#recentMovementsTable').html(tableBody);
                 },
                 error: function(xhr) {
-                    console.error('Error loading movements');
+                    console.log('Error loading movements');
                 }
             });
         }
@@ -1279,7 +1390,7 @@
                     $('#currentStockTable').html(tableBody);
                 },
                 error: function(xhr) {
-                    console.error('Error loading current stock');
+                    console.log('Error loading current stock');
                 }
             });
         }
@@ -1293,7 +1404,7 @@
                     updateProductSelects(response);
                 },
                 error: function(xhr) {
-                    console.error('Error loading products');
+                    console.log('Error loading products');
                 }
             });
         }

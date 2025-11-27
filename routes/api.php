@@ -49,6 +49,8 @@ Route::prefix('meat-inventory')->name('meat-inventory.')->group(function () {
         Route::get('/{meatPurchase}', [MeatPurchaseController::class, 'show'])->name('show');
         Route::put('/{meatPurchase}', [MeatPurchaseController::class, 'update'])->name('update');
         Route::delete('/{meatPurchase}', [MeatPurchaseController::class, 'destroy'])->name('destroy');
+        Route::get('/{meatPurchase}/details', [MeatPurchaseController::class, 'showDetails'])->name('showDetails');
+        Route::get('/{meatPurchase}/print', [MeatPurchaseController::class, 'print'])->name('print');
     });
 
     // مسارات حركات المخزون
