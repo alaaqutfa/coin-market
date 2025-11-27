@@ -3,6 +3,53 @@
 @section('title', 'نظام إدارة الملحمه')
 
 @push('css')
+    <!-- مكتبة Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <style>
+        /* تخصيص Select2 للغة العربية */
+        .select2-container--default .select2-selection--single {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            height: 42px;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5;
+            text-align: right;
+            padding-right: 8px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            left: 8px;
+            right: auto;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #ECC631;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            text-align: right;
+        }
+
+        /* تحسينات للغة العربية */
+        .select2-container--default .select2-results__option {
+            text-align: right;
+            padding: 8px 12px;
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .select2-container--default .select2-selection--single {
+                height: 38px;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
     <style>
         :root {
             --primary: #ECC631;
@@ -921,6 +968,8 @@
 @endsection
 
 @push('script')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/i18n/ar.js"></script>
     <script>
         // المتغيرات العامة
         let purchaseItemCounter = 0;
@@ -937,7 +986,37 @@
             // إعداد النماذج
             setupForms();
             setupNavigation();
+            initializeSelect2();
         });
+
+
+        function initializeSelect2() {
+            // تهيئة Select2 للعناصر الموجودة حالياً
+            $('.product-select, #saleProductsSelect, #returnProductsSelect, #wasteProductsSelect').select2({
+                language: "ar",
+                placeholder: "اختر المنتج",
+                allowClear: true,
+                width: '100%',
+                dir: "rtl"
+            });
+
+            // إعادة تهيئة Select2 عند إضافة صفوف جديدة
+            $(document).on('select2:open', () => {
+                document.querySelector('.select2-container--open .select2-search__field').focus();
+            });
+        }
+
+        // إعادة تهيئة Select2 للعناصر الجديدة
+        function reinitializeSelect2() {
+            $('.product-select:not(.select2-hidden-accessible)').select2({
+                language: "ar",
+                placeholder: "اختر المنتج",
+                allowClear: true,
+                width: '100%',
+                dir: "rtl"
+            });
+        }
+
 
         // إعداد التنقل بين الأقسام
         function setupNavigation() {
@@ -1008,6 +1087,9 @@
         // ========== إدارة المنتجات ==========
         function showProductForm() {
             $('#productFormSection').fadeIn(300);
+            setTimeout(() => {
+                reinitializeSelect2();
+            }, 300);
         }
 
         function hideProductForm() {
@@ -1188,6 +1270,9 @@
                 </tr>
             `;
             $('#purchaseItemsTable').append(row);
+            setTimeout(() => {
+                reinitializeSelect2();
+            }, 100);
         }
 
         function calculatePurchaseTotal() {
@@ -1354,16 +1439,16 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                                    <tr class="border-b hover:bg-gray-50">
-                                                                        <td class="px-6 py-4">${index + 1}</td>
-                                                                        <td class="px-6 py-4 font-medium text-gray-900">
-                                                                            ${item.product?.name || 'منتج محذوف'}
-                                                                        </td>
-                                                                        <td class="px-6 py-4">${item.quantity}</td>
-                                                                        <td class="px-6 py-4">${item.unit_cost}</td>
-                                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                                    </tr>
-                                                                `).join('')}
+                                                                                    <tr class="border-b hover:bg-gray-50">
+                                                                                        <td class="px-6 py-4">${index + 1}</td>
+                                                                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                                                                            ${item.product?.name || 'منتج محذوف'}
+                                                                                        </td>
+                                                                                        <td class="px-6 py-4">${item.quantity}</td>
+                                                                                        <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                                    </tr>
+                                                                                `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
@@ -1679,6 +1764,8 @@
             $('#saleProductsSelect').html('<option value="">اختر المنتج</option>' + options);
             $('#returnProductsSelect').html('<option value="">اختر المنتج</option>' + options);
             $('#wasteProductsSelect').html('<option value="">اختر المنتج</option>' + options);
+
+            $('#saleProductsSelect, #returnProductsSelect, #wasteProductsSelect').trigger('change.select2');
         }
 
         function showNotification(message, type = 'info') {
