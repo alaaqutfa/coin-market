@@ -58,12 +58,6 @@ class MeatPurchaseController extends Controller
                 ]);
 
                 $totalAmount += $item->total_cost;
-
-                // تحديث مخزون المنتج
-                $product = MeatProduct::find($itemData['meat_product_id']);
-                if ($product) {
-                    $product->increment('current_stock', $itemData['quantity']);
-                }
             }
 
             // تحديث المبلغ الإجمالي

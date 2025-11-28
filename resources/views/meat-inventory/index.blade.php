@@ -183,7 +183,8 @@
 
         /* تحسينات RTSL والاستجابة */
         .table-responsive {
-            overflow-x: auto;
+            max-height: 400px;
+            overflow: auto;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -862,12 +863,29 @@
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                         placeholder="مثال: 5.2">
                                 </div>
+                                <div id="default_waste_persent_div" style="display: none;">
+                                    <label for="default_waste_persent_field"
+                                        class="block mb-2 text-sm font-medium text-gray-700">
+                                        نسبة الهدر الافتراضية (%)
+                                    </label>
+                                    <input type="number" id="default_waste_persent_field"
+                                        name="default_waste_persent_field" value="0"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2" disabled />
+                                </div>
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">التاريخ</label>
                                     <input type="date" name="movement_date" value="{{ date('Y-m-d') }}" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2" />
                                 </div>
                                 <div class="md:col-span-2">
+                                    <div class="flex items-center mb-4">
+                                        <input id="calc_default_waste_persent" type="checkbox" value="0"
+                                            class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
+                                        <label for="calc-default-waste-persent"
+                                            class="select-none ms-2 text-sm font-medium text-heading">
+                                            حساب نسبة الهدر الافتراضية للمنتج
+                                        </label>
+                                    </div>
                                     <button type="submit"
                                         class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                         <i class="fas fa-undo ml-2"></i>
@@ -902,13 +920,14 @@
                                 </div>
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">كمية الهدر (كيلو)</label>
-                                    <input type="number" name="quantity" step="0.1" required
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    <input type="number" id="wasteProductsQuantity" name="quantity" step="0.1"
+                                        required class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                         placeholder="مثال: 1.5">
                                 </div>
                                 <div>
                                     <label class="block mb-2 text-sm font-medium text-gray-700">التاريخ</label>
-                                    <input type="date" name="movement_date" value="{{ date('Y-m-d') }}" required
+                                    <input type="date" id="wasteProductsMovementDate" name="movement_date"
+                                        value="{{ date('Y-m-d') }}" required
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2" />
                                 </div>
                                 <div class="md:col-span-2">
@@ -1041,6 +1060,10 @@
                     loadProductsManagement();
                 } else if (target === 'purchases-section') {
                     loadPurchaseInvoices();
+                } else if (target === 'dashboard-section') {
+                    loadDailyReport();
+                    loadRecentMovements();
+                    loadCurrentStock();
                 }
             });
         }
@@ -1299,11 +1322,13 @@
                             '<tr><td colspan="5" class="px-6 py-4 text-center">لا توجد فواتير شراء</td></tr>';
                     } else {
                         response.forEach(invoice => {
+                            const dateObj = new Date(invoice.purchase_date);
+                            const purchase_date = dateObj.toISOString().split('T')[0];
                             tableBody += `
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="px-6 py-4 font-medium text-gray-900">${invoice.invoice_number || 'INV-' + invoice.id}</td>
                                     <td class="px-6 py-4">${invoice.supplier_name || '-'}</td>
-                                    <td class="px-6 py-4">${invoice.purchase_date}</td>
+                                    <td class="px-6 py-4">${purchase_date}</td>
                                     <td class="px-6 py-4">${invoice.total_amount} $</td>
                                     <td class="px-6 py-4">
                                         <button onclick="viewPurchaseInvoice(${invoice.id})" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm flex items-center gap-1">
@@ -1439,16 +1464,16 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                                                    <tr class="border-b hover:bg-gray-50">
-                                                                                        <td class="px-6 py-4">${index + 1}</td>
-                                                                                        <td class="px-6 py-4 font-medium text-gray-900">
-                                                                                            ${item.product?.name || 'منتج محذوف'}
-                                                                                        </td>
-                                                                                        <td class="px-6 py-4">${item.quantity}</td>
-                                                                                        <td class="px-6 py-4">${item.unit_cost}</td>
-                                                                                        <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                                                    </tr>
-                                                                                `).join('')}
+                                                                                                                                                                        <tr class="border-b hover:bg-gray-50">
+                                                                                                                                                                            <td class="px-6 py-4">${index + 1}</td>
+                                                                                                                                                                            <td class="px-6 py-4 font-medium text-gray-900">
+                                                                                                                                                                                ${item.product?.name || 'منتج محذوف'}
+                                                                                                                                                                            </td>
+                                                                                                                                                                            <td class="px-6 py-4">${item.quantity}</td>
+                                                                                                                                                                            <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                                                                                                                            <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                                                                                                                        </tr>
+                                                                                                                                                                    `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
@@ -1537,6 +1562,13 @@
                     loadRecentMovements();
                     showNotification('تم تسجيل الإرجاع بنجاح', 'success');
                     hideLoading();
+                    // if ($('#calc_default_waste_persent').is(':checked') && $('#default_waste_persent_field')
+                    //     .val() != 0) {
+                    //     console.log($('#default_waste_persent_field').val());
+                    //         $('#wasteProductsSelect').val($('#returnProductsSelect').val()).trigger('change');
+                    //         $('#wasteProductsQuantity').val($('#returnProductsSelect').val()).trigger('change');
+                    //         $('#wasteProductsMovementDate').val($('#returnProductsSelect').val()).trigger('change');
+                    // }
                 },
                 error: function(xhr) {
                     showNotification('خطأ في تسجيل الإرجاع', 'error');
@@ -1766,6 +1798,29 @@
             $('#wasteProductsSelect').html('<option value="">اختر المنتج</option>' + options);
 
             $('#saleProductsSelect, #returnProductsSelect, #wasteProductsSelect').trigger('change.select2');
+
+            // إعداد التعامل مع نسبة الهدر الافتراضية في نموذج الإرجاع
+            var waste_percentage_values = {};
+            products.forEach((product, index, array) => {
+                waste_percentage_values[product['id']] = product['waste_percentage'];
+            });
+            $('#calc_default_waste_persent').on('change', () => {
+                if (!$('#calc_default_waste_persent').is(':checked')) {
+                    $('#default_waste_persent_div').fadeOut();
+                    return;
+                }
+                $('#default_waste_persent_div').fadeIn();
+                const selectedProductId = $('#returnProductsSelect').val();
+                const wastePercentage = waste_percentage_values[selectedProductId] || 0;
+                $('#default_waste_persent_field').val(wastePercentage);
+            });
+            $('#returnProductsSelect').on('change', function() {
+                if ($('#calc_default_waste_persent').is(':checked')) {
+                    const selectedProductId = $(this).val();
+                    const wastePercentage = waste_percentage_values[selectedProductId] || 0;
+                    $('#default_waste_persent_field').val(wastePercentage);
+                }
+            });
         }
 
         function showNotification(message, type = 'info') {
