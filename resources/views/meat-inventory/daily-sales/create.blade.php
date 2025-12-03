@@ -95,41 +95,6 @@
                                         السريع</p>
                                 </div>
 
-                                <!-- حقل نوع العملية -->
-                                <div>
-                                    <label for="transaction_type"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        نوع العملية *
-                                    </label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <i class="fas fa-exchange-alt text-gray-500"></i>
-                                        </div>
-                                        <select
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            id="transaction_type" name="transaction_type" required>
-                                            <option value="sale">بيع</option>
-                                            <option value="return">مرتجع</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- حقل التاريخ -->
-                                <div>
-                                    <label for="sale_date"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                        تاريخ العملية *
-                                    </label>
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                            <i class="fas fa-calendar-alt text-gray-500"></i>
-                                        </div>
-                                        <input type="date"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            id="sale_date" name="sale_date" value="{{ date('Y-m-d') }}" required>
-                                    </div>
-                                </div>
-
                                 <!-- حقل السعر -->
                                 <div>
                                     <label for="sale_price"
@@ -177,6 +142,41 @@
                                             id="total_amount" readonly value="0.00 $">
                                     </div>
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">محسوب تلقائياً</p>
+                                </div>
+
+                                <!-- حقل نوع العملية -->
+                                <div>
+                                    <label for="transaction_type"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        نوع العملية *
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <i class="fas fa-exchange-alt text-gray-500"></i>
+                                        </div>
+                                        <select
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            id="transaction_type" name="transaction_type" required>
+                                            <option value="sale">بيع</option>
+                                            <option value="return">مرتجع</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- حقل التاريخ -->
+                                <div>
+                                    <label for="sale_date"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        تاريخ العملية *
+                                    </label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <i class="fas fa-calendar-alt text-gray-500"></i>
+                                        </div>
+                                        <input type="date"
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pr-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            id="sale_date" name="sale_date" value="{{ date('Y-m-d') }}" required>
+                                    </div>
                                 </div>
                             </div>
 
