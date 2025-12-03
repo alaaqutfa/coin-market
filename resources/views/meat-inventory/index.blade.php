@@ -514,6 +514,7 @@
                         <table class="data-table w-full">
                             <thead>
                                 <tr>
+                                    <th class="px-3 sm:px-6 py-3">الباركود</th>
                                     <th class="px-3 sm:px-6 py-3">المنتج</th>
                                     <th class="px-3 sm:px-6 py-3">الوزن المتوفر</th>
                                     <th class="px-3 sm:px-6 py-3">سعر البيع</th>
@@ -631,6 +632,7 @@
                         <table class="data-table w-full">
                             <thead>
                                 <tr>
+                                    <th class="px-3 sm:px-6 py-3">الباركود</th>
                                     <th class="px-3 sm:px-6 py-3">الاسم</th>
                                     <th class="px-3 sm:px-6 py-3">الوزن الحالي</th>
                                     <th class="px-3 sm:px-6 py-3">سعر التكلفة</th>
@@ -1212,6 +1214,7 @@
                         response.forEach(product => {
                             tableBody += `
                                 <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900">${product.barcode}</td>
                                     <td class="px-6 py-4 font-medium text-gray-900">${product.name}</td>
                                     <td class="px-6 py-4">${product.current_stock} كغ</td>
                                     <td class="px-6 py-4">${product.cost_price} $</td>
@@ -1765,6 +1768,7 @@
                         response.forEach(product => {
                             tableBody += `
                                 <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900">${product.barcode}</td>
                                     <td class="px-6 py-4 font-medium text-gray-900">${product.name}</td>
                                     <td class="px-6 py-4">${product.current_stock} كغ</td>
                                     <td class="px-6 py-4">${product.selling_price} $</td>
