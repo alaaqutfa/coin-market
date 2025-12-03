@@ -11,6 +11,7 @@ class MeatProduct extends Model
 
     protected $fillable = [
         'name',
+        'barcode',
         'image',
         'description',
         'current_stock',
@@ -55,5 +56,13 @@ class MeatProduct extends Model
     public function calculateExpectedWaste($quantity)
     {
         return $quantity * ($this->waste_percentage / 100);
+    }
+
+    /**
+     * العلاقة مع المبيعات
+     */
+    public function dailySales()
+    {
+        return $this->hasMany(DailySale::class);
     }
 }

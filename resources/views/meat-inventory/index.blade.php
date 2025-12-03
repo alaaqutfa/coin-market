@@ -392,6 +392,13 @@
                 <li class="me-2 flex-shrink-0">
                     <button type="button"
                         class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
+                        data-target="daily-sales-section">
+                        <i class="fas fa-chart-bar ml-2"></i>المبيعات اليومية
+                    </button>
+                </li>
+                <li class="me-2 flex-shrink-0">
+                    <button type="button"
+                        class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target="purchases-section">
                         <i class="fas fa-file-invoice ml-2"></i>فواتير الشراء
                     </button>
@@ -545,6 +552,12 @@
                                     placeholder="أدخل اسم المنتج">
                             </div>
                             <div>
+                                <label class="block mb-2 text-sm font-medium text-gray-700">باركود</label>
+                                <input type="text" name="barcode" id="productBarcode"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                    placeholder="أدخل الباركود">
+                            </div>
+                            <div>
                                 <label class="block mb-2 text-sm font-medium text-gray-700">الصورة</label>
                                 <input type="file" name="image" id="productImage"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2">
@@ -637,12 +650,75 @@
             </div>
         </div>
 
+        <!-- قسم إدارة المبيعات اليومية -->
+        <div class="nav-item daily-sales-section" style="display: none;">
+            <div class="table-container bg-white rounded-lg">
+                <div class="p-4 border-b bg-purple-50">
+                    <h2 class="text-lg sm:text-xl font-semibold text-purple-800 flex items-center gap-2">
+                        <i class="fas fa-chart-bar ml-2"></i>
+                        المبيعات اليومية
+                    </h2>
+                </div>
+                <div class="p-4 my-8">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{{ route('meat-inventory.daily-sales.create') }}"
+                            class="flex-1 flex items-center gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-lg bg-blue-500 flex items-center justify-center">
+                                    <i class="fas fa-plus text-white text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-bold text-gray-900 mb-1">إضافة عملية</h3>
+                                <p class="text-gray-600 text-sm">تسجيل بيع أو مرتجع جديد</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-left text-blue-500 text-lg"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ route('meat-inventory.daily-sales.report') }}"
+                            class="flex-1 flex items-center gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-lg bg-green-500 flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-white text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-bold text-gray-900 mb-1">تقرير المبيعات</h3>
+                                <p class="text-gray-600 text-sm">عرض وتحليل جميع العمليات</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-left text-emerald-500 text-lg"></i>
+                            </div>
+                        </a>
+
+                        <a href="{{ route('meat-inventory.daily-sales.daily-summary') }}"
+                            class="flex-1 flex items-center gap-4 bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+                            <div class="flex-shrink-0">
+                                <div class="w-12 h-12 rounded-lg bg-purple-500 flex items-center justify-center">
+                                    <i class="fas fa-chart-pie text-white text-xl"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-bold text-gray-900 mb-1">الملخص اليومي</h3>
+                                <p class="text-gray-600 text-sm">إحصائيات ومؤشرات الأداء</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-arrow-left text-purple-500 text-lg"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- قسم فواتير الشراء -->
         <div class="nav-item purchases-section" style="display: none;">
             <!-- نموذج إنشاء فاتورة شراء -->
             <div id="purchaseInvoiceFormSection" class="table-container bg-white rounded-lg mt-6" style="display: none;">
-                <div class="p-4 border-b bg-teal-50">
-                    <h2 class="text-lg sm:text-xl font-semibold text-teal-800 flex items-center gap-2">
+                <div class="p-4 border-b bg-blue-50">
+                    <h2 class="text-lg sm:text-xl font-semibold text-blue-800 flex items-center gap-2">
                         <i class="fas fa-receipt ml-2"></i>
                         إنشاء فاتورة شراء جديدة
                     </h2>
@@ -724,8 +800,8 @@
             </div>
 
             <div class="table-container bg-white rounded-lg">
-                <div class="p-4 border-b bg-teal-50">
-                    <h2 class="text-lg sm:text-xl font-semibold text-teal-800 flex items-center gap-2">
+                <div class="p-4 border-b bg-blue-50">
+                    <h2 class="text-lg sm:text-xl font-semibold text-blue-800 flex items-center gap-2">
                         <i class="fas fa-file-invoice ml-2"></i>
                         فواتير الشراء
                     </h2>
@@ -763,7 +839,6 @@
             </div>
         </div>
 
-        <!-- باقي الأقسام بنفس النمط... -->
         <!-- قسم إدارة المخزون -->
         <div class="nav-item inventory-section" style="display: none;">
             <div class="grid grid-cols-1 gap-4 sm:gap-6">
@@ -1213,6 +1288,7 @@
                     $('#productFormSubmitText').text('تحديث المنتج');
                     $('#productId').val(product.id);
                     $('#productName').val(product.name);
+                    $('#productBarcode').val(product.barcode);
                     $('#productStock').val(product.current_stock);
                     $('#productCost').val(product.cost_price);
                     $('#productPrice').val(product.selling_price);
@@ -1426,7 +1502,7 @@
                 <div dir="rtl" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div class="bg-white rounded-lg w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
                         <!-- الهيدر -->
-                        <div class="bg-teal-500 text-white p-6 rounded-t-lg">
+                        <div class="bg-blue-500 text-white p-6 rounded-t-lg">
                             <div class="flex justify-between items-center">
                                 <h2 class="text-2xl font-bold">فاتورة الشراء #${invoice.invoice_number}</h2>
                                 <button onclick="closeModal()" class="text-white hover:text-gray-200 text-2xl">
@@ -1464,21 +1540,21 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                                                                                                                                        <tr class="border-b hover:bg-gray-50">
-                                                                                                                                                                            <td class="px-6 py-4">${index + 1}</td>
-                                                                                                                                                                            <td class="px-6 py-4 font-medium text-gray-900">
-                                                                                                                                                                                ${item.product?.name || 'منتج محذوف'}
-                                                                                                                                                                            </td>
-                                                                                                                                                                            <td class="px-6 py-4">${item.quantity}</td>
-                                                                                                                                                                            <td class="px-6 py-4">${item.unit_cost}</td>
-                                                                                                                                                                            <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                                                                                                                                        </tr>
-                                                                                                                                                                    `).join('')}
+                                                                                                                                                                                                        <tr class="border-b hover:bg-gray-50">
+                                                                                                                                                                                                            <td class="px-6 py-4">${index + 1}</td>
+                                                                                                                                                                                                            <td class="px-6 py-4 font-medium text-gray-900">
+                                                                                                                                                                                                                ${item.product?.name || 'منتج محذوف'}
+                                                                                                                                                                                                            </td>
+                                                                                                                                                                                                            <td class="px-6 py-4">${item.quantity}</td>
+                                                                                                                                                                                                            <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                                                                                                                                                            <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                                                                                                                                                        </tr>
+                                                                                                                                                                                                    `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
                                             <td colspan="4" class="px-6 py-4 text-right font-bold">المجموع الكلي:</td>
-                                            <td class="px-6 py-4 font-bold text-lg text-teal-600">${invoice.total_amount} $</td>
+                                            <td class="px-6 py-4 font-bold text-lg text-blue-600">${invoice.total_amount} $</td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -1724,7 +1800,7 @@
             const endDate = $('#endDate').val();
 
             $.ajax({
-                url: '{{ route('meat-inventory.inventory.reports.daily') }}',
+                url: '{{ route('meat-inventory.inventory.reports.range') }}',
                 type: 'GET',
                 data: {
                     start_date: startDate,

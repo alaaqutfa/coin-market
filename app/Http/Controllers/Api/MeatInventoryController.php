@@ -109,7 +109,6 @@ class MeatInventoryController extends Controller
     }
 
     // التقارير اليومية
-    // التقارير اليومية - معدلة
     public function dailyReport(Request $request)
     {
         $date = $request->date ?? now()->format('Y-m-d');
@@ -133,11 +132,7 @@ class MeatInventoryController extends Controller
         $totalWeightSold     = $sales->sum('quantity');
         $totalWeightReturned = $returns->sum('quantity');
         $totalWasteWeight    = $waste->sum('quantity');
-
-        // 🔥 جديد: حساب تكلفة الهدر
         $totalWasteCost = $waste->sum('total_price');
-
-        // 🔥 جديد: حساب الربح الحقيقي
         $totalCost = 0;
         foreach ($sales as $sale) {
             $product = $sale->product;
@@ -145,10 +140,9 @@ class MeatInventoryController extends Controller
                 $totalCost += $sale->quantity * $product->cost_price;
             }
         }
-
         $actualSoldWeight = $totalWeightSold - $totalWeightReturned;
         $grossProfit      = $totalSales - $totalCost;
-        $netProfit        = $grossProfit - $totalWasteCost; // 🔥 خصم تكلفة الهدر
+        $netProfit        = $grossProfit - $totalWasteCost;
 
         return response()->json([
             'date'               => $date,
@@ -157,10 +151,67 @@ class MeatInventoryController extends Controller
             'returned_weight'    => $totalWeightReturned,
             'actual_sold_weight' => $actualSoldWeight,
             'waste_weight'       => $totalWasteWeight,
-            'waste_cost'         => $totalWasteCost, // 🔥 جديد
-            'total_cost'         => $totalCost,      // 🔥 جديد
-            'gross_profit'       => $grossProfit,    // 🔥 جديد
-            'net_profit'         => $netProfit,      // 🔥 جديد
+            'waste_cost'         => $totalWasteCost,
+            'total_cost'         => $totalCost,
+            'gross_profit'       => $grossProfit,
+            'net_profit'         => $netProfit,
+            'sales_count'        => $sales->count(),
+            'sales'              => $sales,
+            'returns'            => $returns,
+            'waste'              => $waste,
+        ]);
+    }
+
+    // التقارير المخصصة
+    public function rangeReport(Request $request)
+    {
+        // $request->start_date
+        // $request->end_date
+
+        $date = $request->date ?? now()->format('Y-m-d');
+
+        $sales = MeatInventoryMovement::with('product')
+            ->where('movement_type', 'out')
+            ->whereDate('movement_date', $date)
+            ->get();
+
+        $returns = MeatInventoryMovement::with('product')
+            ->where('movement_type', 'return')
+            ->whereDate('movement_date', $date)
+            ->get();
+
+        $waste = MeatInventoryMovement::with('product')
+            ->where('movement_type', 'waste')
+            ->whereDate('movement_date', $date)
+            ->get();
+
+        $totalSales          = $sales->sum('total_price');
+        $totalWeightSold     = $sales->sum('quantity');
+        $totalWeightReturned = $returns->sum('quantity');
+        $totalWasteWeight    = $waste->sum('quantity');
+        $totalWasteCost = $waste->sum('total_price');
+        $totalCost = 0;
+        foreach ($sales as $sale) {
+            $product = $sale->product;
+            if ($product) {
+                $totalCost += $sale->quantity * $product->cost_price;
+            }
+        }
+        $actualSoldWeight = $totalWeightSold - $totalWeightReturned;
+        $grossProfit      = $totalSales - $totalCost;
+        $netProfit        = $grossProfit - $totalWasteCost;
+
+        return response()->json([
+            'date'               => $date,
+            'total_sales'        => $totalSales,
+            'sold_weight'        => $totalWeightSold,
+            'returned_weight'    => $totalWeightReturned,
+            'actual_sold_weight' => $actualSoldWeight,
+            'waste_weight'       => $totalWasteWeight,
+            'waste_cost'         => $totalWasteCost,
+            'total_cost'         => $totalCost,
+            'gross_profit'       => $grossProfit,
+            'net_profit'         => $netProfit,
             'sales_count'        => $sales->count(),
             'sales'              => $sales,
             'returns'            => $returns,

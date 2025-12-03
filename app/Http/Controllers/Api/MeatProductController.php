@@ -19,6 +19,7 @@ class MeatProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'barcode' => 'nullable|string|max:50|unique:meat_products,barcode,',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'current_stock' => 'required|numeric|min:0',
@@ -52,6 +53,7 @@ class MeatProductController extends Controller
     {
         $request->validate([
             'name' => 'sometimes|string|max:255',
+            'barcode' => 'nullable|string|max:50|unique:meat_products,barcode,',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
             'current_stock' => 'sometimes|numeric|min:0',
