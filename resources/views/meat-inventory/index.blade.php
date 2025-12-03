@@ -1540,16 +1540,16 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                                                                                                                                                                        <tr class="border-b hover:bg-gray-50">
-                                                                                                                                                                                                            <td class="px-6 py-4">${index + 1}</td>
-                                                                                                                                                                                                            <td class="px-6 py-4 font-medium text-gray-900">
-                                                                                                                                                                                                                ${item.product?.name || 'منتج محذوف'}
-                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                            <td class="px-6 py-4">${item.quantity}</td>
-                                                                                                                                                                                                            <td class="px-6 py-4">${item.unit_cost}</td>
-                                                                                                                                                                                                            <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                                                                                                                                                                        </tr>
-                                                                                                                                                                                                    `).join('')}
+                                                                                                                                                                                                            <tr class="border-b hover:bg-gray-50">
+                                                                                                                                                                                                                <td class="px-6 py-4">${index + 1}</td>
+                                                                                                                                                                                                                <td class="px-6 py-4 font-medium text-gray-900">
+                                                                                                                                                                                                                    ${item.product?.name || 'منتج محذوف'}
+                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                <td class="px-6 py-4">${item.quantity}</td>
+                                                                                                                                                                                                                <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                                                                                                                                                                <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                                                                                                                                                            </tr>
+                                                                                                                                                                                                        `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
