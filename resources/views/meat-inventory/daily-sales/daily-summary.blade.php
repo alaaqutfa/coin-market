@@ -55,11 +55,13 @@
                                 <i class="fas fa-list ml-2"></i>
                                 التقرير التفصيلي
                             </a>
-                            <a href="{{ route('meat-inventory.index') }}"
-                                class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                                <i class="fas fa-home ml-2"></i>
-                                الصفحة الرئيسية
-                            </a>
+                            @if (request()->query('mobile') != 1)
+                                <a href="{{ route('meat-inventory.index') }}"
+                                    class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                    <i class="fas fa-home ml-2"></i>
+                                    الصفحة الرئيسية
+                                </a>
+                            @endif
                         </div>
                     </form>
                 </div>

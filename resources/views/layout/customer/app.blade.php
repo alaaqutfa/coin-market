@@ -33,15 +33,15 @@
     </div>
 
     <div id="app">
-
-        @include('layout.partials.header')
-
+        @if (request()->query('mobile') != 1)
+            @include('layout.partials.header')
+        @endif
         <main>
             @yield('content')
         </main>
-
-        @include('layout.partials.footer')
-
+        @if (request()->query('mobile') != 1)
+            @include('layout.partials.footer')
+        @endif
     </div>
 
 
