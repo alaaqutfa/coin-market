@@ -33,13 +33,13 @@
     </div>
 
     <div id="app">
-        @if (request()->query('mobile') != 1)
+        @if (!session('mobile'))
             @include('layout.partials.header')
         @endif
         <main>
             @yield('content')
         </main>
-        @if (request()->query('mobile') != 1)
+        @if (!session('mobile'))
             @include('layout.partials.footer')
         @endif
     </div>

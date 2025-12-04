@@ -139,7 +139,6 @@ Route::get('/products/{id}', [CustomerController::class, 'show'])->name('custome
 */
 Route::get('/list', [EmployeeController::class, 'show_employee_code_list'])->name('employee_code_list');
 
-
-Route::get('/meat-inventory', function () {
+Route::middleware('mobile')->get('/meat-inventory', function () {
     return view('meat-inventory.index');
 })->name('meat-inventory.index');

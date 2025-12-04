@@ -37,32 +37,32 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-wrap gap-3">
-                            <button type="submit"
-                                class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-                                <i class="fas fa-search ml-2"></i>
-                                عرض التقرير
-                            </button>
+                        @if (!session('mobile'))
+                            <div class="flex flex-wrap gap-3">
+                                <button type="submit"
+                                    class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+                                    <i class="fas fa-search ml-2"></i>
+                                    عرض التقرير
+                                </button>
 
-                            <button type="button" onclick="printReport()"
-                                class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 rounded-lg dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
-                                <i class="fas fa-print ml-2"></i>
-                                طباعة التقرير
-                            </button>
+                                <button type="button" onclick="printReport()"
+                                    class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 rounded-lg dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800">
+                                    <i class="fas fa-print ml-2"></i>
+                                    طباعة التقرير
+                                </button>
 
-                            <a href="{{ route('meat-inventory.daily-sales.report') }}"
-                                class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                <i class="fas fa-list ml-2"></i>
-                                التقرير التفصيلي
-                            </a>
-                            @if (request()->query('mobile') != 1)
+                                <a href="{{ route('meat-inventory.daily-sales.report') }}"
+                                    class="flex items-center justify-center px-5 py-2.5 text-sm font-medium text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-blue-300 rounded-lg dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                    <i class="fas fa-list ml-2"></i>
+                                    التقرير التفصيلي
+                                </a>
                                 <a href="{{ route('meat-inventory.index') }}"
                                     class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                                     <i class="fas fa-home ml-2"></i>
                                     الصفحة الرئيسية
                                 </a>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>

@@ -389,7 +389,7 @@
                         <i class="fas fa-cube ml-2"></i>إدارة المنتجات
                     </button>
                 </li>
-                @if (request()->query('mobile') != 1)
+                @if (!session('mobile'))
                     <li class="me-2 flex-shrink-0">
                         <button type="button"
                             class="nav-btn inline-block p-3 sm:p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"

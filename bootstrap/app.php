@@ -14,12 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->api(prepend: [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Http\Middleware\HandleCors::class, // هذا السطر مهم!
+            \Illuminate\Http\Middleware\HandleCors::class,
         ]);
         $middleware->alias([
             'cors' => \Illuminate\Http\Middleware\HandleCors::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'superadmin' => \App\Http\Middleware\SuperAdminOnly::class,
+            'mobile' => \App\Http\Middleware\MobileModeMiddleware::class,
         ]);
 
         // إستثناءات CSRF لـ API

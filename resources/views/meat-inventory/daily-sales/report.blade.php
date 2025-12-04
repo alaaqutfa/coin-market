@@ -11,25 +11,25 @@
                     <h1 class="text-2xl font-bold text-gray-900 dark:text-white">تقرير المبيعات</h1>
                     <p class="text-gray-600 dark:text-gray-400 mt-1">عرض وتحليل عمليات البيع والمرتجعات</p>
                 </div>
-                <div class="flex items-center space-x-3 space-x-reverse">
-                    <a href="{{ route('meat-inventory.daily-sales.daily-summary') }}"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                        <i class="fas fa-chart-pie ml-2"></i>
-                        الملخص اليومي
-                    </a>
-                    @if (request()->query('mobile') != 1)
+                @if (!session('mobile'))
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                        <a href="{{ route('meat-inventory.daily-sales.daily-summary') }}"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                            <i class="fas fa-chart-pie ml-2"></i>
+                            الملخص اليومي
+                        </a>
                         <a href="{{ route('meat-inventory.index') }}"
                             class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                             <i class="fas fa-home ml-2"></i>
                             الصفحة الرئيسية
                         </a>
-                    @endif
-                    <a href="{{ route('meat-inventory.daily-sales.create') }}"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:outline-none dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                        <i class="fas fa-plus ml-2"></i>
-                        إضافة عملية
-                    </a>
-                </div>
+                        <a href="{{ route('meat-inventory.daily-sales.create') }}"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:outline-none dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                            <i class="fas fa-plus ml-2"></i>
+                            إضافة عملية
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <!-- فلترة التقرير -->

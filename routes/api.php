@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // مجموعة مسارات نظام الملحمه
-Route::prefix('meat-inventory')->name('meat-inventory.')->group(function () {
+Route::prefix('meat-inventory')->name('meat-inventory.')->middleware('mobile')->group(function () {
 
     // مسارات المنتجات
     Route::prefix('products')->name('products.')->group(function () {
