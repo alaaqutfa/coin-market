@@ -874,6 +874,8 @@
                     name: $("input[name='name']").val(),
                     price: $("input[name='price']").val(),
                     weight: $("input[name='weight']").val(),
+                    category: $("select[name='category']").val(),
+                    brand: $("select[name='brand']").val(),
                     date_from: $("input[name='date_from']").val(),
                     date_to: $("input[name='date_to']").val(),
                     barcode_date_from: $("input[name='barcode_date_from']").val(),
