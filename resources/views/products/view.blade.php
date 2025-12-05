@@ -273,7 +273,7 @@
                     </div>
 
                     <!-- نطاق التواريخ -->
-                    <div>
+                    <div class="hidden">
                         <label class="block mb-2 text-sm font-medium">من تاريخ</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -284,7 +284,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div class="hidden">
                         <label class="block mb-2 text-sm font-medium">إلى تاريخ</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -296,7 +296,7 @@
                     </div>
 
                     <!-- خيارات تاريخ سريعة -->
-                    <div class="md:col-span-2">
+                    <div class="hidden md:col-span-2">
                         <label class="block mb-2 text-sm font-medium">خيارات سريعة</label>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="setDateFilter('today')"
