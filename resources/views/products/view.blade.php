@@ -377,37 +377,39 @@
                         </div>
                     </div>
 
-                    <!-- خيارات الترتيب -->
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="alphabetical" name="alphabetical"
-                            value="{{ !empty($filters['alphabetical']) ? '1' : '0' }}"
-                            {{ !empty($filters['alphabetical']) ? 'checked' : '' }} class="sr-only peer">
-                        <div
-                            class="alphabetical_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
-                        </div>
-                        <span class="ms-3 text-sm font-medium text-white">ترتيب أبجدي</span>
-                    </label>
+                    <div class="toggles">
+                        <!-- خيارات الترتيب -->
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="alphabetical" name="alphabetical"
+                                value="{{ !empty($filters['alphabetical']) ? '1' : '0' }}"
+                                {{ !empty($filters['alphabetical']) ? 'checked' : '' }} class="sr-only peer">
+                            <div
+                                class="alphabetical_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-white">ترتيب أبجدي</span>
+                        </label>
 
-                    <!-- خيارات الصور -->
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="have_image" name="have_image"
-                            value="{{ !empty($filters['have_image']) ? '1' : '0' }}"
-                            {{ !empty($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
-                        <div
-                            class="have_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
-                        </div>
-                        <span class="ms-3 text-sm font-medium text-white">منتجات لديها صور فقط</span>
-                    </label>
+                        <!-- خيارات الصور -->
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="have_image" name="have_image"
+                                value="{{ !empty($filters['have_image']) ? '1' : '0' }}"
+                                {{ !empty($filters['have_image']) ? 'checked' : '' }} class="sr-only peer">
+                            <div
+                                class="have_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-white">منتجات لديها صور فقط</span>
+                        </label>
 
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="no_image" name="no_image"
-                            value="{{ !empty($filters['no_image']) ? '1' : '0' }}"
-                            {{ !empty($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
-                        <div
-                            class="no_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
-                        </div>
-                        <span class="ms-3 text-sm font-medium text-white">منتجات ليس لديها صور فقط</span>
-                    </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="no_image" name="no_image"
+                                value="{{ !empty($filters['no_image']) ? '1' : '0' }}"
+                                {{ !empty($filters['no_image']) ? 'checked' : '' }} class="sr-only peer">
+                            <div
+                                class="no_image_div relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-white">منتجات ليس لديها صور فقط</span>
+                        </label>
+                    </div>
 
                     <!-- زر التصفية -->
                     <div class="flex items-end col-span-4">
