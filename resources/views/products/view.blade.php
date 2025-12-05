@@ -377,15 +377,6 @@
                         </div>
                     </div>
 
-                    <!-- زر التصفية -->
-                    <div class="flex items-end">
-                        <button type="submit"
-                            class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-filter ml-2"></i>
-                            تطبيق الفلترة
-                        </button>
-                    </div>
-
                     <!-- خيارات الترتيب -->
                     <label class="inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="alphabetical" name="alphabetical"
@@ -417,6 +408,15 @@
                         </div>
                         <span class="ms-3 text-sm font-medium text-white">منتجات ليس لديها صور فقط</span>
                     </label>
+
+                    <!-- زر التصفية -->
+                    <div class="flex items-end col-span-4">
+                        <button type="submit"
+                            class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-filter ml-2"></i>
+                            تطبيق الفلترة
+                        </button>
+                    </div>
                 </form>
 
             </div>
