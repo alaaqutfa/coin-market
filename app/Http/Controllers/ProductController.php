@@ -47,6 +47,16 @@ class ProductController extends Controller
             $query->where('weight', $request->weight);
         }
 
+        // الفلترة حسب الفئة
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->brand) {
+            $query->where('brand_id', $request->brand);
+        }
+
         // مع صورة
         if ($request->have_image) {
             $query->whereNotNull('image_path');
@@ -112,7 +122,9 @@ class ProductController extends Controller
         $filters  = $request->all();
         $products = $query->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
-        return view('products.view', compact('products', 'filters'));
+        $categories = Category::all();
+        $brands     = Brand::all();
+        return view('products.view', compact('products', 'filters', 'categories', 'brands'));
     }
 
     public function filter(Request $request)
@@ -132,6 +144,16 @@ class ProductController extends Controller
         // الفلترة حسب السعر
         if ($request->price) {
             $query->where('price', $request->price);
+        }
+
+        // الفلترة حسب الفئة
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->brand) {
+            $query->where('brand_id', $request->brand);
         }
 
         // الفلترة حسب الوزن
@@ -204,8 +226,10 @@ class ProductController extends Controller
         $filters  = $request->all();
         $products = $query->paginate(50)->appends($filters);
         $products->withPath(url('/admin/products'));
+        $categories = Category::all();
+        $brands     = Brand::all();
 
-        return view('products.partials.products-table', compact('products', 'filters'))->render();
+        return view('products.partials.products-table', compact('products', 'filters', 'categories', 'brands'))->render();
     }
 
     public function store(Request $request)
