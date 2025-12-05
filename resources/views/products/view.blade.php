@@ -412,7 +412,7 @@
                     </div>
 
                     <!-- زر التصفية -->
-                    <div class="max-w-4xl flex justify-start items-end col-span-4 ">
+                    <div class="max-w-2xl flex justify-start items-end col-span-4 ">
                         <button type="submit"
                             class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-filter ml-2"></i>
