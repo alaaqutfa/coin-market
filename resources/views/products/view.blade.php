@@ -377,7 +377,7 @@
                         </div>
                     </div>
 
-                    <div class="toggles">
+                    <div class="toggles flex justify-start items-center gap-6 md:col-span-4">
                         <!-- خيارات الترتيب -->
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="alphabetical" name="alphabetical"
@@ -412,7 +412,7 @@
                     </div>
 
                     <!-- زر التصفية -->
-                    <div class="flex items-end col-span-4">
+                    <div class="max-w-4xl flex justify-start items-end col-span-4 ">
                         <button type="submit"
                             class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-filter ml-2"></i>
