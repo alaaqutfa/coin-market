@@ -84,6 +84,10 @@ Route::prefix('meat-inventory')->name('meat-inventory.')->middleware('mobile')->
 
             return response()->json(['success' => false]);
         })->name('products.get-stock');
+        // جلب الصور
+        Route::get('/image/{filename}', [DailySalesController::class, 'getImage']);
+        // عرض بيانات البيع
+        Route::get('/{id}', [DailySalesController::class, 'show']);
     });
 
 });

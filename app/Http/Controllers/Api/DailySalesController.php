@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\DailySale;
 use App\Models\MeatProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DailySalesController extends Controller
 {
@@ -32,7 +34,17 @@ class DailySalesController extends Controller
             'sale_price'       => 'required|numeric|min:0',
             'notes'            => 'nullable|string|max:500',
             'sale_date'        => 'required|date',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            // رفع صورة من ملف
+            $image     = $request->file('image');
+            $fileName  = 'sale_' . time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('daily_sales', $fileName, 'public');
+        }
 
         // حساب المبلغ الإجمالي
         $totalAmount = $validated['quantity'] * $validated['sale_price'];
@@ -46,6 +58,7 @@ class DailySalesController extends Controller
             'transaction_type' => $validated['transaction_type'],
             'quantity'         => $validated['quantity'],
             'total_amount'     => $totalAmount,
+            'image'            => $imagePath,
             'notes'            => $validated['notes'],
             'transaction_time' => now(),
         ]);
@@ -58,6 +71,17 @@ class DailySalesController extends Controller
             $product->current_stock += $validated['quantity'];
         }
         $product->save();
+
+        if ($request->expectsJson() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم حفظ العملية بنجاح',
+                'data'    => [
+                    'sale'      => $sale,
+                    'image_url' => $imagePath ? Storage::url($imagePath) : null,
+                ],
+            ], 201);
+        }
 
         return redirect()->route('meat-inventory.daily-sales.create')
             ->with('success', 'تم حفظ العملية بنجاح');

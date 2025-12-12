@@ -17,6 +17,7 @@ class DailySale extends Model
         'quantity',
         'total_amount',
         'notes',
+        'image',
         'transaction_time',
     ];
 
