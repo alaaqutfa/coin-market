@@ -552,8 +552,8 @@
                             <th class="px-6 py-4 text-center">التاريخ</th>
                             <th class="px-6 py-4 text-center">الباركود</th>
                             <th class="px-6 py-4 text-center">اسم المنتج</th>
-                            <th class="px-6 py-4 text-center">السعر</th>
                             <th class="px-6 py-4 text-center">الوزن</th>
+                            <th class="px-6 py-4 text-center">السعر</th>
                             <th class="px-6 py-4 text-center">إجراء</th>
                         </tr>
                     </thead>

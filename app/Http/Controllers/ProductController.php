@@ -552,7 +552,7 @@ class ProductController extends Controller
                 $results[] = [
                     'id'     => $product->id,
                     'name'   => $product->name,
-                    'image'  => asset('storage/tmp_products/' . $tmpName),
+                    'image'  => asset('public/storage/tmp_products/' . $tmpName),
                     'tmp'    => $tmpName,
                     'status' => 'matched',
                 ];
