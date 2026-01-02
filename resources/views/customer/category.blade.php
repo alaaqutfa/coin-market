@@ -17,7 +17,7 @@
                     </p>
                 </div>
                 <a dir="ltr" href="{{ url('/') }}" class="text-yellow-500 hover:text-yellow-600 font-medium">
-                    <i class="fas fa-arrow-right ml-2"></i>
+                    <i class="fas fa-arrow-left ml-2"></i>
                     العودة للرئيسية
                 </a>
             </div>
