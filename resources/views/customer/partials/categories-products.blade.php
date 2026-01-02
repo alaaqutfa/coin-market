@@ -13,7 +13,13 @@
                         {{ $category->products->count() }} منتج
                     </p>
                 </div>
-                <div class="w-16 h-1 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full"></div>
+
+                <a href="{{ route('customer.category.products', $category->id) }}"
+                    class="show-more-btn bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                    <i class="fas fa-external-link-alt ml-2"></i>
+                    عرض الكل
+                </a>
+
             </div>
 
             <!-- منتجات الفئة -->
@@ -95,14 +101,8 @@
 
             <!-- أزرار التحكم -->
             <div class="flex justify-center gap-4 mt-6">
-                <button onclick="loadMoreCategory({{ $category->id }})"
-                    class="show-more-btn bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
-                    <i class="fas fa-plus-circle ml-2"></i>
-                    عرض المزيد
-                </button>
-
                 <a href="{{ route('customer.category.products', $category->id) }}"
-                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors duration-200">
+                    class="show-more-btn bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors duration-200">
                     <i class="fas fa-external-link-alt ml-2"></i>
                     عرض الكل
                 </a>

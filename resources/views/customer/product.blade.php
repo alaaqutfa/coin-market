@@ -214,8 +214,9 @@
                 @endforeach
             </div>
         </div>
+
         {{-- قسم المنتجات الأخيرة --}}
-        @if ($latestProducts->count() > 0)
+        @if ($latestProducts->count() > 0 && request('category') === null)
             <div class="mb-12">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">
