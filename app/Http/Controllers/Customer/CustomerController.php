@@ -32,10 +32,10 @@ class CustomerController extends Controller
             $query->where('weight', $request->weight);
         }
 
-        // // الفلترة حسب الفئة
-        // if ($request->category) {
-        //     $query->where('category_id', $request->category);
-        // }
+        // الفلترة حسب الفئة
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
 
         // الفلترة حسب العلامة التجارية
         if ($request->brand) {

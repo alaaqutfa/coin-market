@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -101,6 +102,30 @@ class CategoryController extends Controller
             DB::rollBack();
             return redirect()->route('categories.index')
                 ->with('error', 'حدث خطأ أثناء حذف الفئة.');
+        }
+    }
+
+    public function updateCategory(Request $request, Product $product)
+    {
+        $request->validate([
+            'category_id' => 'nullable|exists:categories,id',
+        ]);
+
+        try {
+            $product->update([
+                'category_id' => $request->category_id,
+            ]);
+
+            return response()->json([
+                'success'       => true,
+                'message'       => 'تم تحديث الفئة بنجاح',
+                'category_name' => $product->category ? $product->category->name : null,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء تحديث الفئة',
+            ], 500);
         }
     }
 }

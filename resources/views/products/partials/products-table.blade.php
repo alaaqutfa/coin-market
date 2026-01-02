@@ -18,7 +18,8 @@
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
                         $downloadName = $product->barcode . '.' . $extension;
                     @endphp
-                    <a href="{{ asset('public/storage/' . $product->image_path) }}" download="{{ $downloadName }}" class="bg-gray-500">
+                    <a href="{{ asset('public/storage/' . $product->image_path) }}" download="{{ $downloadName }}"
+                        class="bg-gray-500">
                         <img src="{{ asset('public/storage/' . $product->image_path) }}"
                             onerror="this.src='{{ asset('public/assets/img/place-holder.png') }}'"
                             class="w-20 h-20 object-contain rounded cursor-pointer bg-gray-500" title="تحميل الصورة" />
@@ -49,9 +50,46 @@
                 {{ $product->symbol }}
             </div>
         </td>
+
         <td class="px-6 py-4">
-            <div class="editable-field category-field" contenteditable="true" data-field="category_name">
-                {{ $product->category ? $product->category->name : '' }}
+            <div class="category-editable-container" data-product-id="{{ $product->id }}">
+                <!-- وضع العرض (Display Mode) -->
+                <div class="display-mode flex items-center justify-between cursor-pointer group">
+                    <span class="category-name text-gray-800">
+                        {{ $product->category ? $product->category->name : 'بدون فئة' }}
+                    </span>
+                    <button type="button"
+                        class="edit-category-btn opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-400 hover:text-yellow-500 ml-2">
+                        <i class="fas fa-edit text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- وضع التحرير (Edit Mode) -->
+                <div class="edit-mode hidden">
+                    <select name="category_id"
+                        class="category-select w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-200"
+                        data-original-category="{{ $product->category_id }}">
+                        <option value="">-- اختر فئة --</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ $product->category_id == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <!-- أزرار الإجراءات في وضع التحرير -->
+                    <div class="edit-actions flex items-center gap-2 mt-2">
+                        <button type="button"
+                            class="save-category-btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm transition-colors duration-200">
+                            حفظ
+                        </button>
+                        <button type="button"
+                            class="cancel-edit-btn bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm transition-colors duration-200">
+                            إلغاء
+                        </button>
+                    </div>
+                </div>
             </div>
         </td>
 

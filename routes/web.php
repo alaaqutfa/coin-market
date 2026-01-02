@@ -3,10 +3,10 @@
 use App\Http\Controllers\Admin\EmployeeController;
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,7 +67,8 @@ Route::prefix('admin')
         Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
         Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-
+        Route::post('/api/products/{product}/update-category', [CategoryController::class, 'updateCategory'])
+            ->name('products.update-category');
         /*
         |--------------------------------------------------------------------------
         | Product Management
