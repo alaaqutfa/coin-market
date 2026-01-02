@@ -143,7 +143,7 @@
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-300">الفئة</label>
                 <select name="category" id="category"
-                    class="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3">
+                    class="bg-white/10 backdrop-blur-sm border border-white/20 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3">
                     <option value="">كل الفئات</option>
                     @foreach ($allCategories as $category)
                         <option value="{{ $category->id }}" @selected(request('category') == $category->id)>
@@ -157,7 +157,7 @@
             <div>
                 <label class="block mb-2 text-sm font-medium text-gray-300">العلامة التجارية</label>
                 <select name="brand" id="brand"
-                    class="bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3">
+                    class="bg-white/10 backdrop-blur-sm border border-white/20 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full p-3">
                     <option value="">كل العلامات</option>
                     @foreach ($allBrands as $brand)
                         <option value="{{ $brand->id }}" @selected(request('brand') == $brand->id)>
