@@ -1,4 +1,4 @@
-<div class="links w-full pb-8">
+<div dir="ltr" class="links w-full pb-8">
     {{ $products->links() }}
 </div>
 @foreach ($products as $product)

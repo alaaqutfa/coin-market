@@ -14,7 +14,7 @@
 
     {{-- Pagination Links --}}
     @if($products->hasPages())
-    <div class="mt-8">
+    <div dir="ltr" class="mt-8">
         {{ $products->links() }}
     </div>
     @endif
