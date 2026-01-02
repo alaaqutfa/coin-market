@@ -54,7 +54,7 @@
         <td class="px-6 py-4">
             <div class="category-editable-container" data-product-id="{{ $product->id }}">
                 <!-- وضع العرض (Display Mode) -->
-                <div class="display-mode flex items-center justify-between cursor-pointer group">
+                <div class="display-mode flex items-center gap-2 justify-between cursor-pointer group">
                     <span class="category-name text-gray-800">
                         {{ $product->category ? $product->category->name : 'بدون فئة' }}
                     </span>
