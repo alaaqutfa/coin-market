@@ -1031,146 +1031,146 @@
 
         // === دوال خاصة بتعديل الفئة ===
 
-// تهيئة محرر الفئة
-function initCategoryEditor() {
-    // عند النقر على زر تعديل الفئة
-    $(document).on('click', '.edit-category-btn', function(e) {
-        e.stopPropagation();
-        const container = $(this).closest('.category-editable-container');
-        switchToCategoryEditMode(container);
-    });
+        // تهيئة محرر الفئة
+        function initCategoryEditor() {
+            // عند النقر على زر تعديل الفئة
+            $(document).on('click', '.edit-category-btn', function(e) {
+                e.stopPropagation();
+                const container = $(this).closest('.category-editable-container');
+                switchToCategoryEditMode(container);
+            });
 
-    // عند النقر على حقل العرض
-    $(document).on('click', '.category-editable-container .display-mode', function(e) {
-        if (!$(e.target).closest('.edit-category-btn').length) {
-            const container = $(this).closest('.category-editable-container');
-            switchToCategoryEditMode(container);
-        }
-    });
+            // عند النقر على حقل العرض
+            $(document).on('click', '.category-editable-container .display-mode', function(e) {
+                if (!$(e.target).closest('.edit-category-btn').length) {
+                    const container = $(this).closest('.category-editable-container');
+                    switchToCategoryEditMode(container);
+                }
+            });
 
-    // عند النقر على زر الحفظ
-    $(document).on('click', '.save-category-btn', function() {
-        const container = $(this).closest('.category-editable-container');
-        saveCategoryChange(container);
-    });
+            // عند النقر على زر الحفظ
+            $(document).on('click', '.save-category-btn', function() {
+                const container = $(this).closest('.category-editable-container');
+                saveCategoryChange(container);
+            });
 
-    // عند النقر على زر الإلغاء
-    $(document).on('click', '.cancel-edit-btn', function() {
-        const container = $(this).closest('.category-editable-container');
-        cancelCategoryEditMode(container);
-    });
-
-    // عند الضغط على Enter أو Escape في اختيار الفئة
-    $(document).on('keydown', '.category-select', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            const container = $(this).closest('.category-editable-container');
-            saveCategoryChange(container);
-        }
-        if (e.key === 'Escape') {
-            const container = $(this).closest('.category-editable-container');
-            cancelCategoryEditMode(container);
-        }
-    });
-}
-
-// التحويل إلى وضع التحرير للفئة
-function switchToCategoryEditMode(container) {
-    const displayMode = container.find('.display-mode');
-    const editMode = container.find('.edit-mode');
-    const select = container.find('.category-select');
-
-    // حفظ القيمة الأصلية إذا لم تكن محفوظة
-    if (!select.data('original-category')) {
-        select.data('original-category', select.val());
-    }
-
-    // التبديل بين الوضعين
-    displayMode.addClass('hidden');
-    editMode.removeClass('hidden');
-
-    // التركيز على الـ select
-    select.focus();
-}
-
-// حفظ تغيير الفئة
-function saveCategoryChange(container) {
-    const productId = container.data('product-id');
-    const select = container.find('.category-select');
-    const categoryId = select.val();
-    const originalCategoryId = select.data('original-category');
-    const categoryName = select.find('option:selected').text();
-
-    // إذا لم يتغيرت القيمة
-    if (categoryId === originalCategoryId) {
-        cancelCategoryEditMode(container);
-        return;
-    }
-
-    // إظهار حالة التحميل
-    const saveBtn = container.find('.save-category-btn');
-    const originalBtnHtml = saveBtn.html();
-    saveBtn.html('<i class="fas fa-spinner fa-spin mr-1"></i> جاري الحفظ');
-    saveBtn.prop('disabled', true);
-
-    const updateCategoryRoute = "{{ route('products.update-category', ':productId') }}";
-    const url = updateCategoryRoute.replace(':productId', productId);
-
-    // إرسال طلب AJAX
-    $.ajax({
-        url: url,
-        method: 'POST',
-        data: {
-            category_id: categoryId,
-            _token: "{{ csrf_token() }}"
-        },
-        success: function(response) {
-            if (response.success) {
-                // تحديث عرض الفئة
-                container.find('.category-name').text(categoryName || 'بدون فئة');
-
-                // تحديث القيمة الأصلية
-                select.data('original-category', categoryId);
-
-                // العودة لوضع العرض
+            // عند النقر على زر الإلغاء
+            $(document).on('click', '.cancel-edit-btn', function() {
+                const container = $(this).closest('.category-editable-container');
                 cancelCategoryEditMode(container);
+            });
 
-                // إظهار رسالة نجاح
-                showToast('تم تحديث الفئة بنجاح', 'success');
-            } else {
-                showToast(response.message || 'حدث خطأ أثناء التحديث', 'error');
+            // عند الضغط على Enter أو Escape في اختيار الفئة
+            $(document).on('keydown', '.category-select', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const container = $(this).closest('.category-editable-container');
+                    saveCategoryChange(container);
+                }
+                if (e.key === 'Escape') {
+                    const container = $(this).closest('.category-editable-container');
+                    cancelCategoryEditMode(container);
+                }
+            });
+        }
+
+        // التحويل إلى وضع التحرير للفئة
+        function switchToCategoryEditMode(container) {
+            const displayMode = container.find('.display-mode');
+            const editMode = container.find('.edit-mode');
+            const select = container.find('.category-select');
+
+            // حفظ القيمة الأصلية إذا لم تكن محفوظة
+            if (!select.data('original-category')) {
+                select.data('original-category', select.val());
+            }
+
+            // التبديل بين الوضعين
+            displayMode.addClass('hidden');
+            editMode.removeClass('hidden');
+
+            // التركيز على الـ select
+            select.focus();
+        }
+
+        // حفظ تغيير الفئة
+        function saveCategoryChange(container) {
+            const productId = container.data('product-id');
+            const select = container.find('.category-select');
+            const categoryId = select.val();
+            const originalCategoryId = select.data('original-category');
+            const categoryName = select.find('option:selected').text();
+
+            // إذا لم يتغيرت القيمة
+            if (categoryId === originalCategoryId) {
+                cancelCategoryEditMode(container);
+                return;
+            }
+
+            // إظهار حالة التحميل
+            const saveBtn = container.find('.save-category-btn');
+            const originalBtnHtml = saveBtn.html();
+            saveBtn.html('<i class="fas fa-spinner fa-spin mr-1"></i> جاري الحفظ');
+            saveBtn.prop('disabled', true);
+
+            const updateCategoryRoute = "{{ route('products.update-category', ':productId') }}";
+            const url = updateCategoryRoute.replace(':productId', productId);
+
+            // إرسال طلب AJAX
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    category_id: categoryId,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // تحديث عرض الفئة
+                        container.find('.category-name').text(categoryName || 'بدون فئة');
+
+                        // تحديث القيمة الأصلية
+                        select.data('original-category', categoryId);
+
+                        // العودة لوضع العرض
+                        cancelCategoryEditMode(container);
+
+                        // إظهار رسالة نجاح
+                        showToast('تم تحديث الفئة بنجاح', 'success');
+                    } else {
+                        showToast(response.message || 'حدث خطأ أثناء التحديث', 'error');
+                        select.val(originalCategoryId);
+                    }
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء تحديث الفئة', 'error');
+                    console.log(xhr.responseText);
+                    select.val(originalCategoryId);
+                },
+                complete: function() {
+                    // إعادة زر الحفظ لحالته الأصلية
+                    saveBtn.html(originalBtnHtml);
+                    saveBtn.prop('disabled', false);
+                }
+            });
+        }
+
+        // إلغاء تحرير الفئة
+        function cancelCategoryEditMode(container) {
+            const displayMode = container.find('.display-mode');
+            const editMode = container.find('.edit-mode');
+            const select = container.find('.category-select');
+
+            // إرجاع القيمة الأصلية
+            const originalCategoryId = select.data('original-category');
+            if (originalCategoryId) {
                 select.val(originalCategoryId);
             }
-        },
-        error: function(xhr) {
-            showToast('حدث خطأ أثناء تحديث الفئة', 'error');
-            console.log(xhr.responseText);
-            select.val(originalCategoryId);
-        },
-        complete: function() {
-            // إعادة زر الحفظ لحالته الأصلية
-            saveBtn.html(originalBtnHtml);
-            saveBtn.prop('disabled', false);
+
+            // العودة لوضع العرض
+            editMode.addClass('hidden');
+            displayMode.removeClass('hidden');
         }
-    });
-}
-
-// إلغاء تحرير الفئة
-function cancelCategoryEditMode(container) {
-    const displayMode = container.find('.display-mode');
-    const editMode = container.find('.edit-mode');
-    const select = container.find('.category-select');
-
-    // إرجاع القيمة الأصلية
-    const originalCategoryId = select.data('original-category');
-    if (originalCategoryId) {
-        select.val(originalCategoryId);
-    }
-
-    // العودة لوضع العرض
-    editMode.addClass('hidden');
-    displayMode.removeClass('hidden');
-}
 
         // تهيئة الحقول القابلة للتعديل
         function initEditableFields() {
