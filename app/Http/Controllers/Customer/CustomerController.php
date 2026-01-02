@@ -11,10 +11,10 @@ class CustomerController extends Controller
 {
     public function home(Request $request)
     {
-        $query = Category::query()->with(['products' => function($productQuery) use ($request) {
+        $query = Category::query()->with(['products' => function ($productQuery) use ($request) {
             // تطبيق الفلاتر على المنتجات داخل كل فئة
-            $productQuery->whereNotNull('image_path')
-                        ->whereNotNull('brand_id');
+            $productQuery->whereNotNull('image_path');
+                // ->whereNotNull('brand_id');
 
             // الفلترة حسب الاسم
             if ($request->name) {
@@ -41,9 +41,9 @@ class CustomerController extends Controller
         }]);
 
         // فلترة الفئات التي تحتوي على منتجات بعد تطبيق الفلاتر
-        $query->whereHas('products', function($productQuery) use ($request) {
-            $productQuery->whereNotNull('image_path')
-                        ->whereNotNull('brand_id');
+        $query->whereHas('products', function ($productQuery) use ($request) {
+            $productQuery->whereNotNull('image_path');
+                // ->whereNotNull('brand_id');
 
             if ($request->name) {
                 $productQuery->where('name', 'like', '%' . $request->name . '%');
@@ -67,9 +67,9 @@ class CustomerController extends Controller
             $query->where('id', $request->category);
         }
 
-        $filters   = $request->all();
-        $categories = $query->orderBy('name')->get();
-        $allBrands  = Brand::all();
+        $filters       = $request->all();
+        $categories    = $query->orderBy('name')->get();
+        $allBrands     = Brand::all();
         $allCategories = Category::all();
 
         return view('customer.product', compact('categories', 'allBrands', 'allCategories', 'filters'));
@@ -77,10 +77,9 @@ class CustomerController extends Controller
 
     public function filter(Request $request)
     {
-        $query = Category::query()->with(['products' => function($productQuery) use ($request) {
-            // تطبيق الفلاتر على المنتجات داخل كل فئة
-            $productQuery->whereNotNull('image_path')
-                        ->whereNotNull('brand_id');
+        $query = Category::query()->with(['products' => function ($productQuery) use ($request) {
+            $productQuery->whereNotNull('image_path');
+            // ->whereNotNull('brand_id');
 
             if ($request->name) {
                 $productQuery->where('name', 'like', '%' . $request->name . '%');
@@ -102,9 +101,9 @@ class CustomerController extends Controller
         }]);
 
         // فلترة الفئات التي تحتوي على منتجات بعد تطبيق الفلاتر
-        $query->whereHas('products', function($productQuery) use ($request) {
-            $productQuery->whereNotNull('image_path')
-                        ->whereNotNull('brand_id');
+        $query->whereHas('products', function ($productQuery) use ($request) {
+            $productQuery->whereNotNull('image_path');
+                // ->whereNotNull('brand_id');
 
             if ($request->name) {
                 $productQuery->where('name', 'like', '%' . $request->name . '%');
@@ -127,7 +126,7 @@ class CustomerController extends Controller
             $query->where('id', $request->category);
         }
 
-        $filters   = $request->all();
+        $filters    = $request->all();
         $categories = $query->orderBy('name')->get();
 
         return view('customer.partials.categories-products', compact('categories', 'filters'));
