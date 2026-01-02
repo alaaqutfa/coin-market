@@ -73,6 +73,18 @@
                 @endif
                 @if (Auth::user()->role->id == 1)
                     <li>
+                        <a href="{{ route('categories.index') }}"
+                            class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                            <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
+                                xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                            </svg>
+                            <span class="flex-1 ms-3 whitespace-nowrap">إدارة الفئات</span>
+                        </a>
+                    </li>
+                @endif
+                {{-- @if (Auth::user()->role->id == 1)
+                    <li>
                         <a href="{{ route('employees.index') }}"
                             class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
                             <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 group-hover:text-gray-900"
@@ -84,7 +96,7 @@
                             <span class="flex-1 ms-3 whitespace-nowrap">فريق العمل</span>
                         </a>
                     </li>
-                @endif
+                @endif --}}
             @endauth
             {{-- <li>
                 <a href="#"
