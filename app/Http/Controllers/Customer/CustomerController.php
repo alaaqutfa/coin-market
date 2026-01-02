@@ -74,9 +74,9 @@ class CustomerController extends Controller
         }
 
         // // الفلترة حسب الفئة
-        // if ($request->category) {
-        //     $query->where('category_id', $request->category);
-        // }
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
 
         // الفلترة حسب العلامة التجارية
         if ($request->brand) {
