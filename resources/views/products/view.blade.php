@@ -633,804 +633,805 @@
 
             <button id="saveImages" class="hidden m-4 bg-green-600 text-white px-4 py-2 rounded">حفظ</button>
         </div>
+    </div>
 
-    @endsection
+@endsection
 
-    @push('script')
-        <script>
-            $(function() {
+@push('script')
+    <script>
+        $(function() {
 
-                $('input[name="alphabetical"]').on('change', function() {
-                    if (this.checked) {
-                        $('.alphabetical_div').addClass('bg-yellow-500');
-                    } else {
-                        $('.alphabetical_div').removeClass('bg-yellow-500');
-                    }
-                    $(this).val(this.checked ? '1' : '0');
-                });
-
-                $('input[name="have_image"]').on('change', function() {
-                    if (this.checked) {
-                        $('.have_image_div').addClass('bg-yellow-500');
-                    } else {
-                        $('.have_image_div').removeClass('bg-yellow-500');
-                    }
-                    $(this).val(this.checked ? '1' : '0');
-                });
-
-                $('input[name="no_image"]').on('change', function() {
-                    if (this.checked) {
-                        $('.no_image_div').addClass('bg-yellow-500');
-                    } else {
-                        $('.no_image_div').removeClass('bg-yellow-500');
-                    }
-                    $(this).val(this.checked ? '1' : '0');
-                });
-
-                let previewData = []; // نخزن بيانات المعاينة
-
-                $('#dropzone-file').on('change', function() {
-                    $('#previewForm').submit();
-                });
-
-                // رفع للمعاينة
-                $('#previewForm').on('submit', function(e) {
-                    $('#loadingOverlay').css('display', 'flex');
-                    e.preventDefault();
-                    let formData = new FormData(this);
-
-                    $.ajax({
-                        url: "{{ route('products.preview.images') }}",
-                        type: "POST",
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        success: function(data) {
-                            previewData = data;
-                            let table = $('#previewTable');
-                            table.html("");
-                            data.forEach((item, index) => {
-                                let rowIndex = $('#previewTable tr').length;
-                                table.append(`
-                        <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200" data-id="${item.id ?? '-'}">
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center items-center" data-field="id">
-                                    ${rowIndex + 1}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center items-center" data-field="id">
-                                    <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="text-center" data-field="name">
-                                    ${item.name}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center items-center" data-field="image">
-                                    <img src="${item.image}" class="w-20 h-20 rounded object-contain" />
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center items-center">
-                                    <button type="button" class="delete-row text-red-600 hover:text-red-800" data-index="${index}">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `);
-                            });
-                            $('#saveImages').removeClass('hidden');
-                            $('#loadingOverlay').hide();
-                        }
-                    });
-                });
-
-                // حذف صف من المعاينة
-                $(document).on('click', '.delete-row', function() {
-                    let index = $(this).data('index');
-                    previewData.splice(index, 1);
-                    $(this).closest('tr').remove();
-                });
-
-                // حفظ نهائي
-                $('#saveImages').on('click', function() {
-                    $('#loadingOverlay').css('display', 'flex');
-                    $.ajax({
-                        url: "{{ route('products.save.images') }}",
-                        type: "POST",
-                        data: {
-                            items: previewData,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(res) {
-                            let table = $('#previewTable');
-                            table.html("");
-                            showToast('تم الحفظ بنجاح ✅');
-                            $('#loadingOverlay').hide();
-                        }
-                    });
-                });
-
-                $('.nav-btn').on('click', function() {
-                    // إزالة التنسيقات من الأزرار
-                    $('.nav-btn').removeClass('text-yellow-400 border-yellow-400 active')
-                        .addClass('border-transparent');
-
-                    // إضافة تنسيق للزر النشط
-                    $(this).addClass('text-yellow-400 border-yellow-400 active')
-                        .removeClass('border-transparent');
-
-                    // إخفاء كل العناصر
-                    $('.nav-item').fadeOut(200);
-
-                    // إظهار العنصر المطلوب
-                    let target = $(this).data('target');
-                    $(target).fadeIn(200);
-                });
+            $('input[name="alphabetical"]').on('change', function() {
+                if (this.checked) {
+                    $('.alphabetical_div').addClass('bg-yellow-500');
+                } else {
+                    $('.alphabetical_div').removeClass('bg-yellow-500');
+                }
+                $(this).val(this.checked ? '1' : '0');
             });
 
-            // تعريف المتغيرات العالمية
-            let autoRefreshEnabled = false;
-            let autoRefreshInterval = null;
-            let productIds = new Set();
-            let lastUpdateTime = new Date().getTime();
-
-            // تهيئة معرفات المنتجات الحالية
-            @foreach ($products as $product)
-                productIds.add({{ $product->id }});
-            @endforeach
-
-            function toggleUserInteraction(disable) {
-                if (disable) {
-                    // تعطيل الحقول القابلة للتعديل
-                    $('.editable-field')
-                        .attr('contenteditable', 'false')
-                        .addClass('opacity-50 cursor-not-allowed');
-
-                    // تعطيل الفلاتر
-                    $('#filter-form :input').prop('disabled', true);
-
-                    // تعطيل أزرار حذف المنتج
-                    $('button.delete-btn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-
+            $('input[name="have_image"]').on('change', function() {
+                if (this.checked) {
+                    $('.have_image_div').addClass('bg-yellow-500');
                 } else {
-                    // إعادة التمكين
-                    $('.editable-field')
-                        .attr('contenteditable', 'true')
-                        .removeClass('opacity-50 cursor-not-allowed');
-
-                    $('#filter-form :input').prop('disabled', false);
-                    $('button.delete-btn').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+                    $('.have_image_div').removeClass('bg-yellow-500');
                 }
-            }
+                $(this).val(this.checked ? '1' : '0');
+            });
 
-            // دوال خاصة بتواريخ سجلات الباركود
-            function setBarcodeDateFilter(range) {
-                const today = new Date();
-                let fromDate, toDate;
-
-                switch (range) {
-                    case 'today':
-                        fromDate = today.toISOString().split('T')[0];
-                        toDate = fromDate;
-                        break;
-                    case 'yesterday':
-                        const yesterday = new Date(today);
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        fromDate = yesterday.toISOString().split('T')[0];
-                        toDate = fromDate;
-                        break;
-                    case 'week':
-                        const weekAgo = new Date(today);
-                        weekAgo.setDate(weekAgo.getDate() - 7);
-                        fromDate = weekAgo.toISOString().split('T')[0];
-                        toDate = today.toISOString().split('T')[0];
-                        break;
-                    case 'month':
-                        const monthAgo = new Date(today);
-                        monthAgo.setDate(monthAgo.getDate() - 30);
-                        fromDate = monthAgo.toISOString().split('T')[0];
-                        toDate = today.toISOString().split('T')[0];
-                        break;
-                    case 'this_month':
-                        fromDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
-                        toDate = today.toISOString().split('T')[0];
-                        break;
-                }
-
-                $("input[name='barcode_date_from']").val(fromDate);
-                $("input[name='barcode_date_to']").val(toDate);
-
-                // تطبيق الفلترة تلقائياً
-                applyFilters();
-            }
-
-            function clearBarcodeDateFilter() {
-                $("input[name='barcode_date_from']").val('');
-                $("input[name='barcode_date_to']").val('');
-
-                // تطبيق الفلترة تلقائياً
-                applyFilters();
-            }
-
-            // تعريف الدالة في النطاق العام
-            window.applyFilters = function(isAutoRefresh) {
-                // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
-                if (!isAutoRefresh) {
-                    // toggleUserInteraction(!isAutoRefresh);
-                    $('#loadingOverlay').css('display', 'flex');
-                }
-
-                let data = {
-                    have_image: $("input[name='have_image']").val(),
-                    no_image: $("input[name='no_image']").val(),
-                    alphabetical: $("input[name='alphabetical']").val(),
-                    barcode: $("input[name='barcode']").val(),
-                    name: $("input[name='name']").val(),
-                    price: $("input[name='price']").val(),
-                    weight: $("input[name='weight']").val(),
-                    category: $("select[name='category']").val(),
-                    brand: $("select[name='brand']").val(),
-                    date_from: $("input[name='date_from']").val(),
-                    date_to: $("input[name='date_to']").val(),
-                    barcode_date_from: $("input[name='barcode_date_from']").val(),
-                    barcode_date_to: $("input[name='barcode_date_to']").val(),
-                    page: {{ $products->currentPage() }},
-                    _token: '{{ csrf_token() }}'
-                };
-
-                $.ajax({
-                    url: "{{ route('products.filter') }}",
-                    type: "GET",
-                    data: data,
-                    success: function(response) {
-                        // حفظ عدد المنتجات الحالي قبل التحديث
-                        const currentCount = $("#products-count").text();
-
-                        // تحديث الجدول
-                        $("#products-table-body").html(response);
-
-                        // حساب عدد المنتجات بشكل صحيح
-                        let tempDiv = $('<div>').html(response);
-                        let newCount = tempDiv.find('tr[data-id]').length;
-                        $("#products-count").text(newCount);
-
-                        // التحقق من وجود منتجات جديدة في حالة التحديث التلقائي
-                        if (isAutoRefresh && autoRefreshEnabled) {
-                            checkForNewProducts(response);
-                        }
-
-                        // إعادة تهيئة الحقول القابلة للتعديل
-                        initEditableFields();
-
-                        // تحديث وقت آخر تحديث
-                        lastUpdateTime = new Date().getTime();
-
-                        // إخفاء مؤشر التحميل
-                        $('#loadingOverlay').hide();
-                    },
-                    error: function(xhr, status, error) {
-                        // إخفاء مؤشر التحميل في حالة الخطأ
-                        $('#loadingOverlay').hide();
-                        console.log('حدث خطأ أثناء جلب البيانات:', error);
-
-                        if (isAutoRefresh) {
-                            showToast('فشل في التحديث التلقائي', 'error');
-                        }
-                    }
-                });
-            };
-
-            // التحقق من وجود منتجات جديدة
-            function checkForNewProducts(response) {
-                const tempDiv = $('<div>').html(response);
-                const currentIds = new Set();
-                let newProductsCount = 0;
-
-                // جمع معرفات المنتجات الحالية
-                tempDiv.find('tr[data-id]').each(function() {
-                    const productId = $(this).data('id');
-                    currentIds.add(productId);
-
-                    // إذا كان المنتج غير موجود في المجموعة السابقة، فهو منتج جديد
-                    if (!productIds.has(productId)) {
-                        newProductsCount++;
-                        // تمييز المنتج الجديد
-                        $(this).addClass('bg-green-50');
-                        $(this).find('td:first').prepend('<span class="new-product-indicator">!</span>');
-                    }
-                });
-
-                // إذا كان هناك منتجات جديدة، عرض إشعار
-                if (newProductsCount > 0) {
-                    showNewProductsNotification(newProductsCount);
-
-                    // تحديث زر التحديث التلقائي للإشارة إلى وجود تحديثات جديدة
-                    $('#autoRefreshToggle').addClass('bg-green-500');
-                    setTimeout(() => {
-                        $('#autoRefreshToggle').removeClass('bg-green-500');
-                    }, 2000);
-                }
-
-                // تحديث مجموعة معرفات المنتجات
-                productIds = currentIds;
-            }
-
-            // عرض إشعار بوجود منتجات جديدة
-            function showNewProductsNotification(count) {
-                const message = count === 1 ? 'تمت إضافة منتج جديد' : `تمت إضافة ${count} منتجات جديدة`;
-
-                Toastify({
-                    text: message,
-                    duration: 5000,
-                    gravity: "top",
-                    position: "right",
-                    backgroundColor: "#10B981",
-                    stopOnFocus: true,
-                    onClick: function() {
-                        // عند النقر على الإشعار، التمرير إلى أعلى الجدول
-                        $('html, body').animate({
-                            scrollTop: $('.table-container').offset().top
-                        }, 500);
-                    }
-                }).showToast();
-            }
-
-            // تهيئة الحقول القابلة للتعديل
-            function initEditableFields() {
-                $('.editable-field').off('blur').on('blur', function() {
-                    const field = $(this).data('field');
-                    const value = $(this).text().trim();
-                    const productId = $(this).closest('tr').data('id');
-
-                    updateProductField(productId, field, value);
-                });
-            }
-
-            // تحديث حقل منتج
-            function updateProductField(productId, field, value) {
-                $.ajax({
-                    url: `/api/products/${productId}`,
-                    type: 'PUT',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        [field]: value,
-                        role_id: {{ Auth::user()->role_id }},
-                    },
-                    success: function(response) {
-                        showToast('تم تحديث المنتج بنجاح', 'success');
-                    },
-                    error: function(xhr) {
-                        showToast('حدث خطأ أثناء التحديث', 'error');
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-
-            // حذف منتج
-            function deleteProduct(productId) {
-                if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنتج؟')) {
-                    return;
-                }
-
-                $.ajax({
-                    url: `/api/products/${productId}`,
-                    type: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        showToast('تم حذف المنتج بنجاح', 'success');
-                        // إعادة تطبيق الفلاتر لتحديث الجدول
-                        applyFilters(false);
-                    },
-                    error: function(xhr) {
-                        showToast('حدث خطأ أثناء الحذف', 'error');
-                        console.log(xhr.responseText);
-                    }
-                });
-            }
-
-            // تبديل حالة التحديث التلقائي
-            function toggleAutoRefresh() {
-                autoRefreshEnabled = !autoRefreshEnabled;
-
-                if (autoRefreshEnabled) {
-                    $('#autoRefreshToggle').html(
-                        '<i class="fas fa-pause ml-2"></i> <span id="autoRefreshText">إيقاف التحديث</span>');
-                    $('#autoRefreshToggle').removeClass('bg-gray-500').addClass('bg-yellow-500');
-                    showToast('تم تشغيل التحديث التلقائي', 'success');
+            $('input[name="no_image"]').on('change', function() {
+                if (this.checked) {
+                    $('.no_image_div').addClass('bg-yellow-500');
                 } else {
-                    $('#autoRefreshToggle').html(
-                        '<i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>');
-                    $('#autoRefreshToggle').removeClass('bg-yellow-500').addClass('bg-gray-500');
-                    showToast('تم إيقاف التحديث التلقائي', 'info');
+                    $('.no_image_div').removeClass('bg-yellow-500');
                 }
-            }
+                $(this).val(this.checked ? '1' : '0');
+            });
 
-            // تعيين الفلتر حسب التاريخ
-            function setDateFilter(type) {
-                const today = new Date();
-                let fromDate = new Date();
-                let toDate = new Date();
+            let previewData = []; // نخزن بيانات المعاينة
 
-                switch (type) {
-                    case 'today':
-                        // من بداية اليوم إلى نهايته
-                        fromDate.setHours(0, 0, 0, 0);
-                        toDate.setHours(23, 59, 59, 999);
-                        break;
-                    case 'yesterday':
-                        // من بداية البارحة إلى نهايتها
-                        fromDate.setDate(today.getDate() - 1);
-                        fromDate.setHours(0, 0, 0, 0);
-                        toDate.setDate(today.getDate() - 1);
-                        toDate.setHours(23, 59, 59, 999);
-                        break;
-                    case 'week':
-                        // من بداية الأسبوع إلى اليوم
-                        fromDate.setDate(today.getDate() - 7);
-                        fromDate.setHours(0, 0, 0, 0);
-                        toDate.setHours(23, 59, 59, 999);
-                        break;
-                    case 'month':
-                        // من بداية الشهر إلى اليوم
-                        fromDate.setDate(1);
-                        fromDate.setHours(0, 0, 0, 0);
-                        toDate.setHours(23, 59, 59, 999);
-                        break;
-                }
+            $('#dropzone-file').on('change', function() {
+                $('#previewForm').submit();
+            });
 
-                // تنسيق التاريخ إلى yyyy-mm-dd
-                const formatDate = (date) => {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0');
-                    const day = String(date.getDate()).padStart(2, '0');
-                    return `${year}-${month}-${day}`;
-                };
+            // رفع للمعاينة
+            $('#previewForm').on('submit', function(e) {
+                $('#loadingOverlay').css('display', 'flex');
+                e.preventDefault();
+                let formData = new FormData(this);
 
-                $("input[name='date_from']").val(formatDate(fromDate));
-                $("input[name='date_to']").val(formatDate(toDate));
-
-                // تطبيق الفلترة تلقائياً
-                applyFilters(false);
-            }
-
-            // مسح فلترة التاريخ
-            function clearDateFilter() {
-                $("input[name='date_from']").val('');
-                $("input[name='date_to']").val('');
-
-                // تطبيق الفلترة تلقائياً
-                applyFilters(false);
-            }
-
-            function copyTitle(element) {
-                const textToCopy = element.getAttribute("title");
-
-                navigator.clipboard.writeText(textToCopy)
-                    .then(() => {
-                        showToast(`✅ تم نسخ النص: ${textToCopy}`, 'success');
-                    })
-                    .catch(err => {
-                        console.log("حدث خطأ أثناء النسخ:", err);
-                    });
-                // مافي return false حتى الرابط يشتغل عادي
-            }
-
-            function showCatalog() {
-                let ids = [];
-                $('#products-table-body input[type="checkbox"]:checked').each(function() {
-                    let tr = $(this).closest('tr');
-                    if (tr.data('id')) {
-                        ids.push(tr.data('id'));
-                    }
-                });
-
-                if (ids.length === 0) {
-                    showToast("رجاءً اختر منتجات أولاً", 'error');
-                    return;
-                }
-
-                // تقسيم الـ IDs إلى مجموعات (4 في كل مجموعة)
-                const groups = [];
-                for (let i = 0; i < ids.length; i += 4) {
-                    groups.push(ids.slice(i, i + 4));
-                }
-
-                // إرسال كل مجموعة على حدة
-                groups.forEach((group, index) => {
-                    setTimeout(() => {
-                        sendCatalogRequest(group);
-                    }, index * 1000); // تأخير بسيط بين الطلبات
-                });
-            }
-
-            // دالة منفصلة لإرسال الطلب
-            function sendCatalogRequest(ids) {
-                // إنشاء نموذج وإرساله لتحميل الملف
-                let form = $('<form>', {
-                    method: 'GET',
-                    action: "{{ route('showCatalog') }}",
-                    target: '_blank'
-                });
-
-                // إضافة CSRF token
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: '_token',
-                    value: "{{ csrf_token() }}"
-                }));
-
-                // إضافة الـ IDs
-                form.append($('<input>', {
-                    type: 'hidden',
-                    name: 'ids',
-                    value: JSON.stringify(ids)
-                }));
-
-                // إضافة النموذج إلى الصفحة وإرساله
-                $(document.body).append(form);
-                form.submit();
-                form.remove();
-            }
-
-            function addRow(barcode = '', added_at = '', id = "") {
-                let rowIndex = $('#new-products-body tr').length;
-                let rowHtml = `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td id="rowIndex${rowIndex}" class="rowIndex px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
-                        <td class="px-4 py-3 flex justify-center items-center gap-4">
-                            <button type="button" class="remove-row text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
-                                x
-                            </button>
-                            ${added_at}
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col">
-                                <input type="text" name="products[${rowIndex}][barcode]" data-row="${rowIndex}" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
-                                <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">⚠️ الباركود موجود مسبقاً</span>
+                $.ajax({
+                    url: "{{ route('products.preview.images') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        previewData = data;
+                        let table = $('#previewTable');
+                        table.html("");
+                        data.forEach((item, index) => {
+                            let rowIndex = $('#previewTable tr').length;
+                            table.append(`
+                    <tr class="odd:bg-white even:bg-gray-50 border-b border-gray-200" data-id="${item.id ?? '-'}">
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center" data-field="id">
+                                ${rowIndex + 1}
                             </div>
                         </td>
-                        <td class="px-4 py-3">
-                            <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center" data-field="id">
+                                <input type="checkbox" name="" id="" class="border border-gray-400 rounded" />
+                            </div>
                         </td>
-                        <td class="px-4 py-3">
-                            <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
+                        <td class="px-6 py-4">
+                            <div class="text-center" data-field="name">
+                                ${item.name}
+                            </div>
                         </td>
-                        <td class="px-4 py-3">
-                            <input type="number" step="0.01" name="products[${rowIndex}][price]" class="w-32 border rounded-lg px-3 py-2" placeholder="السعر" required>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center" data-field="image">
+                                <img src="${item.image}" class="w-20 h-20 rounded object-contain" />
+                            </div>
                         </td>
-                        <td class="px-4 py-3 text-center">
-                            <button type="button" class="delete-row-new-products bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition" data-id="${id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <td class="px-6 py-4">
+                            <div class="flex justify-center items-center">
+                                <button type="button" class="delete-row text-red-600 hover:text-red-800" data-index="${index}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
-                </tr>`;
-                $('#new-products-body').append(rowHtml);
-            }
-
-            function importFile() {
-                $('.importFileInput').trigger('click');
-            }
-
-
-            $(document).ready(function() {
-
-                $('.importFileInput').on('change', function() {
-                    if (this.files && this.files.length > 0) {
-                        // بإمكانك إضافة تحقق على نوع الملف لو بدك
-                        $('.importFileForm').submit();
-                    }
-                });
-
-                // حدث تحديد/إلغاء تحديد الكل
-                $('#check-all-page-items').change(function() {
-                    const isChecked = $(this).prop('checked');
-                    $('table input[type="checkbox"]').prop('checked', isChecked);
-                });
-
-                // حدث عند تغيير أي checkbox فردي
-                $('table input[type="checkbox"]').not('#check-all-page-items').change(function() {
-                    const allChecked = $('table input[type="checkbox"]').not('#check-all-page-items').length ===
-                        $('table input[type="checkbox"]').not('#check-all-page-items').filter(':checked')
-                        .length;
-                    $('#check-all-page-items').prop('checked', allChecked);
-                });
-
-                $(document).on('click', '.delete-row-new-products', function() {
-                    const button = $(this);
-                    const id = button.data('id');
-
-                    if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
-
-                    $.ajax({
-                        url: '{{ route('product.destroyMissing', ':id') }}'.replace(":id", id),
-                        type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                button.closest('tr').remove();
-                            } else {
-                                showToast(response.message || 'حدث خطأ أثناء الحذف', 'showToast');
-                            }
-                        },
-                        error: function(err) {
-                            showToast('تعذر الاتصال بالسيرفر', 'error');
-                            console.log(err);
-                        }
-                    });
-                });
-
-                // ✅ إضافة سطر جديد
-                $("#add-row").on("click", function() {
-                    addRow();
-                });
-
-                // ✅ حذف سطر
-                $(document).on("click", ".remove-row", function() {
-                    $(this).closest("tr").remove();
-                });
-
-                $('#fetch-missing').click(function() {
-                    $.ajax({
-                        url: '{{ route('products.getMissingProducts') }}',
-                        method: 'GET',
-                        success: function(response) {
-                            showToast('تم جلب المنتجات المفقودة', 'success');
-                            response.forEach(barcode => {
-                                // تحقق إذا الباركود موجود بالفعل
-                                if ($('#new-products-table tbody tr').filter(function() {
-                                        return $(this).find('.barcode-input').val() ==
-                                            barcode['barcode'];
-                                    }).length === 0) {
-                                    addRow(barcode['barcode'], barcode['added_at'], barcode[
-                                        'id']);
-                                }
-                            });
-                        },
-                        error: function(err) {
-                            showToast('حدث خطأ أثناء جلب المنتجات.', 'error');
-                            console.log(err);
-                        }
-                    });
-                });
-
-                // التحقق من تكرار الباركود أثناء الإدخال
-                $(document).on("change", ".barcode-input", function() {
-                    let input = $(this);
-                    let barcode = input.val();
-                    let errorSpan = input.siblings(".barcode-error");
-
-                    let row = parseInt(input.attr("data-row"));
-                    let nextRow = row + 1;
-
-                    addRow(); // إضافة صف جديد
-
-                    if (barcode.trim() !== "") {
-                        let barcodeRoute = "{{ route('products.findByBarcode', ':barcode') }}";
-                        let url = barcodeRoute.replace(":barcode", barcode);
-
-                        $.ajax({
-                            url: url,
-                            type: "GET",
-
-                            success: function(response) {
-
-                                // تعبئة بيانات الصف الحالي
-                                input.val(response['barcode']);
-
-                                $(`input[name="products[${row}][name]"]`).val(response['name'] ??
-                                    "");
-                                $(`input[name="products[${row}][price]"]`).val(response['price'] ??
-                                    "");
-                                $(`input[name="products[${row}][weight]"]`).val(response[
-                                    'weight'] ?? "");
-
-                                // اظهار رسالة الخطأ
-                                errorSpan.removeClass("hidden").text("⚠️ الباركود موجود مسبقاً");
-
-                                // وضع المؤشر على الصف التالي
-                                $(`input[name="products[${nextRow}][barcode]"]`).focus();
-                            },
-
-                            error: function(xhr) {
-                                if (xhr.status === 404) {
-                                    // الباركود غير موجود → اخفاء الخطأ
-                                    errorSpan.addClass("hidden");
-                                }
-
-                                // انتقال إلى الباركود في الصف التالي
-                                $(`input[name="products[${nextRow}][barcode]"]`).focus();
-                            }
+                    </tr>
+                `);
                         });
+                        $('#saveImages').removeClass('hidden');
+                        $('#loadingOverlay').hide();
                     }
-                });
-
-                // ✅ حفظ الجميع
-                $("#save-all").on("click", function() {
-                    let formData = {};
-                    $("#new-products-body tr").each(function(i, row) {
-                        $(row).find("input").each(function() {
-                            formData[$(this).attr("name")] = $(this).val();
-                        });
-                    });
-
-                    $.ajax({
-                        url: "{{ route('products.bulkStore') }}",
-                        type: "POST",
-                        data: formData,
-                        headers: {
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                        },
-                        success: function(res) {
-                            showToast("✅ تم الحفظ بنجاح (" + res.count + " منتج)", "success");
-                            $("#new-products-body").empty(); // تفريغ الجدول
-                            rowIndex = 0;
-                            $("#add-row").click(); // أول سطر فارغ
-                        },
-                        error: function(xhr) {
-                            showToast("❌ حدث خطأ أثناء الحفظ", "error");
-                            console.log(xhr.responseText);
-                        }
-                    });
-                });
-
-                // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
-                initEditableFields();
-
-                // فلترة أثناء الكتابة
-                $(".filter-input").on("keyup change", function() {
-                    applyFilters(false);
-                });
-
-                // منع إعادة تحميل الصفحة عند submit
-                $("#filter-form").on("submit", function(e) {
-                    e.preventDefault();
-                    applyFilters(false);
-                });
-
-                // إعداد التحديث التلقائي كل 5 ثوان
-                autoRefreshInterval = setInterval(() => {
-                    if (autoRefreshEnabled) {
-                        applyFilters(true);
-                    }
-                }, 5000);
-
-                // إعداد حدث النقر على زر التحديث التلقائي
-                $('#autoRefreshToggle').click(toggleAutoRefresh);
-
-                $('#cleanImages').on('click', function() {
-                    if (!confirm('هل أنت متأكد أنك تريد حذف الصور غير المرتبطة؟')) return;
-
-                    $.ajax({
-                        url: '{{ route('products.cleanUnused') }}',
-                        type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                        },
-                        success: function(data) {
-                            if (data.status === 'success') {
-                                alert(`تم حذف ${data.count} صورة غير ضرورية بنجاح ✅`);
-                            } else {
-                                alert('حدث خطأ أثناء تنظيف الصور ❌');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                            alert('فشل الاتصال بالسيرفر ❌');
-                        }
-                    });
                 });
             });
-        </script>
-    @endpush
+
+            // حذف صف من المعاينة
+            $(document).on('click', '.delete-row', function() {
+                let index = $(this).data('index');
+                previewData.splice(index, 1);
+                $(this).closest('tr').remove();
+            });
+
+            // حفظ نهائي
+            $('#saveImages').on('click', function() {
+                $('#loadingOverlay').css('display', 'flex');
+                $.ajax({
+                    url: "{{ route('products.save.images') }}",
+                    type: "POST",
+                    data: {
+                        items: previewData,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(res) {
+                        let table = $('#previewTable');
+                        table.html("");
+                        showToast('تم الحفظ بنجاح ✅');
+                        $('#loadingOverlay').hide();
+                    }
+                });
+            });
+
+            $('.nav-btn').on('click', function() {
+                // إزالة التنسيقات من الأزرار
+                $('.nav-btn').removeClass('text-yellow-400 border-yellow-400 active')
+                    .addClass('border-transparent');
+
+                // إضافة تنسيق للزر النشط
+                $(this).addClass('text-yellow-400 border-yellow-400 active')
+                    .removeClass('border-transparent');
+
+                // إخفاء كل العناصر
+                $('.nav-item').fadeOut(200);
+
+                // إظهار العنصر المطلوب
+                let target = $(this).data('target');
+                $(target).fadeIn(200);
+            });
+        });
+
+        // تعريف المتغيرات العالمية
+        let autoRefreshEnabled = false;
+        let autoRefreshInterval = null;
+        let productIds = new Set();
+        let lastUpdateTime = new Date().getTime();
+
+        // تهيئة معرفات المنتجات الحالية
+        @foreach ($products as $product)
+            productIds.add({{ $product->id }});
+        @endforeach
+
+        function toggleUserInteraction(disable) {
+            if (disable) {
+                // تعطيل الحقول القابلة للتعديل
+                $('.editable-field')
+                    .attr('contenteditable', 'false')
+                    .addClass('opacity-50 cursor-not-allowed');
+
+                // تعطيل الفلاتر
+                $('#filter-form :input').prop('disabled', true);
+
+                // تعطيل أزرار حذف المنتج
+                $('button.delete-btn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+
+            } else {
+                // إعادة التمكين
+                $('.editable-field')
+                    .attr('contenteditable', 'true')
+                    .removeClass('opacity-50 cursor-not-allowed');
+
+                $('#filter-form :input').prop('disabled', false);
+                $('button.delete-btn').prop('disabled', false).removeClass('opacity-50 cursor-not-allowed');
+            }
+        }
+
+        // دوال خاصة بتواريخ سجلات الباركود
+        function setBarcodeDateFilter(range) {
+            const today = new Date();
+            let fromDate, toDate;
+
+            switch (range) {
+                case 'today':
+                    fromDate = today.toISOString().split('T')[0];
+                    toDate = fromDate;
+                    break;
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    fromDate = yesterday.toISOString().split('T')[0];
+                    toDate = fromDate;
+                    break;
+                case 'week':
+                    const weekAgo = new Date(today);
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    fromDate = weekAgo.toISOString().split('T')[0];
+                    toDate = today.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    const monthAgo = new Date(today);
+                    monthAgo.setDate(monthAgo.getDate() - 30);
+                    fromDate = monthAgo.toISOString().split('T')[0];
+                    toDate = today.toISOString().split('T')[0];
+                    break;
+                case 'this_month':
+                    fromDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+                    toDate = today.toISOString().split('T')[0];
+                    break;
+            }
+
+            $("input[name='barcode_date_from']").val(fromDate);
+            $("input[name='barcode_date_to']").val(toDate);
+
+            // تطبيق الفلترة تلقائياً
+            applyFilters();
+        }
+
+        function clearBarcodeDateFilter() {
+            $("input[name='barcode_date_from']").val('');
+            $("input[name='barcode_date_to']").val('');
+
+            // تطبيق الفلترة تلقائياً
+            applyFilters();
+        }
+
+        // تعريف الدالة في النطاق العام
+        window.applyFilters = function(isAutoRefresh) {
+            // إظهار مؤشر التحميل فقط إذا لم يكن طلباً تلقائياً
+            if (!isAutoRefresh) {
+                // toggleUserInteraction(!isAutoRefresh);
+                $('#loadingOverlay').css('display', 'flex');
+            }
+
+            let data = {
+                have_image: $("input[name='have_image']").val(),
+                no_image: $("input[name='no_image']").val(),
+                alphabetical: $("input[name='alphabetical']").val(),
+                barcode: $("input[name='barcode']").val(),
+                name: $("input[name='name']").val(),
+                price: $("input[name='price']").val(),
+                weight: $("input[name='weight']").val(),
+                category: $("select[name='category']").val(),
+                brand: $("select[name='brand']").val(),
+                date_from: $("input[name='date_from']").val(),
+                date_to: $("input[name='date_to']").val(),
+                barcode_date_from: $("input[name='barcode_date_from']").val(),
+                barcode_date_to: $("input[name='barcode_date_to']").val(),
+                page: {{ $products->currentPage() }},
+                _token: '{{ csrf_token() }}'
+            };
+
+            $.ajax({
+                url: "{{ route('products.filter') }}",
+                type: "GET",
+                data: data,
+                success: function(response) {
+                    // حفظ عدد المنتجات الحالي قبل التحديث
+                    const currentCount = $("#products-count").text();
+
+                    // تحديث الجدول
+                    $("#products-table-body").html(response);
+
+                    // حساب عدد المنتجات بشكل صحيح
+                    let tempDiv = $('<div>').html(response);
+                    let newCount = tempDiv.find('tr[data-id]').length;
+                    $("#products-count").text(newCount);
+
+                    // التحقق من وجود منتجات جديدة في حالة التحديث التلقائي
+                    if (isAutoRefresh && autoRefreshEnabled) {
+                        checkForNewProducts(response);
+                    }
+
+                    // إعادة تهيئة الحقول القابلة للتعديل
+                    initEditableFields();
+
+                    // تحديث وقت آخر تحديث
+                    lastUpdateTime = new Date().getTime();
+
+                    // إخفاء مؤشر التحميل
+                    $('#loadingOverlay').hide();
+                },
+                error: function(xhr, status, error) {
+                    // إخفاء مؤشر التحميل في حالة الخطأ
+                    $('#loadingOverlay').hide();
+                    console.log('حدث خطأ أثناء جلب البيانات:', error);
+
+                    if (isAutoRefresh) {
+                        showToast('فشل في التحديث التلقائي', 'error');
+                    }
+                }
+            });
+        };
+
+        // التحقق من وجود منتجات جديدة
+        function checkForNewProducts(response) {
+            const tempDiv = $('<div>').html(response);
+            const currentIds = new Set();
+            let newProductsCount = 0;
+
+            // جمع معرفات المنتجات الحالية
+            tempDiv.find('tr[data-id]').each(function() {
+                const productId = $(this).data('id');
+                currentIds.add(productId);
+
+                // إذا كان المنتج غير موجود في المجموعة السابقة، فهو منتج جديد
+                if (!productIds.has(productId)) {
+                    newProductsCount++;
+                    // تمييز المنتج الجديد
+                    $(this).addClass('bg-green-50');
+                    $(this).find('td:first').prepend('<span class="new-product-indicator">!</span>');
+                }
+            });
+
+            // إذا كان هناك منتجات جديدة، عرض إشعار
+            if (newProductsCount > 0) {
+                showNewProductsNotification(newProductsCount);
+
+                // تحديث زر التحديث التلقائي للإشارة إلى وجود تحديثات جديدة
+                $('#autoRefreshToggle').addClass('bg-green-500');
+                setTimeout(() => {
+                    $('#autoRefreshToggle').removeClass('bg-green-500');
+                }, 2000);
+            }
+
+            // تحديث مجموعة معرفات المنتجات
+            productIds = currentIds;
+        }
+
+        // عرض إشعار بوجود منتجات جديدة
+        function showNewProductsNotification(count) {
+            const message = count === 1 ? 'تمت إضافة منتج جديد' : `تمت إضافة ${count} منتجات جديدة`;
+
+            Toastify({
+                text: message,
+                duration: 5000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#10B981",
+                stopOnFocus: true,
+                onClick: function() {
+                    // عند النقر على الإشعار، التمرير إلى أعلى الجدول
+                    $('html, body').animate({
+                        scrollTop: $('.table-container').offset().top
+                    }, 500);
+                }
+            }).showToast();
+        }
+
+        // تهيئة الحقول القابلة للتعديل
+        function initEditableFields() {
+            $('.editable-field').off('blur').on('blur', function() {
+                const field = $(this).data('field');
+                const value = $(this).text().trim();
+                const productId = $(this).closest('tr').data('id');
+
+                updateProductField(productId, field, value);
+            });
+        }
+
+        // تحديث حقل منتج
+        function updateProductField(productId, field, value) {
+            $.ajax({
+                url: `/api/products/${productId}`,
+                type: 'PUT',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    [field]: value,
+                    role_id: {{ Auth::user()->role_id }},
+                },
+                success: function(response) {
+                    showToast('تم تحديث المنتج بنجاح', 'success');
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء التحديث', 'error');
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        // حذف منتج
+        function deleteProduct(productId) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا المنتج؟')) {
+                return;
+            }
+
+            $.ajax({
+                url: `/api/products/${productId}`,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    showToast('تم حذف المنتج بنجاح', 'success');
+                    // إعادة تطبيق الفلاتر لتحديث الجدول
+                    applyFilters(false);
+                },
+                error: function(xhr) {
+                    showToast('حدث خطأ أثناء الحذف', 'error');
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        // تبديل حالة التحديث التلقائي
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+
+            if (autoRefreshEnabled) {
+                $('#autoRefreshToggle').html(
+                    '<i class="fas fa-pause ml-2"></i> <span id="autoRefreshText">إيقاف التحديث</span>');
+                $('#autoRefreshToggle').removeClass('bg-gray-500').addClass('bg-yellow-500');
+                showToast('تم تشغيل التحديث التلقائي', 'success');
+            } else {
+                $('#autoRefreshToggle').html(
+                    '<i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>');
+                $('#autoRefreshToggle').removeClass('bg-yellow-500').addClass('bg-gray-500');
+                showToast('تم إيقاف التحديث التلقائي', 'info');
+            }
+        }
+
+        // تعيين الفلتر حسب التاريخ
+        function setDateFilter(type) {
+            const today = new Date();
+            let fromDate = new Date();
+            let toDate = new Date();
+
+            switch (type) {
+                case 'today':
+                    // من بداية اليوم إلى نهايته
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'yesterday':
+                    // من بداية البارحة إلى نهايتها
+                    fromDate.setDate(today.getDate() - 1);
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setDate(today.getDate() - 1);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'week':
+                    // من بداية الأسبوع إلى اليوم
+                    fromDate.setDate(today.getDate() - 7);
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+                case 'month':
+                    // من بداية الشهر إلى اليوم
+                    fromDate.setDate(1);
+                    fromDate.setHours(0, 0, 0, 0);
+                    toDate.setHours(23, 59, 59, 999);
+                    break;
+            }
+
+            // تنسيق التاريخ إلى yyyy-mm-dd
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            $("input[name='date_from']").val(formatDate(fromDate));
+            $("input[name='date_to']").val(formatDate(toDate));
+
+            // تطبيق الفلترة تلقائياً
+            applyFilters(false);
+        }
+
+        // مسح فلترة التاريخ
+        function clearDateFilter() {
+            $("input[name='date_from']").val('');
+            $("input[name='date_to']").val('');
+
+            // تطبيق الفلترة تلقائياً
+            applyFilters(false);
+        }
+
+        function copyTitle(element) {
+            const textToCopy = element.getAttribute("title");
+
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    showToast(`✅ تم نسخ النص: ${textToCopy}`, 'success');
+                })
+                .catch(err => {
+                    console.log("حدث خطأ أثناء النسخ:", err);
+                });
+            // مافي return false حتى الرابط يشتغل عادي
+        }
+
+        function showCatalog() {
+            let ids = [];
+            $('#products-table-body input[type="checkbox"]:checked').each(function() {
+                let tr = $(this).closest('tr');
+                if (tr.data('id')) {
+                    ids.push(tr.data('id'));
+                }
+            });
+
+            if (ids.length === 0) {
+                showToast("رجاءً اختر منتجات أولاً", 'error');
+                return;
+            }
+
+            // تقسيم الـ IDs إلى مجموعات (4 في كل مجموعة)
+            const groups = [];
+            for (let i = 0; i < ids.length; i += 4) {
+                groups.push(ids.slice(i, i + 4));
+            }
+
+            // إرسال كل مجموعة على حدة
+            groups.forEach((group, index) => {
+                setTimeout(() => {
+                    sendCatalogRequest(group);
+                }, index * 1000); // تأخير بسيط بين الطلبات
+            });
+        }
+
+        // دالة منفصلة لإرسال الطلب
+        function sendCatalogRequest(ids) {
+            // إنشاء نموذج وإرساله لتحميل الملف
+            let form = $('<form>', {
+                method: 'GET',
+                action: "{{ route('showCatalog') }}",
+                target: '_blank'
+            });
+
+            // إضافة CSRF token
+            form.append($('<input>', {
+                type: 'hidden',
+                name: '_token',
+                value: "{{ csrf_token() }}"
+            }));
+
+            // إضافة الـ IDs
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'ids',
+                value: JSON.stringify(ids)
+            }));
+
+            // إضافة النموذج إلى الصفحة وإرساله
+            $(document.body).append(form);
+            form.submit();
+            form.remove();
+        }
+
+        function addRow(barcode = '', added_at = '', id = "") {
+            let rowIndex = $('#new-products-body tr').length;
+            let rowHtml = `
+                <tr class="border-b hover:bg-gray-50">
+                    <td id="rowIndex${rowIndex}" class="rowIndex px-4 py-3 text-center font-medium text-gray-700">${rowIndex + 1}</td>
+                    <td class="px-4 py-3 flex justify-center items-center gap-4">
+                        <button type="button" class="remove-row text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition">
+                            x
+                        </button>
+                        ${added_at}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex flex-col">
+                            <input type="text" name="products[${rowIndex}][barcode]" data-row="${rowIndex}" class="barcode-input w-40 border rounded-lg px-3 py-2" value="${barcode}" required>
+                            <span class="barcode-error text-center text-red-500 text-xs mt-1 hidden">⚠️ الباركود موجود مسبقاً</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <input type="text" name="products[${rowIndex}][name]" class="w-72 border rounded-lg px-3 py-2" placeholder="أدخل اسم المنتج" required>
+                    </td>
+                    <td class="px-4 py-3">
+                        <input type="text" name="products[${rowIndex}][weight]" class="w-32 border rounded-lg px-3 py-2" placeholder="الوزن">
+                    </td>
+                    <td class="px-4 py-3">
+                        <input type="number" step="0.01" name="products[${rowIndex}][price]" class="w-32 border rounded-lg px-3 py-2" placeholder="السعر" required>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        <button type="button" class="delete-row-new-products bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1 rounded-lg transition" data-id="${id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+            </tr>`;
+            $('#new-products-body').append(rowHtml);
+        }
+
+        function importFile() {
+            $('.importFileInput').trigger('click');
+        }
+
+
+        $(document).ready(function() {
+
+            $('.importFileInput').on('change', function() {
+                if (this.files && this.files.length > 0) {
+                    // بإمكانك إضافة تحقق على نوع الملف لو بدك
+                    $('.importFileForm').submit();
+                }
+            });
+
+            // حدث تحديد/إلغاء تحديد الكل
+            $('#check-all-page-items').change(function() {
+                const isChecked = $(this).prop('checked');
+                $('table input[type="checkbox"]').prop('checked', isChecked);
+            });
+
+            // حدث عند تغيير أي checkbox فردي
+            $('table input[type="checkbox"]').not('#check-all-page-items').change(function() {
+                const allChecked = $('table input[type="checkbox"]').not('#check-all-page-items').length ===
+                    $('table input[type="checkbox"]').not('#check-all-page-items').filter(':checked')
+                    .length;
+                $('#check-all-page-items').prop('checked', allChecked);
+            });
+
+            $(document).on('click', '.delete-row-new-products', function() {
+                const button = $(this);
+                const id = button.data('id');
+
+                if (!confirm('هل أنت متأكد من حذف هذا السجل؟')) return;
+
+                $.ajax({
+                    url: '{{ route('product.destroyMissing', ':id') }}'.replace(":id", id),
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            button.closest('tr').remove();
+                        } else {
+                            showToast(response.message || 'حدث خطأ أثناء الحذف', 'showToast');
+                        }
+                    },
+                    error: function(err) {
+                        showToast('تعذر الاتصال بالسيرفر', 'error');
+                        console.log(err);
+                    }
+                });
+            });
+
+            // ✅ إضافة سطر جديد
+            $("#add-row").on("click", function() {
+                addRow();
+            });
+
+            // ✅ حذف سطر
+            $(document).on("click", ".remove-row", function() {
+                $(this).closest("tr").remove();
+            });
+
+            $('#fetch-missing').click(function() {
+                $.ajax({
+                    url: '{{ route('products.getMissingProducts') }}',
+                    method: 'GET',
+                    success: function(response) {
+                        showToast('تم جلب المنتجات المفقودة', 'success');
+                        response.forEach(barcode => {
+                            // تحقق إذا الباركود موجود بالفعل
+                            if ($('#new-products-table tbody tr').filter(function() {
+                                    return $(this).find('.barcode-input').val() ==
+                                        barcode['barcode'];
+                                }).length === 0) {
+                                addRow(barcode['barcode'], barcode['added_at'], barcode[
+                                    'id']);
+                            }
+                        });
+                    },
+                    error: function(err) {
+                        showToast('حدث خطأ أثناء جلب المنتجات.', 'error');
+                        console.log(err);
+                    }
+                });
+            });
+
+            // التحقق من تكرار الباركود أثناء الإدخال
+            $(document).on("change", ".barcode-input", function() {
+                let input = $(this);
+                let barcode = input.val();
+                let errorSpan = input.siblings(".barcode-error");
+
+                let row = parseInt(input.attr("data-row"));
+                let nextRow = row + 1;
+
+                addRow(); // إضافة صف جديد
+
+                if (barcode.trim() !== "") {
+                    let barcodeRoute = "{{ route('products.findByBarcode', ':barcode') }}";
+                    let url = barcodeRoute.replace(":barcode", barcode);
+
+                    $.ajax({
+                        url: url,
+                        type: "GET",
+
+                        success: function(response) {
+
+                            // تعبئة بيانات الصف الحالي
+                            input.val(response['barcode']);
+
+                            $(`input[name="products[${row}][name]"]`).val(response['name'] ??
+                                "");
+                            $(`input[name="products[${row}][price]"]`).val(response['price'] ??
+                                "");
+                            $(`input[name="products[${row}][weight]"]`).val(response[
+                                'weight'] ?? "");
+
+                            // اظهار رسالة الخطأ
+                            errorSpan.removeClass("hidden").text("⚠️ الباركود موجود مسبقاً");
+
+                            // وضع المؤشر على الصف التالي
+                            $(`input[name="products[${nextRow}][barcode]"]`).focus();
+                        },
+
+                        error: function(xhr) {
+                            if (xhr.status === 404) {
+                                // الباركود غير موجود → اخفاء الخطأ
+                                errorSpan.addClass("hidden");
+                            }
+
+                            // انتقال إلى الباركود في الصف التالي
+                            $(`input[name="products[${nextRow}][barcode]"]`).focus();
+                        }
+                    });
+                }
+            });
+
+            // ✅ حفظ الجميع
+            $("#save-all").on("click", function() {
+                let formData = {};
+                $("#new-products-body tr").each(function(i, row) {
+                    $(row).find("input").each(function() {
+                        formData[$(this).attr("name")] = $(this).val();
+                    });
+                });
+
+                $.ajax({
+                    url: "{{ route('products.bulkStore') }}",
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    },
+                    success: function(res) {
+                        showToast("✅ تم الحفظ بنجاح (" + res.count + " منتج)", "success");
+                        $("#new-products-body").empty(); // تفريغ الجدول
+                        rowIndex = 0;
+                        $("#add-row").click(); // أول سطر فارغ
+                    },
+                    error: function(xhr) {
+                        showToast("❌ حدث خطأ أثناء الحفظ", "error");
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+
+            // تهيئة الحقول القابلة للتعديل عند تحميل الصفحة
+            initEditableFields();
+
+            // فلترة أثناء الكتابة
+            $(".filter-input").on("keyup change", function() {
+                applyFilters(false);
+            });
+
+            // منع إعادة تحميل الصفحة عند submit
+            $("#filter-form").on("submit", function(e) {
+                e.preventDefault();
+                applyFilters(false);
+            });
+
+            // إعداد التحديث التلقائي كل 5 ثوان
+            autoRefreshInterval = setInterval(() => {
+                if (autoRefreshEnabled) {
+                    applyFilters(true);
+                }
+            }, 5000);
+
+            // إعداد حدث النقر على زر التحديث التلقائي
+            $('#autoRefreshToggle').click(toggleAutoRefresh);
+
+            $('#cleanImages').on('click', function() {
+                if (!confirm('هل أنت متأكد أنك تريد حذف الصور غير المرتبطة؟')) return;
+
+                $.ajax({
+                    url: '{{ route('products.cleanUnused') }}',
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        if (data.status === 'success') {
+                            alert(`تم حذف ${data.count} صورة غير ضرورية بنجاح ✅`);
+                        } else {
+                            alert('حدث خطأ أثناء تنظيف الصور ❌');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                        alert('فشل الاتصال بالسيرفر ❌');
+                    }
+                });
+            });
+        });
+    </script>
+@endpush
