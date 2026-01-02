@@ -109,13 +109,13 @@
 @endpush
 
 @section('content')
-<div class="container mx-auto px-4 py-8">
+<div dir="rtl" class="container mx-auto px-4 py-8">
     <!-- الفلترة -->
     <div dir="rtl" class="filter-section p-8 mb-12 text-white">
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
             <div>
                 <h1 class="text-2xl md:text-3xl font-bold mb-2">المتجر الإلكتروني</h1>
-                <p class="text-gray-300">تصفح منتجاتنا المميزة حسب الفئات</p>
+                <p class="text-gray-300">تصفح منتجاتنا المميزة </p>
             </div>
             <div class="mt-4 md:mt-0">
                 <span class="bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-medium">
