@@ -214,9 +214,27 @@
                 @endforeach
             </div>
         </div>
+        {{-- قسم المنتجات الأخيرة --}}
+        @if ($latestProducts->count() > 0)
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-clock ml-2 text-yellow-500"></i>
+                        أحدث المنتجات
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                    @foreach ($latestProducts as $product)
+                        {{-- عرض بطاقة المنتج --}}
+                        @include('customer.partials.product-card', ['product' => $product])
+                    @endforeach
+                </div>
+            </div>
+        @endif
 
         <!-- عرض الفئات والمنتجات -->
-        <div id="products-container">
+        <div id="categories-container">
             @include('customer.partials.categories-products', ['categories' => $categories])
         </div>
 
@@ -298,5 +316,34 @@
                 scrollTop: 0
             }, 500);
         });
+
+        // دالة لعرض المزيد من منتجات الفئة
+        function loadMoreCategory(categoryId) {
+            $('#loadingOverlay').fadeIn();
+
+            $.ajax({
+                url: "{{ route('customer.filter') }}",
+                type: "GET",
+                data: {
+                    load_category: categoryId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // إخفاء الأزرار القديمة وإضافة المحتوى الجديد
+                    $(`#category-${categoryId} .show-more-btn`).hide();
+                    $(`#category-${categoryId} .products-grid`).append(response);
+                    $('#loadingOverlay').fadeOut();
+                },
+                error: function() {
+                    $('#loadingOverlay').fadeOut();
+                    alert('حدث خطأ أثناء تحميل المزيد من المنتجات');
+                }
+            });
+        }
+
+        // دالة للذهاب لصفحة الفئة الكاملة
+        function viewAllCategory(categoryId) {
+            window.location.href = `/category/${categoryId}/products`;
+        }
     </script>
 @endpush

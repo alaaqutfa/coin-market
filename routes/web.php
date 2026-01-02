@@ -145,6 +145,8 @@ Route::prefix('admin')
 Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
 Route::get('/filter', [CustomerController::class, 'filter'])->name('customer.filter');
 Route::get('/products/{id}', [CustomerController::class, 'show'])->name('customer.product.show');
+Route::get('/category/{id}/products', [CustomerController::class, 'categoryProducts'])
+    ->name('customer.category.products');
 
 /*
 |--------------------------------------------------------------------------

@@ -11,130 +11,139 @@ class CustomerController extends Controller
 {
     public function home(Request $request)
     {
-        $query = Category::query()->with(['products' => function ($productQuery) use ($request) {
-            // تطبيق الفلاتر على المنتجات داخل كل فئة
-            $productQuery->whereNotNull('image_path');
-            // ->whereNotNull('brand_id');
+        // جلب آخر 20 منتج بدون التصنيفات
+        $latestProducts = Product::query()
+            ->whereNotNull('image_path')
+            // ->with('category', 'brand')
+            ->with('category')
+            ->latest()
+            ->take(20)
+            ->get();
 
-            // الفلترة حسب الاسم
-            if ($request->name) {
-                $productQuery->where('name', 'like', '%' . $request->name . '%');
-            }
-
-            // الفلترة حسب السعر
-            if ($request->price) {
-                $productQuery->where('price', $request->price);
-            }
-
-            // الفلترة حسب الوزن
-            if ($request->weight) {
-                $productQuery->where('weight', $request->weight);
-            }
-
-            // الفلترة حسب العلامة التجارية
-            if ($request->brand) {
-                $productQuery->where('brand_id', $request->brand);
-            }
-
-            // ترتيب المنتجات داخل كل فئة
-            $productQuery->latest()->take(40);
-        }]);
-
-        // فلترة الفئات التي تحتوي على منتجات بعد تطبيق الفلاتر
-        $query->whereHas('products', function ($productQuery) use ($request) {
-            $productQuery->whereNotNull('image_path');
-            // ->whereNotNull('brand_id');
-
-            if ($request->name) {
-                $productQuery->where('name', 'like', '%' . $request->name . '%');
-            }
-
-            if ($request->price) {
-                $productQuery->where('price', $request->price);
-            }
-
-            if ($request->weight) {
-                $productQuery->where('weight', $request->weight);
-            }
-
-            if ($request->brand) {
-                $productQuery->where('brand_id', $request->brand);
-            }
-        });
-
-        // فلترة حسب فئة محددة
-        if ($request->category) {
-            $query->where('id', $request->category);
-        }
+        // جلب الفئات مع آخر 16 منتجات لكل فئة (للعرض المبدئي)
+        $categories = Category::query()
+            ->with(['products' => function ($query) {
+                $query->whereNotNull('image_path')
+                      ->latest()
+                      ->take(16); // 16 منتجات لكل فئة في العرض الأولي
+            }])
+            ->whereHas('products', function ($query) {
+                $query->whereNotNull('image_path');
+            })
+            ->when($request->category, function ($query, $categoryId) {
+                return $query->where('id', $categoryId);
+            })
+            ->orderBy('name')
+            ->get();
 
         $filters       = $request->all();
-        $categories    = $query->orderBy('name')->get();
         $allBrands     = Brand::all();
         $allCategories = Category::all();
 
-        return view('customer.product', compact('categories', 'allBrands', 'allCategories', 'filters'));
+        return view('customer.product', compact(
+            'latestProducts',
+            'categories',
+            'allBrands',
+            'allCategories',
+            'filters'
+        ));
     }
 
     public function filter(Request $request)
     {
-        $query = Category::query()->with(['products' => function ($productQuery) use ($request) {
-            $productQuery->whereNotNull('image_path');
-            // ->whereNotNull('brand_id');
+        // إذا كان طلب فلترة عادي (من شريط البحث)
+        if ($request->filled('name') || $request->filled('price') ||
+            $request->filled('weight') || $request->filled('brand') ||
+            $request->filled('category')) {
+
+            // فلترة المنتجات مباشرة
+            $productsQuery = Product::query()
+                ->whereNotNull('image_path')
+                // ->with('category', 'brand');
+                ->with('category');
 
             if ($request->name) {
-                $productQuery->where('name', 'like', '%' . $request->name . '%');
+                $productsQuery->where('name', 'like', '%' . $request->name . '%');
             }
 
             if ($request->price) {
-                $productQuery->where('price', $request->price);
+                $productsQuery->where('price', $request->price);
             }
 
             if ($request->weight) {
-                $productQuery->where('weight', $request->weight);
+                $productsQuery->where('weight', $request->weight);
             }
 
             if ($request->brand) {
-                $productQuery->where('brand_id', $request->brand);
+                $productsQuery->where('brand_id', $request->brand);
             }
 
-            $productQuery->latest()->take(40);
-        }]);
-
-        // فلترة الفئات التي تحتوي على منتجات بعد تطبيق الفلاتر
-        $query->whereHas('products', function ($productQuery) use ($request) {
-            $productQuery->whereNotNull('image_path');
-            // ->whereNotNull('brand_id');
-
-            if ($request->name) {
-                $productQuery->where('name', 'like', '%' . $request->name . '%');
+            if ($request->category) {
+                $productsQuery->where('category_id', $request->category);
             }
 
-            if ($request->price) {
-                $productQuery->where('price', $request->price);
-            }
+            $products = $productsQuery->latest()->paginate(20);
 
-            if ($request->weight) {
-                $productQuery->where('weight', $request->weight);
-            }
-
-            if ($request->brand) {
-                $productQuery->where('brand_id', $request->brand);
-            }
-        });
-
-        if ($request->category) {
-            $query->where('id', $request->category);
+            return view('customer.partials.filtered-products', compact('products', 'filters'));
         }
 
-        $filters    = $request->all();
-        $categories = $query->orderBy('name')->get();
+        // إذا كان طلب لعرض منتجات فئة محددة مع pagination
+        if ($request->filled('load_category')) {
+            $categoryId = $request->load_category;
+            $page = $request->page ?? 1;
+
+            $products = Product::query()
+                ->whereNotNull('image_path')
+                ->where('category_id', $categoryId)
+                // ->with('brand')
+                ->latest()
+                ->paginate(20, ['*'], 'page', $page);
+
+            $category = Category::find($categoryId);
+
+            return view('customer.partials.category-products', compact('products', 'category'));
+        }
+
+        // الافتراضي: عرض الفئات مع 16 منتجات لكل فئة
+        $categories = Category::query()
+            ->with(['products' => function ($query) {
+                $query->whereNotNull('image_path')
+                      ->latest()
+                      ->take(16);
+            }])
+            ->whereHas('products', function ($query) {
+                $query->whereNotNull('image_path');
+            })
+            ->when($request->category, function ($query, $categoryId) {
+                return $query->where('id', $categoryId);
+            })
+            ->orderBy('name')
+            ->get();
+
+        $filters = $request->all();
 
         return view('customer.partials.categories-products', compact('categories', 'filters'));
     }
 
     public function show($id)
     {
-        $product = Product::with('category', 'brand')->findOrFail($id);
+        // $product = Product::with('category', 'brand')->findOrFail($id);
+        $product = Product::with('category')->findOrFail($id);
         return view('customer.show', compact('product'));
+    }
+
+    // دالة جديدة: عرض جميع منتجات فئة مع pagination
+    public function categoryProducts($id, Request $request)
+    {
+        $category = Category::findOrFail($id);
+
+        $products = Product::query()
+            ->whereNotNull('image_path')
+            ->where('category_id', $id)
+            // ->with('brand')
+            ->latest()
+            ->paginate(20);
+
+        return view('customer.category', compact('category', 'products'));
     }
 }
