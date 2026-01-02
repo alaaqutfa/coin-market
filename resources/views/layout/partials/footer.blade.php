@@ -14,14 +14,14 @@
                 <p class="text-gray-600 text-sm mb-4">
                     متجرنا الإلكتروني يوفر مجموعة متنوعة من المنتجات المميزة بأفضل الأسعار والجودة العالية.
                 </p>
-                <div class="flex gap-2">
-                    <a href="#" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
+                <div class="flex gap-4">
+                    <a href="https://www.facebook.com/profile.php?id=61580920731064" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
                         <i class="fab fa-facebook-f text-lg"></i>
                     </a>
-                    <a href="#" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
+                    <a href="https://www.instagram.com/coin.market.zouk/" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
                         <i class="fab fa-instagram text-lg"></i>
                     </a>
-                    <a href="#" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
+                    <a href="https://www.tiktok.com/@coin.market.zouk3" class="text-gray-500 hover:text-yellow-500 transition-colors duration-200">
                         <i class="fab fa-tiktok text-lg"></i>
                     </a>
                 </div>
@@ -143,16 +143,16 @@
                 . جميع الحقوق محفوظة.
             </span>
 
-            <div class="flex mt-4 gap-2 sm:justify-center sm:mt-0">
-                <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
+            <div class="flex mt-4 gap-4 sm:justify-center sm:mt-0">
+                <a href="https://www.facebook.com/profile.php?id=61580920731064" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
                     <i class="fab fa-facebook-f"></i>
                     <span class="sr-only">Facebook</span>
                 </a>
-                <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
+                <a href="https://www.instagram.com/coin.market.zouk/" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
                     <i class="fab fa-instagram"></i>
                     <span class="sr-only">Instagram</span>
                 </a>
-                <a href="#" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
+                <a href="https://www.tiktok.com/@coin.market.zouk3" class="text-gray-400 hover:text-gray-900 transition-colors duration-200">
                     <i class="fab fa-tiktok"></i>
                     <span class="sr-only">TikTok</span>
                 </a>
