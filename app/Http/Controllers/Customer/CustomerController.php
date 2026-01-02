@@ -6,26 +6,47 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
     public function home(Request $request)
     {
-        // جلب آخر 20 منتج بدون التصنيفات
-        $latestProducts = Product::query()
-            ->whereNotNull('image_path')
-            // ->with('category', 'brand')
-            ->with('category')
-            ->latest()
-            ->take(20)
-            ->get();
+        // تحديد نطاق التاريخ
+    $startDate = $request->input('start_date', now()->subWeek()->toDateString());
+    $endDate = $request->input('end_date', now()->toDateString());
+
+    // جلب آخر 20 منتج حسب سجلات الباركود
+    $latestProducts = Product::query()
+        ->whereNotNull('image_path')
+        ->whereExists(function ($query) use ($startDate, $endDate) {
+            $query->select(DB::raw(1))
+                  ->from('product_barcode_logs')
+                  ->whereColumn('product_barcode_logs.barcode', 'products.barcode')
+                  ->whereBetween('product_barcode_logs.created_at', [
+                      $startDate . ' 00:00:00',
+                      $endDate . ' 23:59:59',
+                  ]);
+        })
+        ->with('category')
+        ->select('products.*')
+        ->addSelect([
+            'last_barcode_scan' => DB::table('product_barcode_logs')
+                ->select('created_at')
+                ->whereColumn('barcode', 'products.barcode')
+                ->orderByDesc('created_at')
+                ->limit(1)
+        ])
+        ->orderByDesc('last_barcode_scan')
+        ->take(20)
+        ->get();
 
         // جلب الفئات مع آخر 20 منتجات لكل فئة (للعرض المبدئي)
         $categories = Category::query()
             ->with(['products' => function ($query) {
                 $query->whereNotNull('image_path')
-                      ->latest()
-                      ->take(20); // 20 منتجات لكل فئة في العرض الأولي
+                    ->latest()
+                    ->take(20); // 20 منتجات لكل فئة في العرض الأولي
             }])
             ->whereHas('products', function ($query) {
                 $query->whereNotNull('image_path');
@@ -59,7 +80,7 @@ class CustomerController extends Controller
             // فلترة المنتجات مباشرة
             $productsQuery = Product::query()
                 ->whereNotNull('image_path')
-                // ->with('category', 'brand');
+            // ->with('category', 'brand');
                 ->with('category');
 
             if ($request->name) {
@@ -90,12 +111,12 @@ class CustomerController extends Controller
         // إذا كان طلب لعرض منتجات فئة محددة مع pagination
         if ($request->filled('load_category')) {
             $categoryId = $request->load_category;
-            $page = $request->page ?? 1;
+            $page       = $request->page ?? 1;
 
             $products = Product::query()
                 ->whereNotNull('image_path')
                 ->where('category_id', $categoryId)
-                // ->with('brand')
+            // ->with('brand')
                 ->latest()
                 ->paginate(40, ['*'], 'page', $page);
 
@@ -108,8 +129,8 @@ class CustomerController extends Controller
         $categories = Category::query()
             ->with(['products' => function ($query) {
                 $query->whereNotNull('image_path')
-                      ->latest()
-                      ->take(20);
+                    ->latest()
+                    ->take(20);
             }])
             ->whereHas('products', function ($query) {
                 $query->whereNotNull('image_path');
@@ -140,7 +161,7 @@ class CustomerController extends Controller
         $products = Product::query()
             ->whereNotNull('image_path')
             ->where('category_id', $id)
-            // ->with('brand')
+        // ->with('brand')
             ->latest()
             ->paginate(40);
 
