@@ -1113,9 +1113,12 @@ function saveCategoryChange(container) {
     saveBtn.html('<i class="fas fa-spinner fa-spin mr-1"></i> جاري الحفظ');
     saveBtn.prop('disabled', true);
 
+    const updateCategoryRoute = "{{ route('products.update-category', ':productId') }}";
+    const url = updateCategoryRoute.replace(':productId', productId);
+
     // إرسال طلب AJAX
     $.ajax({
-        url: `/api/products/${productId}/update-category`,
+        url: url,
         method: 'POST',
         data: {
             category_id: categoryId,
