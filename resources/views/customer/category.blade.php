@@ -16,7 +16,7 @@
                         {{ $products->total() }} منتج
                     </p>
                 </div>
-                <a href="{{ url('/') }}" class="text-yellow-500 hover:text-yellow-600 font-medium">
+                <a dir="ltr" href="{{ url('/') }}" class="text-yellow-500 hover:text-yellow-600 font-medium">
                     <i class="fas fa-arrow-right ml-2"></i>
                     العودة للرئيسية
                 </a>
