@@ -20,12 +20,12 @@ class CustomerController extends Controller
             ->take(20)
             ->get();
 
-        // جلب الفئات مع آخر 16 منتجات لكل فئة (للعرض المبدئي)
+        // جلب الفئات مع آخر 20 منتجات لكل فئة (للعرض المبدئي)
         $categories = Category::query()
             ->with(['products' => function ($query) {
                 $query->whereNotNull('image_path')
                       ->latest()
-                      ->take(16); // 16 منتجات لكل فئة في العرض الأولي
+                      ->take(20); // 20 منتجات لكل فئة في العرض الأولي
             }])
             ->whereHas('products', function ($query) {
                 $query->whereNotNull('image_path');
@@ -82,7 +82,7 @@ class CustomerController extends Controller
                 $productsQuery->where('category_id', $request->category);
             }
 
-            $products = $productsQuery->latest()->paginate(20);
+            $products = $productsQuery->latest()->paginate(40);
 
             return view('customer.partials.filtered-products', compact('products', 'filters'));
         }
@@ -97,19 +97,19 @@ class CustomerController extends Controller
                 ->where('category_id', $categoryId)
                 // ->with('brand')
                 ->latest()
-                ->paginate(20, ['*'], 'page', $page);
+                ->paginate(40, ['*'], 'page', $page);
 
             $category = Category::find($categoryId);
 
             return view('customer.partials.category-products', compact('products', 'category'));
         }
 
-        // الافتراضي: عرض الفئات مع 16 منتجات لكل فئة
+        // الافتراضي: عرض الفئات مع 20 منتجات لكل فئة
         $categories = Category::query()
             ->with(['products' => function ($query) {
                 $query->whereNotNull('image_path')
                       ->latest()
-                      ->take(16);
+                      ->take(20);
             }])
             ->whereHas('products', function ($query) {
                 $query->whereNotNull('image_path');
@@ -142,7 +142,7 @@ class CustomerController extends Controller
             ->where('category_id', $id)
             // ->with('brand')
             ->latest()
-            ->paginate(20);
+            ->paginate(40);
 
         return view('customer.category', compact('category', 'products'));
     }
