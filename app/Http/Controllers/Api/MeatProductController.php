@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\MeatProduct;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class MeatProductController extends Controller
@@ -18,13 +17,13 @@ class MeatProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'barcode' => 'nullable|string|max:50|unique:meat_products,barcode,',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
-            'current_stock' => 'required|numeric|min:0',
-            'cost_price' => 'required|numeric|min:0',
-            'selling_price' => 'required|numeric|min:0',
+            'name'             => 'required|string|max:255',
+            'barcode'          => 'nullable|string|max:50|unique:meat_products,barcode,',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description'      => 'nullable|string',
+            'current_stock'    => 'required|numeric|min:0',
+            'cost_price'       => 'required|numeric|min:0',
+            'selling_price'    => 'required|numeric|min:0',
             'waste_percentage' => 'required|numeric|min:0|max:100',
         ]);
 
@@ -32,7 +31,7 @@ class MeatProductController extends Controller
 
         // رفع الصورة إذا وجدت
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('meat-products', 'public');
+            $imagePath     = $request->file('image')->store('meat-products', 'public');
             $data['image'] = $imagePath;
         }
 
@@ -40,7 +39,7 @@ class MeatProductController extends Controller
 
         return response()->json([
             'message' => 'تم إنشاء المنتج بنجاح',
-            'product' => $product
+            'product' => $product,
         ], 201);
     }
 
@@ -52,15 +51,14 @@ class MeatProductController extends Controller
     public function update(Request $request, MeatProduct $meatProduct)
     {
         $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'barcode' => 'nullable|string|max:50|unique:meat_products,barcode,',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'description' => 'nullable|string',
-            'current_stock' => 'sometimes|numeric|min:0',
-            'cost_price' => 'sometimes|numeric|min:0',
-            'selling_price' => 'sometimes|numeric|min:0',
-            'waste_percentage' => 'sometimes|numeric|min:0|max:100',
-            'is_active' => 'sometimes|boolean'
+            'name'             => 'required|string|max:255',
+            'barcode'          => 'nullable|string|max:50|unique:meat_products,barcode,' . $meatProduct->id,
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description'      => 'nullable|string',
+            'current_stock'    => 'required|numeric|min:0',
+            'cost_price'       => 'required|numeric|min:0',
+            'selling_price'    => 'required|numeric|min:0',
+            'waste_percentage' => 'required|numeric|min:0|max:100',
         ]);
 
         $data = $request->all();
@@ -72,7 +70,7 @@ class MeatProductController extends Controller
                 Storage::disk('public')->delete($meatProduct->image);
             }
 
-            $imagePath = $request->file('image')->store('meat-products', 'public');
+            $imagePath     = $request->file('image')->store('meat-products', 'public');
             $data['image'] = $imagePath;
         }
 
@@ -80,7 +78,7 @@ class MeatProductController extends Controller
 
         return response()->json([
             'message' => 'تم تحديث المنتج بنجاح',
-            'product' => $meatProduct
+            'product' => $meatProduct,
         ]);
     }
 
@@ -94,7 +92,7 @@ class MeatProductController extends Controller
         $meatProduct->delete();
 
         return response()->json([
-            'message' => 'تم حذف المنتج بنجاح'
+            'message' => 'تم حذف المنتج بنجاح',
         ]);
     }
 }

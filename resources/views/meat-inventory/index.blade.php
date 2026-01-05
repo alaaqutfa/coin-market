@@ -1250,32 +1250,35 @@
 
         function saveProduct() {
             showLoading();
+
             const formData = new FormData($('#productForm')[0]);
             const productId = $('#productId').val();
-            const url = productId ?
-                `/api/meat-inventory/products/${productId}` :
-                '{{ route('meat-inventory.products.store') }}';
-            const method = productId ? 'PUT' : 'POST';
 
-            // إضافة _method للحقول إذا كان تحديث
+            let url = '{{ route('meat-inventory.products.store') }}';
+
             if (productId) {
+                url = '{{ route('meat-inventory.products.update', ':id') }}'.replace(':id', productId);
                 formData.append('_method', 'PUT');
             }
 
             $.ajax({
                 url: url,
-                type: productId ? 'PUT' : 'POST',
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function(response) {
+                success: function() {
                     hideProductForm();
                     loadProductsManagement();
                     loadProducts();
-                    showNotification(productId ? 'تم تحديث المنتج بنجاح' : 'تم حفظ المنتج بنجاح', 'success');
+                    showNotification(
+                        productId ? 'تم تحديث المنتج بنجاح' : 'تم حفظ المنتج بنجاح',
+                        'success'
+                    );
                     hideLoading();
                 },
                 error: function(xhr) {
+                    console.error(xhr.responseJSON);
                     showNotification('خطأ في حفظ المنتج', 'error');
                     hideLoading();
                 }
@@ -1284,8 +1287,11 @@
 
         function editProduct(id) {
             showLoading();
+            var baseUrl = "{{ route('meat-inventory.products.show', ':productId') }}";
+            url = baseUrl.replace(':productId', id);
+
             $.ajax({
-                url: `/api/meat-inventory/products/${id}`,
+                url: url,
                 type: 'GET',
                 success: function(response) {
                     const product = response;
@@ -1312,8 +1318,10 @@
         function deleteProduct(id) {
             if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
                 showLoading();
+                const baseUrl = '{{ route('meat-inventory.products.destroy', ':productId') }}';
+                const url = baseUrl.replace(':productId', id);
                 $.ajax({
-                    url: `/api/meat-inventory/products/${id}`,
+                    url: url,
                     type: 'POST',
                     data: {
                         _method: 'DELETE',
@@ -1545,16 +1553,16 @@
                                     </thead>
                                     <tbody>
                                         ${invoice.items.map((item, index) => `
-                                                                                                                                                                                                                        <tr class="border-b hover:bg-gray-50">
-                                                                                                                                                                                                                            <td class="px-6 py-4">${index + 1}</td>
-                                                                                                                                                                                                                            <td class="px-6 py-4 font-medium text-gray-900">
-                                                                                                                                                                                                                                ${item.product?.name || 'منتج محذوف'}
-                                                                                                                                                                                                                            </td>
-                                                                                                                                                                                                                            <td class="px-6 py-4">${item.quantity}</td>
-                                                                                                                                                                                                                            <td class="px-6 py-4">${item.unit_cost}</td>
-                                                                                                                                                                                                                            <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
-                                                                                                                                                                                                                        </tr>
-                                                                                                                                                                                                                    `).join('')}
+                                                                                                                                                                                                                                            <tr class="border-b hover:bg-gray-50">
+                                                                                                                                                                                                                                                <td class="px-6 py-4">${index + 1}</td>
+                                                                                                                                                                                                                                                <td class="px-6 py-4 font-medium text-gray-900">
+                                                                                                                                                                                                                                                    ${item.product?.name || 'منتج محذوف'}
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                <td class="px-6 py-4">${item.quantity}</td>
+                                                                                                                                                                                                                                                <td class="px-6 py-4">${item.unit_cost}</td>
+                                                                                                                                                                                                                                                <td class="px-6 py-4 font-semibold">${(item.quantity * item.unit_cost).toFixed(2)}</td>
+                                                                                                                                                                                                                                            </tr>
+                                                                                                                                                                                                                                        `).join('')}
                                     </tbody>
                                     <tfoot class="bg-gray-50">
                                         <tr>
