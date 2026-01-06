@@ -28,42 +28,42 @@ class ProductController extends Controller
         $query = Product::query();
 
         // الفلترة حسب الباركود
-        if ($request->barcode) {
+        if ($request->filled('barcode')) {
             $query->where('barcode', 'like', '%' . $request->barcode . '%');
         }
 
         // الفلترة حسب الاسم
-        if ($request->name) {
+        if ($request->filled('name')) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
         // الفلترة حسب السعر
-        if ($request->price) {
+        if ($request->has('price')) {
             $query->where('price', $request->price);
         }
 
         // الفلترة حسب الوزن
-        if ($request->weight) {
+        if ($request->has('weight')) {
             $query->where('weight', $request->weight);
         }
 
         // الفلترة حسب الفئة
-        if ($request->category) {
+        if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
         // الفلترة حسب العلامة التجارية
-        if ($request->brand) {
+        if ($request->filled('brand')) {
             $query->where('brand_id', $request->brand);
         }
 
         // مع صورة
-        if ($request->have_image) {
+        if ($request->boolean('have_image')) {
             $query->whereNotNull('image_path');
         }
 
         // بدون صورة
-        if ($request->no_image) {
+        if ($request->boolean('no_image')) {
             $query->whereNull('image_path');
         }
 
@@ -132,42 +132,42 @@ class ProductController extends Controller
         $query = Product::query();
 
         // الفلترة حسب الباركود
-        if ($request->barcode) {
+        if ($request->filled('barcode')) {
             $query->where('barcode', 'like', '%' . $request->barcode . '%');
         }
 
         // الفلترة حسب الاسم
-        if ($request->name) {
+        if ($request->filled('name')) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
         // الفلترة حسب السعر
-        if ($request->price) {
+        if ($request->has('price')) {
             $query->where('price', $request->price);
         }
 
+        // الفلترة حسب الوزن
+        if ($request->has('weight')) {
+            $query->where('weight', $request->weight);
+        }
+
         // الفلترة حسب الفئة
-        if ($request->category) {
+        if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
         // الفلترة حسب العلامة التجارية
-        if ($request->brand) {
+        if ($request->filled('brand')) {
             $query->where('brand_id', $request->brand);
         }
 
-        // الفلترة حسب الوزن
-        if ($request->weight) {
-            $query->where('weight', $request->weight);
-        }
-
         // مع صورة
-        if ($request->have_image) {
+        if ($request->boolean('have_image')) {
             $query->whereNotNull('image_path');
         }
 
         // بدون صورة
-        if ($request->no_image) {
+        if ($request->boolean('no_image')) {
             $query->whereNull('image_path');
         }
 
