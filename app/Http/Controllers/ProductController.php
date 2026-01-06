@@ -28,12 +28,12 @@ class ProductController extends Controller
         $query = Product::query();
 
         // الفلترة حسب الباركود
-        if ($request->filled('barcode')) {
+        if ($request->barcode) {
             $query->where('barcode', 'like', '%' . $request->barcode . '%');
         }
 
         // الفلترة حسب الاسم
-        if ($request->filled('name')) {
+        if ($request->name) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
@@ -48,12 +48,12 @@ class ProductController extends Controller
         }
 
         // الفلترة حسب الفئة
-        if ($request->filled('category')) {
+        if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
         // الفلترة حسب العلامة التجارية
-        if ($request->filled('brand')) {
+        if ($request->brand) {
             $query->where('brand_id', $request->brand);
         }
 
@@ -132,12 +132,12 @@ class ProductController extends Controller
         $query = Product::query();
 
         // الفلترة حسب الباركود
-        if ($request->filled('barcode')) {
+        if ($request->barcode) {
             $query->where('barcode', 'like', '%' . $request->barcode . '%');
         }
 
         // الفلترة حسب الاسم
-        if ($request->filled('name')) {
+        if ($request->name) {
             $query->where('name', 'like', '%' . $request->name . '%');
         }
 
@@ -152,12 +152,12 @@ class ProductController extends Controller
         }
 
         // الفلترة حسب الفئة
-        if ($request->filled('category')) {
+        if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
         // الفلترة حسب العلامة التجارية
-        if ($request->filled('brand')) {
+        if ($request->brand) {
             $query->where('brand_id', $request->brand);
         }
 
