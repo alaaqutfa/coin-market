@@ -38,12 +38,12 @@ class ProductController extends Controller
         }
 
         // الفلترة حسب السعر
-        if ($request->has('price')) {
+        if ($request->has('price') && $request->price !== '') {
             $query->where('price', $request->price);
         }
 
         // الفلترة حسب الوزن
-        if ($request->has('weight')) {
+        if ($request->has('weight') && $request->weight !== '') {
             $query->where('weight', $request->weight);
         }
 
@@ -142,14 +142,14 @@ class ProductController extends Controller
         }
 
         // الفلترة حسب السعر
-        if ($request->has('price')) {
+        if ($request->has('price') && $request->price !== '') {
             $query->where('price', $request->price);
         }
 
         // الفلترة حسب الوزن
-        if ($request->has('weight')) {
+        if ($request->has('weight') && $request->weight !== '') {
             $query->where('weight', $request->weight);
-        }
+        } 
 
         // الفلترة حسب الفئة
         if ($request->category) {
