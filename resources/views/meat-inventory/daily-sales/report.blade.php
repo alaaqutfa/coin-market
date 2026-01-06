@@ -282,7 +282,8 @@
                                     @if ($sale->notes)
                                         <div class="relative group">
                                             <span class="truncate block max-w-[200px]">
-                                                {{ Str::limit($sale->notes, 30) }}
+                                                {{-- {{ Str::limit($sale->notes, 30) }} --}}
+                                                {{ $sale->notes }}
                                             </span>
                                             <div
                                                 class="absolute z-10 invisible group-hover:visible bg-gray-900 text-white text-sm rounded-lg px-3 py-2 bottom-full mb-2 w-64">
