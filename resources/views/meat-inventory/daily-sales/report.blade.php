@@ -281,7 +281,7 @@
                                 <td class="px-6 py-4 max-w-xs">
                                     @if ($sale->notes)
                                         <div class="relative group">
-                                            <span class="truncate block max-w-[200px]">
+                                            <span class="">
                                                 {{-- {{ Str::limit($sale->notes, 30) }} --}}
                                                 {{ $sale->notes }}
                                             </span>
