@@ -214,7 +214,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     @if ($sale->image)
-                                        <img src="{{ $sale->image }}" alt="صورة المنتج"
+                                        <img src="{{ asset('public/storage/' . $sale->image) }}" alt="صورة المنتج"
                                             class="w-12 h-12 object-cover rounded-md border border-gray-200">
                                     @else
                                         <div
