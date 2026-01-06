@@ -58,12 +58,12 @@ class ProductController extends Controller
         }
 
         // مع صورة
-        if ($request->boolean('have_image')) {
+        if ($request->have_image) {
             $query->whereNotNull('image_path');
         }
 
         // بدون صورة
-        if ($request->boolean('no_image')) {
+        if ($request->no_image) {
             $query->whereNull('image_path');
         }
 
@@ -162,12 +162,12 @@ class ProductController extends Controller
         }
 
         // مع صورة
-        if ($request->boolean('have_image')) {
+        if ($request->have_image) {
             $query->whereNotNull('image_path');
         }
 
         // بدون صورة
-        if ($request->boolean('no_image')) {
+        if ($request->no_image) {
             $query->whereNull('image_path');
         }
 
