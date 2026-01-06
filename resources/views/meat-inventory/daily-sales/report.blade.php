@@ -215,10 +215,10 @@
                                 <td class="flex justify-center items-center px-6 py-4">
                                     @if ($sale->image)
                                         <img src="{{ asset('storage/app/public/' . $sale->image) }}" alt="صورة المنتج"
-                                            class="w-12 hover:w-80 h-12 hover:h-80 object-cover rounded-md border border-gray-200">
+                                            class="w-80 h-80 object-cover rounded-md border border-gray-200">
                                     @else
                                         <div
-                                            class="w-12 hover:w-80 h-12 hover:h-80 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200">
+                                            class="w-80 h-80 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200">
                                             <i class="fas fa-image text-gray-400"></i>
                                         </div>
                                     @endif
