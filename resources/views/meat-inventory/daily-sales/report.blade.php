@@ -189,6 +189,7 @@
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" class="px-6 py-3">التاريخ</th>
+                            <th scope="col" class="px-6 py-3">الصورة</th>
                             <th scope="col" class="px-6 py-3">الوقت</th>
                             <th scope="col" class="px-6 py-3">المنتج</th>
                             <th scope="col" class="px-6 py-3">النوع</th>
@@ -210,6 +211,17 @@
                                     <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                         {{ $sale->sale_date->translatedFormat('l') }}
                                     </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if ($sale->meatProduct->image_url)
+                                        <img src="{{ $sale->meatProduct->image_url }}" alt="صورة المنتج"
+                                            class="w-12 h-12 object-cover rounded-md border border-gray-200">
+                                    @else
+                                        <div
+                                            class="w-12 h-12 flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200">
+                                            <i class="fas fa-image text-gray-400"></i>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
