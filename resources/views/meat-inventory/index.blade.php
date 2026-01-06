@@ -957,14 +957,14 @@
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2" />
                                 </div>
                                 <div class="md:col-span-2">
-                                    <div class="flex items-center mb-4">
+                                    {{-- <div class="flex items-center mb-4">
                                         <input id="calc_default_waste_persent" type="checkbox" value="0"
                                             class="w-4 h-4 border border-default-medium rounded-xs bg-neutral-secondary-medium focus:ring-2 focus:ring-brand-soft">
                                         <label for="calc-default-waste-persent"
                                             class="select-none ms-2 text-sm font-medium text-heading">
                                             حساب نسبة الهدر الافتراضية للمنتج
                                         </label>
-                                    </div>
+                                    </div> --}}
                                     <button type="submit"
                                         class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2.5 px-6 rounded-lg flex items-center justify-center gap-2">
                                         <i class="fas fa-undo ml-2"></i>

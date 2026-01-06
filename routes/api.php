@@ -69,6 +69,7 @@ Route::prefix('meat-inventory')->name('meat-inventory.')->middleware('mobile')->
     Route::prefix('daily-sales')->name('daily-sales.')->group(function () {
         Route::get('/create', [DailySalesController::class, 'create'])->name('create');
         Route::post('/store', [DailySalesController::class, 'store'])->name('store');
+        Route::post('/mobile-store', [DailySalesController::class, 'mobileStore'])->name('mobile-store');
         Route::get('/report', [DailySalesController::class, 'report'])->name('report');
         Route::get('/daily-summary', [DailySalesController::class, 'dailySummary'])->name('daily-summary');
         // إضافة هذا المسار لتحديث معلومات المنتج

@@ -86,6 +86,65 @@ class DailySalesController extends Controller
         return redirect()->route('meat-inventory.daily-sales.create')
             ->with('success', 'تم حفظ العملية بنجاح');
     }
+    /**
+     * حفظ عملية البيع/الإرجاع من خلال الجوال
+     */
+    public function mobileStore(Request $request)
+    {
+        $validated = $request->validate([
+            'meat_product_id'  => 'required|exists:meat_products,id',
+            'transaction_type' => 'required|in:sale,return',
+            'quantity'         => 'required|numeric|min:0.001',
+            'sale_price'       => 'required|numeric|min:0',
+            'notes'            => 'nullable|string|max:500',
+            'sale_date'        => 'required|date',
+            'image'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image')) {
+            // رفع صورة من ملف
+            $image     = $request->file('image');
+            $fileName  = 'sale_' . time() . '_' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('daily_sales', $fileName, 'public');
+        }
+
+        // حساب المبلغ الإجمالي
+        $totalAmount = $validated['quantity'] * $validated['sale_price'];
+
+        // إنشاء السجل
+        $sale = DailySale::create([
+            'meat_product_id'  => $validated['meat_product_id'],
+            'sale_date'        => $validated['sale_date'],
+            'sale_price'       => $validated['sale_price'],
+            'return_price'     => $validated['transaction_type'] === 'return' ? $totalAmount : 0,
+            'transaction_type' => $validated['transaction_type'],
+            'quantity'         => $validated['quantity'],
+            'total_amount'     => $totalAmount,
+            'image'            => $imagePath,
+            'notes'            => $validated['notes'],
+            'transaction_time' => now(),
+        ]);
+
+        // تحديث المخزون
+        $product = MeatProduct::find($validated['meat_product_id']);
+        if ($validated['transaction_type'] === 'sale') {
+            $product->current_stock -= $validated['quantity'];
+        } else {
+            $product->current_stock += $validated['quantity'];
+        }
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم حفظ العملية بنجاح',
+            'data'    => [
+                'sale'      => $sale,
+                'image_url' => $imagePath ? Storage::url($imagePath) : null,
+            ],
+        ], 201);
+    }
 
     /**
      * تقرير المبيعات حسب التاريخ
