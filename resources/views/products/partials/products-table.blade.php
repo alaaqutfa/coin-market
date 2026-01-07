@@ -102,8 +102,7 @@
             {{ $product->created_at->format('Y-m-d') }}
         </td>
         <td class="px-6 py-4">
-            <div class="flex space-x-2 space-x-reverse gap-2">
-
+            <div class="flex justify-around items-center gap-2">
                 @if ($product->image_path)
                     @php
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
@@ -152,7 +151,6 @@
                         <i class="fas fa-camera"></i>
                     </a>
                 @endif
-
                 <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-800">
                     <i class="fas fa-trash"></i>
                 </button>
