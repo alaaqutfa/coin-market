@@ -104,7 +104,6 @@
         <td class="px-6 py-4">
             <div class="flex space-x-2 space-x-reverse gap-2">
 
-                <!-- زر تحميل الصورة -->
                 @if ($product->image_path)
                     @php
                         $extension = pathinfo($product->image_path, PATHINFO_EXTENSION);
