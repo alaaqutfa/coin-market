@@ -103,46 +103,6 @@
         </td>
         <td class="px-6 py-4">
             <div class="flex space-x-2 space-x-reverse gap-2">
-                <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-800">
-                    <i class="fas fa-trash"></i>
-                </button>
-
-                @php
-                    $searchParts = [$product->barcode, $product->name];
-
-                    if ($product->weight > 0) {
-                        $searchParts[] = $product->weight;
-                    }
-
-                    $searchParts[] = 'high quality png image';
-
-                    $searchQuery = rawurlencode(implode(' ', $searchParts));
-                @endphp
-
-
-                <a href="https://www.google.com/search?tbm=isch&q={{ $searchQuery }}" title="{{ $product->barcode }}"
-                    class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"
-                    onclick="copyTitle(this)">
-                    <i class="fab fa-google"></i>
-                </a>
-
-                <a href="https://www.bing.com/images/search?q={{ $searchQuery }}" title="{{ $product->barcode }}"
-                    class="text-green-600 hover:text-green-800" target="_blank" rel="noopener noreferrer"
-                    onclick="copyTitle(this)">
-                    <i class="fab fa-microsoft"></i>
-                </a>
-
-                <a href="https://duckduckgo.com/?q={{ $searchQuery }}&iax=images&ia=images"
-                    title="{{ $product->barcode }}" class="text-purple-600 hover:text-purple-800" target="_blank"
-                    rel="noopener noreferrer" onclick="copyTitle(this)">
-                    <i class="fas fa-image"></i>
-                </a>
-
-                <a href="https://yandex.com/images/search?text={{ $searchQuery }}" title="{{ $product->barcode }}"
-                    class="text-red-600 hover:text-red-800" target="_blank" rel="noopener noreferrer"
-                    onclick="copyTitle(this)">
-                    <i class="fas fa-camera"></i>
-                </a>
 
                 <!-- زر تحميل الصورة -->
                 @if ($product->image_path)
@@ -155,7 +115,48 @@
                         class="text-green-600 hover:text-green-800" title="تحميل الصورة">
                         <i class="fas fa-download"></i>
                     </a>
+                @else
+                    @php
+                        $searchParts = [$product->barcode, $product->name];
+
+                        if ($product->weight > 0) {
+                            $searchParts[] = $product->weight;
+                        }
+
+                        $searchParts[] = 'high quality png image';
+
+                        $searchQuery = rawurlencode(implode(' ', $searchParts));
+                    @endphp
+
+
+                    <a href="https://www.google.com/search?tbm=isch&q={{ $searchQuery }}"
+                        title="{{ $product->barcode }}" class="text-blue-600 hover:text-blue-800" target="_blank"
+                        rel="noopener noreferrer" onclick="copyTitle(this)">
+                        <i class="fab fa-google"></i>
+                    </a>
+
+                    <a href="https://www.bing.com/images/search?q={{ $searchQuery }}" title="{{ $product->barcode }}"
+                        class="text-green-600 hover:text-green-800" target="_blank" rel="noopener noreferrer"
+                        onclick="copyTitle(this)">
+                        <i class="fab fa-microsoft"></i>
+                    </a>
+
+                    <a href="https://duckduckgo.com/?q={{ $searchQuery }}&iax=images&ia=images"
+                        title="{{ $product->barcode }}" class="text-purple-600 hover:text-purple-800" target="_blank"
+                        rel="noopener noreferrer" onclick="copyTitle(this)">
+                        <i class="fas fa-image"></i>
+                    </a>
+
+                    <a href="https://yandex.com/images/search?text={{ $searchQuery }}"
+                        title="{{ $product->barcode }}" class="text-red-600 hover:text-red-800" target="_blank"
+                        rel="noopener noreferrer" onclick="copyTitle(this)">
+                        <i class="fas fa-camera"></i>
+                    </a>
                 @endif
+
+                <button onclick="deleteProduct({{ $product->id }})" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
             </div>
         </td>
     </tr>
