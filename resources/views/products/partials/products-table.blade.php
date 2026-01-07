@@ -107,10 +107,41 @@
                     <i class="fas fa-trash"></i>
                 </button>
 
-                <a href="https://www.google.com/search?q={{ $product->barcode . ' ' . $product->name . ' ' . $product->weight . ' high quality png image' }}"
-                    title="{{ $product->barcode }}" class="text-blue-600 hover:text-blue-800" target="_blank"
+                @php
+                    $searchParts = [$product->barcode, $product->name];
+
+                    if ($product->weight > 0) {
+                        $searchParts[] = $product->weight;
+                    }
+
+                    $searchParts[] = 'high quality png image';
+
+                    $searchQuery = rawurlencode(implode(' ', $searchParts));
+                @endphp
+
+
+                <a href="https://www.google.com/search?tbm=isch&q={{ $searchQuery }}" title="{{ $product->barcode }}"
+                    class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer"
+                    onclick="copyTitle(this)">
+                    <i class="fab fa-google"></i>
+                </a>
+
+                <a href="https://www.bing.com/images/search?q={{ $searchQuery }}" title="{{ $product->barcode }}"
+                    class="text-green-600 hover:text-green-800" target="_blank" rel="noopener noreferrer"
+                    onclick="copyTitle(this)">
+                    <i class="fab fa-microsoft"></i>
+                </a>
+
+                <a href="https://duckduckgo.com/?q={{ $searchQuery }}&iax=images&ia=images"
+                    title="{{ $product->barcode }}" class="text-purple-600 hover:text-purple-800" target="_blank"
                     rel="noopener noreferrer" onclick="copyTitle(this)">
-                    <i class="fas fa-search"></i>
+                    <i class="fas fa-image"></i>
+                </a>
+
+                <a href="https://yandex.com/images/search?text={{ $searchQuery }}" title="{{ $product->barcode }}"
+                    class="text-red-600 hover:text-red-800" target="_blank" rel="noopener noreferrer"
+                    onclick="copyTitle(this)">
+                    <i class="fas fa-camera"></i>
                 </a>
 
                 <!-- زر تحميل الصورة -->
