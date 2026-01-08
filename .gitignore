@@ -1,4 +1,7 @@
 *.log
+*.apk
+*.aab
+/public/assets/app/*.apk
 .DS_Store
 .env
 .env.backup

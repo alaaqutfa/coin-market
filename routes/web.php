@@ -158,3 +158,7 @@ Route::get('/list', [EmployeeController::class, 'show_employee_code_list'])->nam
 Route::middleware('mobile')->get('/meat-inventory', function () {
     return view('meat-inventory.index');
 })->name('meat-inventory.index');
+
+Route::middleware('mobile')->get('/meat-inventory/mobile-app', function () {
+    return view('meat-inventory.apps');
+})->name('meat-inventory.apps');
