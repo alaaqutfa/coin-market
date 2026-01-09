@@ -194,23 +194,30 @@
 @endpush
 
 @section('content')
-
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">نظام إدارة المنتجات</h1>
-        <p class="text-center text-gray-600 mb-8">قم بتصفية المنتجات حسب المعايير المختلفة</p>
+        <!-- العنوان الرئيسي -->
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">
+            نظام إدارة المنتجات
+        </h1>
+        <p class="text-center text-gray-600 mb-8">
+            قم بتصفية المنتجات حسب المعايير المختلفة
+        </p>
 
+        <!-- علامات التبويب -->
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
             <ul class="flex flex-wrap -mb-px">
                 <li class="me-2">
                     <button type="button"
                         class="nav-btn inline-block p-4 text-yellow-400 border-b-2 border-yellow-400 rounded-t-lg active"
-                        data-target=".products-list">قائمة المنتجات</button>
+                        data-target=".products-list">
+                        قائمة المنتجات
+                    </button>
                 </li>
                 <li class="me-2">
                     <button type="button"
                         class="nav-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300"
                         data-target=".add-products">
-                        أضافة منتجات
+                        إضافة منتجات
                     </button>
                 </li>
                 <li class="me-2">
@@ -220,19 +227,14 @@
                         صور المنتجات
                     </button>
                 </li>
-                {{-- <li>
-                    <a
-                        class="inline-block p-4 text-gray-400 rounded-t-lg cursor-not-allowed">Disabled</a>
-                </li> --}}
             </ul>
         </div>
 
-        <!-- جدول المنتجات -->
+        <!-- ========== قسم قائمة المنتجات ========== -->
         <div class="nav-item products-list table-container bg-white rounded-lg">
-
-            <!-- بطاقة الفلترة -->
+            <!-- فلترة المنتجات -->
             <div class="filter-section p-6 mb-8 text-white">
-                <h2 class="text-xl font-semibold mb-4 flex justify-start items-center gap-2">
+                <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
                     <i class="fas fa-filter ml-2"></i>
                     <span>تصفية المنتجات</span>
                 </h2>
@@ -288,6 +290,7 @@
                         </div>
                     </div>
 
+                    <!-- التصنيفات -->
                     <div>
                         <label for="category" class="block mb-2 text-sm font-medium">التصنيفات</label>
                         <select name="category" id="category"
@@ -301,6 +304,7 @@
                         </select>
                     </div>
 
+                    <!-- العلامات التجارية -->
                     <div>
                         <label for="brand" class="block mb-2 text-sm font-medium">العلامات التجارية</label>
                         <select name="brand" id="brand"
@@ -314,65 +318,14 @@
                         </select>
                     </div>
 
-                    <!-- نطاق التواريخ -->
-                    <div class="hidden">
-                        <label class="block mb-2 text-sm font-medium">من تاريخ</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <i class="fas fa-calendar-day text-gray-400"></i>
-                            </div>
-                            <input type="date" name="date_from" value="{{ $filters['date_from'] ?? '' }}"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
-                        </div>
-                    </div>
-
-                    <div class="hidden">
-                        <label class="block mb-2 text-sm font-medium">إلى تاريخ</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <i class="fas fa-calendar-day text-gray-400"></i>
-                            </div>
-                            <input type="date" name="date_to" value="{{ $filters['date_to'] ?? '' }}"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
-                        </div>
-                    </div>
-
-                    <!-- خيارات تاريخ سريعة -->
-                    <div class="hidden md:col-span-2">
-                        <label class="block mb-2 text-sm font-medium">خيارات سريعة</label>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="setDateFilter('today')"
-                                class="quick-filter-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-day ml-2"></i> اليوم
-                            </button>
-                            <button type="button" onclick="setDateFilter('yesterday')"
-                                class="quick-filter-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-minus ml-2"></i> البارحة
-                            </button>
-                            <button type="button" onclick="setDateFilter('week')"
-                                class="quick-filter-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
-                            </button>
-                            <button type="button" onclick="setDateFilter('month')"
-                                class="quick-filter-btn bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
-                            </button>
-                            <button type="button" onclick="clearDateFilter()"
-                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
-                                <i class="fas fa-times ml-2"></i> مسح التواريخ
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- نطاق تواريخ سجلات الباركود -->
+                    <!-- تواريخ سجلات الباركود -->
                     <div>
                         <label class="block mb-2 text-sm font-medium">من تاريخ (سجلات الباركود)</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                 <i class="fas fa-calendar-day text-gray-400"></i>
                             </div>
-                            <input type="date" name="barcode_date_from"
-                                value="{{ $filters['barcode_date_from'] ?? '' }}"
+                            <input type="date" name="barcode_date_from" value="{{ $filters['barcode_date_from'] ?? '' }}"
                                 class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-2.5">
                         </div>
                     </div>
@@ -388,39 +341,40 @@
                         </div>
                     </div>
 
-                    <!-- خيارات تاريخ سريعة لسجلات الباركود -->
+                    <!-- خيارات سريعة لسجلات الباركود -->
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-medium">خيارات سريعة (سجلات الباركود)</label>
                         <div class="flex flex-wrap gap-2">
                             <button type="button" onclick="setBarcodeDateFilter('today')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-calendar-day ml-2"></i> اليوم
                             </button>
                             <button type="button" onclick="setBarcodeDateFilter('yesterday')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-calendar-minus ml-2"></i> البارحة
                             </button>
                             <button type="button" onclick="setBarcodeDateFilter('week')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-calendar-week ml-2"></i> آخر أسبوع
                             </button>
                             <button type="button" onclick="setBarcodeDateFilter('month')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-calendar-alt ml-2"></i> آخر شهر
                             </button>
                             <button type="button" onclick="setBarcodeDateFilter('this_month')"
-                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-calendar ml-2"></i> هذا الشهر
                             </button>
                             <button type="button" onclick="clearBarcodeDateFilter()"
-                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex justify-center items-center gap-2">
+                                class="quick-filter-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm flex items-center gap-2">
                                 <i class="fas fa-times ml-2"></i> مسح التواريخ
                             </button>
                         </div>
                     </div>
 
+                    <!-- التبديلات -->
                     <div class="toggles flex justify-start items-center gap-6 md:col-span-4">
-                        <!-- خيارات الترتيب -->
+                        <!-- الترتيب الأبجدي -->
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="alphabetical" name="alphabetical"
                                 value="{{ !empty($filters['alphabetical']) ? '1' : '0' }}"
@@ -431,7 +385,7 @@
                             <span class="ms-3 text-sm font-medium text-white">ترتيب أبجدي</span>
                         </label>
 
-                        <!-- خيارات الصور -->
+                        <!-- المنتجات ذات الصور -->
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="have_image" name="have_image"
                                 value="{{ !empty($filters['have_image']) ? '1' : '0' }}"
@@ -442,6 +396,7 @@
                             <span class="ms-3 text-sm font-medium text-white">منتجات لديها صور فقط</span>
                         </label>
 
+                        <!-- المنتجات بدون صور -->
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="no_image" name="no_image"
                                 value="{{ !empty($filters['no_image']) ? '1' : '0' }}"
@@ -453,8 +408,8 @@
                         </label>
                     </div>
 
-                    <!-- زر التصفية -->
-                    <div class="max-w-2xl flex justify-start items-end col-span-4 ">
+                    <!-- زر تطبيق الفلترة -->
+                    <div class="max-w-2xl flex justify-start items-end col-span-4">
                         <button type="submit"
                             class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2.5 px-4 rounded-lg flex items-center justify-center gap-2">
                             <i class="fas fa-filter ml-2"></i>
@@ -462,39 +417,55 @@
                         </button>
                     </div>
                 </form>
-
             </div>
 
+            <!-- شريط الأدوات -->
             <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-list ml-2"></i>
                     قائمة المنتجات
                 </h2>
+
                 <div class="flex items-center space-x-4 gap-2">
+                    <!-- زر التحديث التلقائي -->
                     <button id="autoRefreshToggle"
-                        class="auto-refresh-btn bg-gray-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-4 rounded-lg flex justify-center items-center gap-2">
-                        <i class="fas fa-play ml-2"></i> <span id="autoRefreshText">تشغيل التحديث</span>
+                        class="auto-refresh-btn bg-gray-500 hover:bg-yellow-600 text-white font-medium py-1.5 px-4 rounded-lg flex items-center gap-2">
+                        <i class="fas fa-play ml-2"></i>
+                        <span id="autoRefreshText">تشغيل التحديث</span>
                     </button>
+
+                    <!-- زر إنشاء تصميم -->
                     <button onclick="showCatalog()"
                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
                         إنشاء تصميم
                     </button>
+
+                    <button data-modal-target="catalogModal" data-modal-toggle="catalogModal"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg" type="button">
+                        إعدادات التصميم
+                    </button>
+
+                    <!-- زر رفع ملف Excel -->
                     <form class="importFileForm hidden" action="{{ route('products.import') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <input type="file" name="file" class="importFileInput" accept=".csv,.xlsx" required>
                     </form>
                     <button onclick="importFile()"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">رفع منتجات
-                        (Excel)</button>
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                        رفع منتجات (Excel)
+                    </button>
+
+                    <!-- عداد المنتجات -->
                     <span
-                        class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex justify-center items-center gap-2">
+                        class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2">
                         <i class="fas fa-boxes ml-2"></i>
                         <span id="products-count">{{ $products->total() }}</span> منتج
                     </span>
                 </div>
             </div>
 
+            <!-- جدول المنتجات -->
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
@@ -504,52 +475,52 @@
                                     class="border border-gray-400 rounded" />
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الباركود</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الصورة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">اسم المنتج</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الوزن</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">السعر</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">العملة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الفئة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">العلامة التجارية</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">تاريخ الإضافة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الإجراءات</span>
                                 </div>
                             </th>
@@ -563,11 +534,12 @@
                             ])
                         @else
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center">
+                                <td colspan="11" class="px-6 py-4 text-center">
                                     <div class="flex flex-col items-center justify-center py-8">
                                         <i class="fas fa-inbox text-4xl text-gray-400 mb-2"></i>
                                         <p class="text-gray-500 text-lg">لا توجد منتجات</p>
-                                        <p class="text-gray-400 text-sm">لم يتم العثور على أي منتجات تطابق معايير البحث
+                                        <p class="text-gray-400 text-sm">
+                                            لم يتم العثور على أي منتجات تطابق معايير البحث
                                         </p>
                                     </div>
                                 </td>
@@ -576,16 +548,14 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
 
-        <!-- إضافة منتجات -->
+        <!-- ========== قسم إضافة المنتجات ========== -->
         <div class="nav-item add-products table-container bg-white rounded-lg" style="display: none;">
-
             <div class="p-4 border-b flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800 flex justify-center items-center gap-2">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-2">
                     <i class="fas fa-list ml-2"></i>
-                    أضافة منتجات
+                    إضافة منتجات
                 </h2>
             </div>
 
@@ -605,19 +575,24 @@
                     <tbody id="new-products-body"></tbody>
                 </table>
 
+                <!-- أزرار التحكم -->
                 <div class="my-8 flex gap-2">
-                    <button type="button" id="add-row" class="bg-green-500 text-white px-4 py-2 rounded">+ إضافة
-                        سطر</button>
-                    <button type="button" id="fetch-missing" class="bg-yellow-500 text-white px-4 py-2 rounded">🟡 جلب
-                        المنتجات غير الموجودة</button>
-                    <button type="button" id="save-all" class="bg-blue-500 text-white px-4 py-2 rounded">💾 حفظ
-                        الجميع</button>
+                    <button type="button" id="add-row" class="bg-green-500 text-white px-4 py-2 rounded">
+                        + إضافة سطر
+                    </button>
+                    <button type="button" id="fetch-missing" class="bg-yellow-500 text-white px-4 py-2 rounded">
+                        🟡 جلب المنتجات غير الموجودة
+                    </button>
+                    <button type="button" id="save-all" class="bg-blue-500 text-white px-4 py-2 rounded">
+                        💾 حفظ الجميع
+                    </button>
                 </div>
             </div>
-
         </div>
 
+        <!-- ========== قسم صور المنتجات ========== -->
         <div class="nav-item products-images table-container bg-white rounded-lg" style="display: none;">
+            <!-- رفع الصور -->
             <form id="previewForm" class="my-6" enctype="multipart/form-data">
                 <div class="flex items-center justify-center w-full p-4">
                     <label for="dropzone-file"
@@ -629,44 +604,44 @@
                                     stroke-width="2"
                                     d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                             </svg>
-                            <p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">Click to
-                                    upload</span> or drag and drop</p>
-                            <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            <p class="mb-2 text-sm text-gray-500">
+                                <span class="font-semibold">انقر للرفع</span> أو اسحب وأفلت
+                            </p>
+                            <p class="text-xs text-gray-500">SVG, PNG, JPG أو GIF (الحد الأقصى: 800x400px)</p>
                         </div>
-
                         <input type="file" name="images[]" id="dropzone-file" class="hidden" multiple />
                     </label>
                 </div>
             </form>
+
+            <!-- زر تنظيف الصور -->
             <button id="cleanImages" class="m-4 bg-red-600 text-white px-4 py-2 rounded">
                 تنظيف الصور غير المرتبطة 🔥
             </button>
 
+            <!-- جدول الصور -->
             <div class="relative overflow-x-auto">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                         <tr>
+                            <th scope="col" class="px-6 py-4">#</th>
                             <th scope="col" class="px-6 py-4">
-                                #
-                            </th>
-                            <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
-                                    <input type="checkbox" name="" id=""
-                                        class="border border-gray-400 rounded" />
+                                <div class="flex flex-col items-center gap-2">
+                                    <input type="checkbox" class="border border-gray-400 rounded" />
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الاسم</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الصورة</span>
                                 </div>
                             </th>
                             <th scope="col" class="px-6 py-4">
-                                <div class="flex justify-center items-center flex-col gap-2">
+                                <div class="flex flex-col items-center gap-2">
                                     <span class="text-base">الإجراءات</span>
                                 </div>
                             </th>
@@ -676,10 +651,71 @@
                 </table>
             </div>
 
-            <button id="saveImages" class="hidden m-4 bg-green-600 text-white px-4 py-2 rounded">حفظ</button>
+            <!-- زر حفظ الصور -->
+            <button id="saveImages" class="hidden m-4 bg-green-600 text-white px-4 py-2 rounded">
+                حفظ
+            </button>
         </div>
     </div>
 
+    <!-- Main modal -->
+    <div id="catalogModal" tabindex="-1" aria-hidden="true"
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white border border-default rounded-base shadow-sm p-4 md:p-6">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
+                    <h3 class="text-lg font-medium text-heading">
+                        إعدادات التصميم
+                    </h3>
+                    <button type="button"
+                        class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center"
+                        data-modal-hide="catalogModal">
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                            height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18 17.94 6M18 18 6.06 6" />
+                        </svg>
+                        <span class="sr-only">إغلاق</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="pt-4 md:pt-6">
+                    <div class="mb-4">
+                        <label for="design_products_count" class="block mb-2.5 text-sm font-medium text-heading">
+                            عدد المنتجات في كل تصميم
+                        </label>
+                        <input type="number" id="design_products_count"
+                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+                            placeholder="0" value="4" min="1" max="6" required />
+                    </div>
+                    <div>
+                        <label for="design_type" class="block mb-2.5 text-sm font-medium text-heading">
+                            نوع التصميم
+                        </label>
+                        <select id="design_type" name="design_type"
+                            class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                            <option value="post">post</option>
+                            <option value="reels" selected>reels</option>
+                            <option value="green_screen">green screen</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-evenly items-center gap-4 mt-4 text-sm font-medium text-body">
+                        <button type="button" onclick="showCatalog()"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                            إنشاء تصميم
+                        </button>
+                        <button type="button"
+                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2"
+                            data-modal-hide="catalogModal">
+                            حفظ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('script')
@@ -1330,10 +1366,17 @@
                 return;
             }
 
-            // تقسيم الـ IDs إلى مجموعات (4 في كل مجموعة)
+            // تقسيم الـ IDs إلى مجموعات
             const groups = [];
-            for (let i = 0; i < ids.length; i += 4) {
-                groups.push(ids.slice(i, i + 4));
+            const count = parseInt($('#design_products_count').val(), 10);
+
+            if (!count || count <= 0) {
+                console.error('قيمة count غير صحيحة:', count);
+                return;
+            }
+
+            for (let i = 0; i < ids.length; i += count) {
+                groups.push(ids.slice(i, i + count));
             }
 
             // إرسال كل مجموعة على حدة
@@ -1365,6 +1408,13 @@
                 type: 'hidden',
                 name: 'ids',
                 value: JSON.stringify(ids)
+            }));
+
+            // إضافة الـ design_type
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'design_type',
+                value: $('#design_type').val()
             }));
 
             // إضافة النموذج إلى الصفحة وإرساله

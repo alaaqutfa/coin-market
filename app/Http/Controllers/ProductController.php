@@ -725,7 +725,7 @@ class ProductController extends Controller
         $products = Product::whereIn('id', $ids)
             ->whereNotNull('image_path')
             ->get();
-        return view('design.design', compact('products'))->render();
+        return view('design.' . $request->input('design_type'), compact('products'))->render();
     }
 
 }
