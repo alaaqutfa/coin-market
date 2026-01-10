@@ -434,7 +434,7 @@
                         <span id="autoRefreshText">تشغيل التحديث</span>
                     </button>
 
-                    <!-- زر إنشاء تصميم -->
+                    <!-- إنشاء تصميم -->
                     <button data-modal-target="catalogModal" data-modal-toggle="catalogModal"
                         class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg" type="button">
                         إعدادات التصميم

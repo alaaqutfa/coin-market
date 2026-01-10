@@ -21,7 +21,7 @@
         body {
             width: 100%;
             height: 100vh;
-            background: url('{{ asset('public/assets/img/design-bg-3-ice.png') }}') no-repeat center center;
+            background: url('{{ asset('public/assets/img/design-bg-3.png') }}') no-repeat center center;
             background-size: cover;
             overflow: hidden;
             display: flex;
