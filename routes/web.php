@@ -155,10 +155,10 @@ Route::get('/category/{id}/products', [CustomerController::class, 'categoryProdu
 */
 Route::get('/list', [EmployeeController::class, 'show_employee_code_list'])->name('employee_code_list');
 
-Route::middleware('mobile')->get('/meat-inventory', function () {
-    return view('meat-inventory.index');
-})->name('meat-inventory.index');
+// Route::middleware('mobile')->get('/meat-inventory', function () {
+//     return view('meat-inventory.index');
+// })->name('meat-inventory.index');
 
-Route::middleware('mobile')->get('/meat-inventory/mobile-app', function () {
-    return view('meat-inventory.apps');
-})->name('meat-inventory.apps');
+// Route::middleware('mobile')->get('/meat-inventory/mobile-app', function () {
+//     return view('meat-inventory.apps');
+// })->name('meat-inventory.apps');
