@@ -530,6 +530,11 @@ class ProductController extends Controller
 
     public function previewImages(Request $request)
     {
+
+        $request->validate([
+            'images.*' => 'required|image'
+        ]);
+
         $files   = $request->file('images');
         $results = [];
 
@@ -555,6 +560,14 @@ class ProductController extends Controller
                     'image'  => asset('public/storage/tmp_products/' . $tmpName),
                     'tmp'    => $tmpName,
                     'status' => 'matched',
+                ];
+            } else {
+                $results[] = [
+                    'id'    => uniqid(),
+                    'name'   => $originalName,
+                    'image'  => asset('public/storage/tmp_products/' . $tmpName),
+                    'tmp'    => $tmpName,
+                    'status' => 'not_found',
                 ];
             }
         }

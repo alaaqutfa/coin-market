@@ -19,6 +19,9 @@ Route::get('/test', function () {
 Route::apiResource('products', ProductController::class);
 Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarcode'])->name('products.findByBarcode');
 Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
+Route::post('products/preview-images', [ProductController::class, 'apiPreviewImages']);
+Route::post('products/save-images', [ProductController::class, 'apiSaveImages']);
+
 
 // Routes الحضور والانصراف (بدون مصادقة)
 Route::post('/employee/check-in', [AttendanceController::class, 'checkIn']);
