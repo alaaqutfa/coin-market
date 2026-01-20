@@ -84,6 +84,7 @@ Route::prefix('admin')
         Route::delete('/products/clean-unused', [ProductController::class, 'cleanUnusedImages'])->name('products.cleanUnused');
         Route::get('/show-catalog', [ProductController::class, 'showCatalog'])->name('showCatalog');
         Route::post('/import-products', [ProductController::class, 'importProducts'])->name('products.import');
+        Route::post('/import-today-invoices', [ProductController::class, 'importTodayInvoices'])->name('products.importTodayInvoices');
 
         /*
         |--------------------------------------------------------------------------

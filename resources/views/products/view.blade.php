@@ -440,17 +440,6 @@
                         إعدادات التصميم
                     </button>
 
-                    <!-- زر رفع ملف Excel -->
-                    <form class="importFileForm hidden" action="{{ route('products.import') }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        <input type="file" name="file" class="importFileInput" accept=".csv,.xlsx" required>
-                    </form>
-                    <button onclick="importFile()"
-                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                        رفع منتجات (Excel)
-                    </button>
-
                     <!-- عداد المنتجات -->
                     <span
                         class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2">
@@ -577,6 +566,27 @@
                     </button>
                     <button type="button" id="fetch-missing" class="bg-yellow-500 text-white px-4 py-2 rounded">
                         🟡 جلب المنتجات غير الموجودة
+                    </button>
+                    <!-- زر رفع ملف Excel لفواتير اليوم -->
+                    <form class="importTodayInvoicesForm hidden" action="{{ route('products.importTodayInvoices') }}"
+                        method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="files[]" class="importTodayInvoicesInput" accept=".csv,.xlsx"
+                            multiple required>
+                    </form>
+                    <button onclick="importTodayInvoices()"
+                        class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg">
+                        أضافة فواتير اليوم (Excel)
+                    </button>
+                    <!-- زر رفع ملف Excel -->
+                    <form class="importFileForm hidden" action="{{ route('products.import') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" class="importFileInput" accept=".csv,.xlsx" required>
+                    </form>
+                    <button onclick="importFile()"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
+                        رفع منتجات (Excel)
                     </button>
                     <button type="button" id="save-all" class="bg-blue-500 text-white px-4 py-2 rounded">
                         💾 حفظ الجميع
@@ -1457,15 +1467,81 @@
             $('.importFileInput').trigger('click');
         }
 
+        // دالة رفع ملفات Excel باستخدام jQuery فقط
+        function importTodayInvoices() {
+            const $input = $('.importTodayInvoicesInput');
+
+            // إعادة تعيين قيمة الملف
+            $input.val('');
+            $input.trigger('click');
+
+            $input.off('change').on('change', function(event) {
+                const files = event.target.files;
+
+                if (files.length === 0) {
+                    showToast('لم يتم اختيار أي ملفات', 'error');
+                    return;
+                }
+
+                showToast('جاري رفع الملفات...', 'info');
+
+                // إنشاء FormData
+                const formData = new FormData();
+
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('files[]', files[i]);
+                }
+
+                // الحصول على CSRF token
+                const csrfToken = "{{ csrf_token() }}";
+
+                // إرسال الطلب باستخدام $.ajax التقليدي
+                $.ajax({
+                    url: '{{ route('products.importTodayInvoices') }}',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        showToast(response.message || 'تم رفع الملفات بنجاح', 'success');
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Error:', error);
+                        if (xhr.responseJSON) {
+                            const data = xhr.responseJSON;
+                            const errorMessage = data.message || 'حدث خطأ أثناء رفع الملفات';
+                            showToast(errorMessage, 'error');
+                            if (data.errors) {
+                                $.each(data.errors, function(index, errorMsg) {
+                                    showToast(errorMsg, 'error');
+                                });
+                            }
+                        } else {
+                            showToast('حدث خطأ في الاتصال بالخادم', 'error');
+                        }
+                    }
+                });
+            });
+        }
+
 
         $(document).ready(function() {
 
             $('.importFileInput').on('change', function() {
                 if (this.files && this.files.length > 0) {
-                    // بإمكانك إضافة تحقق على نوع الملف لو بدك
                     $('.importFileForm').submit();
                 }
             });
+
+            // $('.importTodayInvoicesInput').on('change', function() {
+            //     if (this.files && this.files.length > 0) {
+            //         $('.importTodayInvoicesForm').submit();
+            //     }
+            // });
 
             // حدث تحديد/إلغاء تحديد الكل
             $('#check-all-page-items').change(function() {

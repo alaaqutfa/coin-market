@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Imports\DailyProductsImport;
 use App\Imports\ProductsImport;
 use App\Models\Brand;
 use App\Models\Category;
@@ -9,6 +10,8 @@ use App\Models\Product;
 // use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ProductBarcodeLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -338,6 +341,71 @@ class ProductController extends Controller
         return back()->with('success', 'تم رفع وتحديث البيانات بنجاح');
     }
 
+    public function importTodayInvoices()
+    {
+        try {
+            $files = request()->file('files');
+
+            if (! $files || count($files) === 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'لم يتم اختيار أي ملفات',
+                ], 400);
+            }
+
+            $importedFiles = 0;
+            $failedFiles   = 0;
+            $errors        = [];
+
+            foreach ($files as $file) {
+                try {
+                    DB::beginTransaction();
+
+                    Excel::import(new DailyProductsImport, $file);
+
+                    DB::commit();
+                    $importedFiles++;
+
+                } catch (\Exception $e) {
+                    DB::rollBack();
+
+                    $errorMessage = 'فشل استيراد ملف: ' . $file->getClientOriginalName();
+                    Log::error($errorMessage, ['error' => $e->getMessage()]);
+                    $errors[] = $errorMessage;
+                    $failedFiles++;
+                }
+            }
+
+            // بناء رسالة النتيجة
+            $message = "تم استيراد {$importedFiles} ملف(ملفات) بنجاح";
+
+            if ($failedFiles > 0) {
+                $message .= "، وفشل {$failedFiles} ملف(ملفات)";
+            }
+
+            $response = [
+                'success'        => true,
+                'message'        => $message,
+                'imported_count' => $importedFiles,
+                'failed_count'   => $failedFiles,
+            ];
+
+            if (count($errors) > 0) {
+                $response['errors'] = $errors;
+            }
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            Log::error('Import error', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء استيراد الملفات: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function getMissingProducts()
     {
         // الباركودات الموجودة فعلياً في جدول المنتجات
@@ -532,7 +600,7 @@ class ProductController extends Controller
     {
 
         $request->validate([
-            'images.*' => 'required|image'
+            'images.*' => 'required|image',
         ]);
 
         $files   = $request->file('images');
@@ -563,7 +631,7 @@ class ProductController extends Controller
                 ];
             } else {
                 $results[] = [
-                    'id'    => uniqid(),
+                    'id'     => uniqid(),
                     'name'   => $originalName,
                     'image'  => asset('public/storage/tmp_products/' . $tmpName),
                     'tmp'    => $tmpName,
