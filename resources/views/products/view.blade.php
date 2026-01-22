@@ -296,6 +296,7 @@
                         <select name="category" id="category"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 block w-full p-2.5">
                             <option value="">---</option>
+                            <option value="null">بدون فئة</option>
                             @foreach ($categories as $category)
                                 <option value="{{ $category->id }}" @if (isset($filters['category']) && $category->id == $filters['category']) selected @endif>
                                     {{ $category->name }}
