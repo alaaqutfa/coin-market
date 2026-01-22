@@ -45,13 +45,16 @@ class ProductController extends Controller
             $query->where('price', $request->price);
         }
 
-// الفلترة حسب الوزن
+        // الفلترة حسب الوزن
         if (isset($request->weight)) {
             $query->where('weight', $request->weight);
         }
 
         // الفلترة حسب الفئة
-        if ($request->category) {
+        if ($request->category == "noCategory") {
+            $query->whereNull('category_id');
+        }
+        else if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
@@ -155,7 +158,10 @@ class ProductController extends Controller
         }
 
         // الفلترة حسب الفئة
-        if ($request->category) {
+        if ($request->category == "noCategory") {
+            $query->whereNull('category_id');
+        }
+        else if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
