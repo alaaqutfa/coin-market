@@ -21,6 +21,7 @@ Route::get('products/barcode/{barcode}', [ProductController::class, 'findByBarco
 Route::put('products/barcode/{barcode}', [ProductController::class, 'updateByBarcode']);
 Route::post('products/preview-images', [ProductController::class, 'previewImages']);
 Route::post('products/save-images', [ProductController::class, 'saveImages']);
+Route::post('/import-today-invoices', [ProductController::class, 'importTodayInvoices'])->name('products.importTodayInvoices');
 
 
 // Routes الحضور والانصراف (بدون مصادقة)
