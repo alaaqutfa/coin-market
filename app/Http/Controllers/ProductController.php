@@ -22,7 +22,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::whereNotNull('image_path')->latest()->paginate(50);
+        $products = Product::whereNotNull('image_path')->whereNotNull('category_id')->latest()->paginate(50);
         return response()->json($products);
     }
 
