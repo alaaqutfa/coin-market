@@ -6,6 +6,9 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    @if(isset($products[0]["category"]["name"]))
+        <title>{{ $products[0]["category"]["name"] }} - {{ $index }}</title>
+    @endif
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
@@ -57,13 +60,11 @@
         .product {
             @if (count($products) <= 2)
                 width: 50%;
-            @else
-                width: 45%;
+            @else width: 45%;
             @endif
             @if (count($products) == 1)
                 transform: scale(1.5);
-            @endif
-            display: flex;
+            @endif display: flex;
             justify-content: center;
             align-items: end;
             flex-direction: column;
@@ -76,10 +77,8 @@
 
             @if (count($products) > 4)
                 height: 350px;
-            @else
-                height: 450px;
-            @endif
-            padding: 1rem;
+            @else height: 450px;
+            @endif padding: 1rem;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -93,9 +92,8 @@
             width: 100%;
             height: 100%;
             /* @if ($products->count() > 4)
-            max-height: 400px;
-        @endif
-        */ object-fit: contain;
+                max-height: 400px;
+            @endif */ object-fit: contain;
         }
 
         .price-weight-shape {
@@ -114,7 +112,6 @@
         .weight {
             color: var(--secondary);
             font-size: 3rem;
-            /* font-size: 2rem; */
             line-height: 2.75rem;
             font-weight: 800;
             text-align: center;
@@ -130,17 +127,18 @@
             width: 100%;
             padding: 1rem;
             color: var(--primary);
-            font-size: 2.25rem;
-            line-height: 2.5rem;
-            /* font-size: 3rem; */
-            font-weight: 800;
+            @if(isset($products[0]) && $products[0]->symbol == "LBP")
+                font-size: 4.25rem;
+                line-height: 5.5rem;
+            @else font-size: 2.25rem;
+                line-height: 2.5rem;
+            @endif font-weight: 800;
             text-align: center;
         }
 
         .price {
             color: var(--secondary);
             font-size: 3rem;
-            /* font-size: 2rem; */
             line-height: 2.75rem;
             font-weight: 800;
         }
@@ -152,28 +150,31 @@
         <div class="top-products" style="height: 18.5rem;"></div>
         <div class="products">
             @foreach ($products as $product)
-                <div class="product">
-                    <div class="image-shape">
-                        <img class="product-image" src="{{ asset('public/storage/' . $product->image_path) }}"
-                            alt="product image" />
-                        <div class="price-weight-shape">
-                            <span class="price">
-                                {{ $product->price }}{{ $product->symbol ?? '$' }}
-                            </span>
-                            @if ($product->weight != 0)
+                @if ($product->weight != 0)
+                    <div class="product">
+                        <div class="image-shape">
+                            <img class="product-image" src="{{ asset('public/storage/' . $product->image_path) }}"
+                                alt="product image" />
+                            <div class="price-weight-shape">
+                                <span class="price">
+                                    @if ($product->symbol == 'LBP')
+                                        {{ number_format($product->price, 0, '.', ',') }} {{ $product->symbol ?? 'LBP' }}
+                                    @else
+                                        {{ number_format($product->price, 2, '.', ',') }} {{ $product->symbol ?? '$' }}
+                                    @endif
+                                </span>
                                 <span class="weight">
                                     {{ $product->weight }}
                                 </span>
-                            @endif
+                            </div>
+                        </div>
+                        <div class="price-shape">
+                            <h5 class="name">
+                                {{ $product->name }}
+                            </h5>
                         </div>
                     </div>
-                    <div class="price-shape">
-                        <h5 class="name">
-                            {{ $product->name }}
-                        </h5>
-
-                    </div>
-                </div>
+                @endif
             @endforeach
         </div>
         <div class="contct-products" style="height: 10rem;"></div>

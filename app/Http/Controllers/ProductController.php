@@ -798,6 +798,7 @@ class ProductController extends Controller
     public function showCatalog(Request $request)
     {
         $ids = $request->input('ids', []);
+        $index = $request->input('index', 0);
         $ids = json_decode($ids, true) ?? [];
 
         if (empty($ids)) {
@@ -811,8 +812,10 @@ class ProductController extends Controller
 
         $products = Product::whereIn('id', $ids)
             ->whereNotNull('image_path')
+            ->with('category')
             ->get();
-        return view('design.' . $request->input('design_type'), compact('products'))->render();
+
+        return view('design.' . $request->input('design_type'), compact(['products','index']))->render();
     }
 
 }

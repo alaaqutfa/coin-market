@@ -148,8 +148,7 @@
                 transform: scale(1);
             }
         }
-    </style>
-    <style>
+
         .category-editable-container {
             position: relative;
             min-height: 40px;
@@ -1388,13 +1387,13 @@
             // إرسال كل مجموعة على حدة
             groups.forEach((group, index) => {
                 setTimeout(() => {
-                    sendCatalogRequest(group);
+                    sendCatalogRequest(index,group);
                 }, index * 1000); // تأخير بسيط بين الطلبات
             });
         }
 
         // دالة منفصلة لإرسال الطلب
-        function sendCatalogRequest(ids) {
+        function sendCatalogRequest(index,ids) {
             // إنشاء نموذج وإرساله لتحميل الملف
             let form = $('<form>', {
                 method: 'GET',
@@ -1421,6 +1420,12 @@
                 type: 'hidden',
                 name: 'design_type',
                 value: $('#design_type').val()
+            }));
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'index',
+                value: index++
             }));
 
             // إضافة النموذج إلى الصفحة وإرساله
