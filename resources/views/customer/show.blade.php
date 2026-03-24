@@ -17,8 +17,14 @@
                 <div class="md:w-1/2 p-6 flex flex-col justify-between">
                     <div>
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ $product->name }}</h1>
-                        <p class="text-gray-700 mb-2"><strong>السعر:</strong> {{ $product->price }}
-                            {{ $product->symbol ?? '$' }}</p>
+                        <p class="text-gray-700 mb-2">
+                            <strong>السعر:</strong>
+                            @if ($product->symbol == 'LBP')
+                                {{ number_format($product->price, 0, '.', ',') }} {{ $product->symbol ?? 'LBP' }}
+                            @else
+                                {{ number_format($product->price, 2, '.', ',') }} {{ $product->symbol ?? '$' }}
+                            @endif
+                        </p>
                         @if ($product->weight)
                             <p class="text-gray-700 mb-2"><strong>الوزن:</strong> {{ $product->weight }}</p>
                         @endif

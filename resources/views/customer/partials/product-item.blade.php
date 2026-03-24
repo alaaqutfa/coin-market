@@ -35,7 +35,11 @@
 
             <div class="flex items-center justify-between">
                 <span class="text-3xl font-bold text-gray-900">
-                    {{ $product->price }} {{ $product->symbol ?? '$' }}
+                    @if ($product->symbol == 'LBP')
+                        {{ number_format($product->price, 0, '.', ',') }}
+                    @else
+                        {{ number_format($product->price, 2, '.', ',') }}
+                    @endif {{ $product->symbol ?? '$' }}
                 </span>
                 <div class="flex justify-center items-center gap-2">
                     <a href="#" title="إضافة إلى السلة"

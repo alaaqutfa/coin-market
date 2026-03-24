@@ -39,7 +39,11 @@
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center">
                 <span class="text-2xl font-bold text-gray-900">
-                    {{ $product->price }}
+                    @if ($product->symbol == 'LBP')
+                        {{ number_format($product->price, 0, '.', ',') }}
+                    @else
+                        {{ number_format($product->price, 2, '.', ',') }}
+                    @endif
                 </span>
                 <span class="text-sm text-gray-500 mr-1">
                     {{ $product->symbol ?? '$' }}
