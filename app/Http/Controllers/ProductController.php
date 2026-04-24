@@ -53,8 +53,7 @@ class ProductController extends Controller
         // الفلترة حسب الفئة
         if ($request->category == "noCategory") {
             $query->whereNull('category_id');
-        }
-        else if ($request->category) {
+        } else if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
@@ -160,8 +159,7 @@ class ProductController extends Controller
         // الفلترة حسب الفئة
         if ($request->category == "noCategory") {
             $query->whereNull('category_id');
-        }
-        else if ($request->category) {
+        } else if ($request->category) {
             $query->where('category_id', $request->category);
         }
 
@@ -239,6 +237,118 @@ class ProductController extends Controller
         $brands     = Brand::all();
 
         return view('products.partials.products-table', compact('products', 'filters', 'categories', 'brands'))->render();
+    }
+
+    public function jsonProducts(Request $request)
+    {
+        $query = Product::query();
+
+        // الفلترة حسب الباركود
+        if ($request->barcode) {
+            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        }
+
+        // الفلترة حسب الاسم
+        if ($request->name) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // الفلترة حسب السعر
+        if (isset($request->price)) {
+            $query->where('price', $request->price);
+        }
+
+        // الفلترة حسب الوزن
+        if (isset($request->weight)) {
+            $query->where('weight', $request->weight);
+        }
+
+        // الفلترة حسب الفئة
+        if ($request->category == "noCategory") {
+            $query->whereNull('category_id');
+        } else if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->brand) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        // مع صورة
+        if ($request->have_image) {
+            $query->whereNotNull('image_path');
+        }
+
+        // بدون صورة
+        if ($request->no_image) {
+            $query->whereNull('image_path');
+        }
+
+        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
+        if ($request->date_from && $request->date_to) {
+            $query->whereBetween('created_at', [
+                $request->date_from . ' 00:00:00',
+                $request->date_to . ' 23:59:59',
+            ]);
+        }
+
+        // فلترة تاريخ اليوم
+        elseif ($request->has('date_today') && $request->date_today) {
+            $query->whereDate('created_at', today());
+        }
+
+        // فلترة تاريخ البارحة
+        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
+            $query->whereDate('created_at', today()->subDay());
+        }
+
+        // فلترة آخر أسبوع
+        elseif ($request->has('date_week') && $request->date_week) {
+            $query->whereBetween('created_at', [
+                now()->subWeek()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة آخر شهر
+        elseif ($request->has('date_month') && $request->date_month) {
+            $query->whereBetween('created_at', [
+                now()->subMonth()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة حسب سجلات الباركود
+        if ($request->barcode_date_from && $request->barcode_date_to) {
+            $query->whereHas('barcodeLogs', function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->barcode_date_from . ' 00:00:00',
+                    $request->barcode_date_to . ' 23:59:59',
+                ]);
+            });
+        }
+
+        // الترتيب
+        if ($request->has('alphabetical') && $request->alphabetical) {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->latest();
+        }
+
+        // الترتيب من الأحدث إلى الأقدم
+        $filters  = $request->all();
+        $products = $query->paginate(60)->appends($filters);
+        $products->withPath(url('/admin/products'));
+        $categories = Category::all();
+        $brands     = Brand::all();
+
+        return response()->json([
+            'products'   => $products,
+            'filters'    => $filters,
+            'categories' => $categories,
+            'brands'     => $brands,
+        ]);
     }
 
     public function store(Request $request)
@@ -797,9 +907,9 @@ class ProductController extends Controller
 
     public function showCatalog(Request $request)
     {
-        $ids = $request->input('ids', []);
+        $ids   = $request->input('ids', []);
         $index = $request->input('index', 0);
-        $ids = json_decode($ids, true) ?? [];
+        $ids   = json_decode($ids, true) ?? [];
 
         if (empty($ids)) {
             return response()->json(['error' => 'لم يتم تحديد أي منتجات'], 400);
@@ -815,7 +925,7 @@ class ProductController extends Controller
             ->with('category')
             ->get();
 
-        return view('design.' . $request->input('design_type'), compact(['products','index']))->render();
+        return view('design.' . $request->input('design_type'), compact(['products', 'index']))->render();
     }
 
 }

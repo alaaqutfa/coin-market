@@ -76,6 +76,7 @@ Route::prefix('admin')
         */
         Route::get('/products', [ProductController::class, 'list'])->name('products.list');
         Route::get('/filter-products', [ProductController::class, 'filter'])->name('products.filter');
+        Route::get('/json-products', [ProductController::class, 'jsonProducts'])->name('products.filter');
         Route::post('/products/bulk-store', [ProductController::class, 'bulkStore'])->name('products.bulkStore');
         Route::get('/products/missing', [ProductController::class, 'getMissingProducts'])->name('products.getMissingProducts');
         Route::delete('/product-barcode-log/{id}', [ProductController::class, 'destroyMissing'])->name('product.destroyMissing');
