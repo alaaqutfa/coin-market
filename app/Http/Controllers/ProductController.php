@@ -337,17 +337,10 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $filters  = $request->all();
-        $products = $query->paginate(60)->appends($filters);
-        $products->withPath(url('/admin/products'));
-        $categories = Category::all();
-        $brands     = Brand::all();
+        $products = $query->get();
 
         return response()->json([
             'products'   => $products,
-            'filters'    => $filters,
-            'categories' => $categories,
-            'brands'     => $brands,
         ]);
     }
 
