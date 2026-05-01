@@ -343,7 +343,7 @@ class ProductController extends Controller
                 'name',
                 'weight',
                 'price',
-                'currency',
+                'symbol',
                 'image_path',
                 'category_id',
             ])
@@ -356,7 +356,7 @@ class ProductController extends Controller
                 'name'          => $product->name,
                 'weight'        => $product->weight,
                 'price'         => $product->price,
-                'currency'      => $product->currency,
+                'currency'      => $product->symbol,
                 'image'         => $product->image_path,
                 'category_id'   => $product->category_id,
                 'category_name' => optional($product->category)->name,
