@@ -158,6 +158,7 @@ Route::prefix('admin')
 | Customer-Facing Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/', [CustomerController::class, 'home'])->name('home');
 Route::prefix('customer')->name('customer.')->group(function () {
     // Auth routes
     Route::get('/check-auth', function () {
@@ -176,7 +177,6 @@ Route::prefix('customer')->name('customer.')->group(function () {
     Route::put('/profile/password', [App\Http\Controllers\Customer\ProfileController::class,
         'updatePassword'])->name('profile.password');
     // Category & Cart & orders
-    Route::get('/', [CustomerController::class, 'home'])->name('home');
     Route::get('/filter', [CustomerController::class, 'filter'])->name('filter');
     Route::get('/products/{id}', [CustomerController::class, 'show'])->name('product.show');
     Route::get('/category/{id}/products', [CustomerController::class, 'categoryProducts'])
