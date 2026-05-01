@@ -158,7 +158,7 @@ Route::prefix('admin')
 | Customer-Facing Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', [CustomerController::class, 'home'])->name('home');
+Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
 Route::prefix('customer')->name('customer.')->group(function () {
     // Auth routes
     Route::get('/check-auth', function () {
