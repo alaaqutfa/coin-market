@@ -42,39 +42,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(5px);
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
         .line-clamp-2 {
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -131,7 +98,7 @@
                 </div>
             </div>
 
-            <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <form id="filter-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- البحث بالاسم -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-300">البحث بالاسم</label>
@@ -139,9 +106,8 @@
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
-                        <input type="text" name="name" placeholder="ابحث عن منتج..."
-                            value="{{ $filters['name'] ?? '' }}"
-                            class="bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-3">
+                        <input type="text" name="name" placeholder="ابحث عن منتج..." value="{{ $filters['name'] ?? '' }}"
+                            class="bg-white/10 backdrop-blur-sm border border-white/20 text-black placeholder-gray-400 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-3">
                     </div>
                 </div>
 
@@ -182,18 +148,18 @@
                         </div>
                         <input type="number" name="price" step="0.01" placeholder="السعر"
                             value="{{ $filters['price'] ?? '' }}"
-                            class="bg-white/10 backdrop-blur-sm border border-white/20 text-white placeholder-gray-400 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-3">
+                            class="bg-white/10 backdrop-blur-sm border border-white/20 text-black placeholder-gray-400 text-sm rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 block w-full pr-10 p-3">
                     </div>
                 </div>
 
                 <!-- زر التصفية -->
-                <div class="flex items-end">
+                {{-- <div class="flex items-end">
                     <button type="submit"
                         class="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
                         <i class="fas fa-filter ml-2"></i>
                         تصفية المنتجات
                     </button>
-                </div>
+                </div> --}}
             </form>
         </div>
 
@@ -216,27 +182,29 @@
         </div>
 
         {{-- قسم المنتجات الأخيرة --}}
-        @if ($latestProducts->count() > 0 && request('category') === null)
-            <div class="mb-12">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800">
-                        <i class="fas fa-clock ml-2 text-yellow-500"></i>
-                        أحدث المنتجات
-                    </h2>
-                </div>
+        <div id="dynamic-products">
+            @if ($latestProducts->count() > 0 && request('category') === null)
+                <div class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">
+                            <i class="fas fa-clock ml-2 text-yellow-500"></i>
+                            أحدث المنتجات
+                        </h2>
+                    </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    @foreach ($latestProducts as $product)
-                        {{-- عرض بطاقة المنتج --}}
-                        @include('customer.partials.product-card', ['product' => $product])
-                    @endforeach
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        @foreach ($latestProducts as $product)
+                            {{-- عرض بطاقة المنتج --}}
+                            @include('customer.partials.product-card', ['product' => $product])
+                        @endforeach
+                    </div>
                 </div>
+            @endif
+
+            <!-- عرض الفئات والمنتجات -->
+            <div id="categories-container">
+                @include('customer.partials.categories-products', ['categories' => $categories])
             </div>
-        @endif
-
-        <!-- عرض الفئات والمنتجات -->
-        <div id="categories-container">
-            @include('customer.partials.categories-products', ['categories' => $categories])
         </div>
 
         <!-- زر العودة للأعلى -->
@@ -245,26 +213,22 @@
         </div>
     </div>
 
-    <!-- نافذة التحميل -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="text-center">
-            <div class="spinner mb-4"></div>
-            <p class="text-gray-600 font-medium">جاري تحميل البيانات...</p>
-        </div>
-    </div>
+    <!-- مودال بيانات العميل -->
+    @include('customer.partials.customer-modal')
+
 @endsection
 
 @push('script')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // تطبيق الفلاتر
-            $('#filter-form').on('submit', function(e) {
+            $('#filter-form').on('submit', function (e) {
                 e.preventDefault();
                 applyFilters();
             });
 
             // عند تغيير أي حقل فلترة
-            $('.filter-input').on('input change', function() {
+            $('.filter-input').on('input change', function () {
                 // يمكنك إضافة debounce هنا إذا أردت
                 // applyFilters();
             });
@@ -287,16 +251,16 @@
                 url: "{{ route('customer.filter') }}",
                 type: "GET",
                 data: formData,
-                success: function(response) {
-                    $('#products-container').fadeOut(200, function() {
+                success: function (response) {
+                    $('#products-container').fadeOut(200, function () {
                         $(this).html(response).fadeIn(300);
                         $('#loadingOverlay').fadeOut();
                     });
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('حدث خطأ أثناء جلب البيانات:', error);
                     $('#loadingOverlay').fadeOut();
-                    alert('حدث خطأ أثناء جلب البيانات. يرجى المحاولة مرة أخرى.');
+                    showToast('حدث خطأ أثناء جلب البيانات. يرجى المحاولة مرة أخرى.', 'error');
                 }
             });
         }
@@ -304,7 +268,7 @@
         // زر العودة للأعلى
         const scrollToTopBtn = $('#scrollToTop');
 
-        $(window).on('scroll', function() {
+        $(window).on('scroll', function () {
             if ($(this).scrollTop() > 300) {
                 scrollToTopBtn.addClass('show');
             } else {
@@ -312,7 +276,7 @@
             }
         });
 
-        scrollToTopBtn.on('click', function() {
+        scrollToTopBtn.on('click', function () {
             $('html, body').animate({
                 scrollTop: 0
             }, 500);
@@ -329,15 +293,15 @@
                     load_category: categoryId,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function(response) {
+                success: function (response) {
                     // إخفاء الأزرار القديمة وإضافة المحتوى الجديد
                     $(`#category-${categoryId} .show-more-btn`).hide();
                     $(`#category-${categoryId} .products-grid`).append(response);
                     $('#loadingOverlay').fadeOut();
                 },
-                error: function() {
+                error: function () {
                     $('#loadingOverlay').fadeOut();
-                    alert('حدث خطأ أثناء تحميل المزيد من المنتجات');
+                    showToast('حدث خطأ أثناء تحميل المزيد من المنتجات', 'error');
                 }
             });
         }
@@ -346,5 +310,63 @@
         function viewAllCategory(categoryId) {
             window.location.href = `/category/${categoryId}/products`;
         }
+
+        // === فلترة لحظية Real-Time ===
+        let filterTimeout = null;
+
+        function applyLiveFilter() {
+            // جمع قيم الفلاتر
+            let formData = {
+                name: $("input[name='name']").val(),
+                price: $("input[name='price']").val(),
+                weight: $("input[name='weight']").val(),
+                brand: $("select[name='brand']").val(),
+                category: $("select[name='category']").val(),
+                _token: '{{ csrf_token() }}'
+            };
+
+            // إظهار loading
+            $('#loadingOverlay').fadeIn();
+
+            $.ajax({
+                url: "{{ route('customer.filter') }}",
+                type: "GET",
+                data: formData,
+                success: function (html) {
+                    // استبدال المحتوى الديناميكي (الفئات + الأحدث) بنتائج الفلترة
+                    $('#dynamic-products').html(html);
+                    $('#loadingOverlay').fadeOut();
+                },
+                error: function () {
+                    $('#loadingOverlay').fadeOut();
+                    showToast('حدث خطأ أثناء جلب البيانات', 'error');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            // عند كتابة أي حرف في حقل الاسم (بعد توقف 300ms)
+            $("input[name='name']").on('input', function () {
+                clearTimeout(filterTimeout);
+                filterTimeout = setTimeout(applyLiveFilter, 300);
+            });
+
+            // باقي الفلاتر عند تغييرها مباشرة
+            $("select[name='brand'], select[name='category'], input[name='price'], input[name='weight']").on('change', function () {
+                applyLiveFilter();
+            });
+
+            // زر إلغاء الفلترة – يعيد تحميل الصفحة الأصلية أو يمسح الفلاتر ويعيد العرض الأصلي
+            $(document).on('click', '#clearFiltersBtn', function () {
+                // إعادة تعيين الحقول
+                $("input[name='name']").val('');
+                $("select[name='brand']").val('');
+                $("select[name='category']").val('');
+                $("input[name='price']").val('');
+                $("input[name='weight']").val('');
+                // إعادة تحميل الصفحة الرئيسية (بدون فلتر)
+                window.location.href = "{{ url('/') }}";
+            });
+        });
     </script>
 @endpush

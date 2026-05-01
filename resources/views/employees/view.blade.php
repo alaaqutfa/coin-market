@@ -1115,7 +1115,7 @@
 
         function viewDayAttendance(employeeId, date) {
             if (!employeeId || !date) {
-                alert('يرجى إدخال المعرف والتاريخ');
+                showToast('يرجى إدخال المعرف والتاريخ', 'error');
                 return;
             }
 
@@ -1176,7 +1176,7 @@
                     $('.attendance-employee-day-log').fadeIn(200);
                 },
                 error: function(xhr) {
-                    alert('حدث خطأ أثناء الجلب');
+                    showToast('حدث خطأ أثناء الجلب', 'error');
                 }
             });
         }

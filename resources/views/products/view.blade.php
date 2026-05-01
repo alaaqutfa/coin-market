@@ -1738,14 +1738,14 @@
                     },
                     success: function(data) {
                         if (data.status === 'success') {
-                            alert(`تم حذف ${data.count} صورة غير ضرورية بنجاح ✅`);
+                            showToast(`تم حذف ${data.count} صورة غير ضرورية بنجاح ✅`,'success');
                         } else {
-                            alert('حدث خطأ أثناء تنظيف الصور ❌');
+                            showToast('حدث خطأ أثناء تنظيف الصور ❌','error');
                         }
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
-                        alert('فشل الاتصال بالسيرفر ❌');
+                        showToast('فشل الاتصال بالسيرفر ❌','error');
                     }
                 });
             });

@@ -1,14 +1,3 @@
-@php
-    $whatsappNumber = '96171349793';
-    $productName = $product->name;
-    $productLink = route('customer.product.show', $product->id);
-    $message =
-        "مرحباً، أريد الاستفسار عن المنتج: {$productName}\n" .
-        "السعر: {$product->price} {$product->symbol}\n" .
-        "رابط المنتج: {$productLink}";
-    $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . rawurlencode($message);
-@endphp
-
 <div
     class="group bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
     <!-- صورة المنتج -->
@@ -57,17 +46,6 @@
         </div>
 
         <!-- الأزرار -->
-        <div class="flex gap-2">
-            <a href="{{ $whatsappUrl }}" target="_blank"
-                class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-2.5 px-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-                <i class="fa-brands fa-whatsapp text-lg"></i>
-                <span class="text-sm">واتساب</span>
-            </a>
-            <a href="#"
-                class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center py-2.5 px-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-cart-plus"></i>
-                <span class="text-sm">السلة</span>
-            </a>
-        </div>
+        @include('customer.partials.action-buttons', ['product' => $product])
     </div>
 </div>

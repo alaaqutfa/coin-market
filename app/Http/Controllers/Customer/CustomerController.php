@@ -13,33 +13,33 @@ class CustomerController extends Controller
     public function home(Request $request)
     {
         // تحديد نطاق التاريخ
-    $startDate = $request->input('start_date', now()->subWeek()->toDateString());
-    $endDate = $request->input('end_date', now()->toDateString());
+        $startDate = $request->input('start_date', now()->subWeek()->toDateString());
+        $endDate   = $request->input('end_date', now()->toDateString());
 
-    // جلب آخر 20 منتج حسب سجلات الباركود
-    $latestProducts = Product::query()
-        ->whereNotNull('image_path')
-        ->whereExists(function ($query) use ($startDate, $endDate) {
-            $query->select(DB::raw(1))
-                  ->from('product_barcode_logs')
-                  ->whereColumn('product_barcode_logs.barcode', 'products.barcode')
-                  ->whereBetween('product_barcode_logs.created_at', [
-                      $startDate . ' 00:00:00',
-                      $endDate . ' 23:59:59',
-                  ]);
-        })
-        ->with('category')
-        ->select('products.*')
-        ->addSelect([
-            'last_barcode_scan' => DB::table('product_barcode_logs')
-                ->select('created_at')
-                ->whereColumn('barcode', 'products.barcode')
-                ->orderByDesc('created_at')
-                ->limit(1)
-        ])
-        ->orderByDesc('last_barcode_scan')
-        ->take(20)
-        ->get();
+        // جلب آخر 20 منتج حسب سجلات الباركود
+        $latestProducts = Product::query()
+            ->whereNotNull('image_path')
+            ->whereExists(function ($query) use ($startDate, $endDate) {
+                $query->select(DB::raw(1))
+                    ->from('product_barcode_logs')
+                    ->whereColumn('product_barcode_logs.barcode', 'products.barcode')
+                    ->whereBetween('product_barcode_logs.created_at', [
+                        $startDate . ' 00:00:00',
+                        $endDate . ' 23:59:59',
+                    ]);
+            })
+            ->with('category')
+            ->select('products.*')
+            ->addSelect([
+                'last_barcode_scan' => DB::table('product_barcode_logs')
+                    ->select('created_at')
+                    ->whereColumn('barcode', 'products.barcode')
+                    ->orderByDesc('created_at')
+                    ->limit(1),
+            ])
+            ->orderByDesc('last_barcode_scan')
+            ->take(20)
+            ->get();
 
         // جلب الفئات مع آخر 20 منتجات لكل فئة (للعرض المبدئي)
         $categories = Category::query()
@@ -72,48 +72,11 @@ class CustomerController extends Controller
 
     public function filter(Request $request)
     {
-        // إذا كان طلب فلترة عادي (من شريط البحث)
-        if ($request->filled('name') || $request->filled('price') ||
-            $request->filled('weight') || $request->filled('brand') ||
-            $request->filled('category')) {
-
-            // فلترة المنتجات مباشرة
-            $productsQuery = Product::query()
-                ->whereNotNull('image_path')
-            // ->with('category', 'brand');
-                ->with('category');
-
-            if ($request->name) {
-                $productsQuery->where('name', 'like', '%' . $request->name . '%');
-            }
-
-            if ($request->price) {
-                $productsQuery->where('price', $request->price);
-            }
-
-            if ($request->weight) {
-                $productsQuery->where('weight', $request->weight);
-            }
-
-            if ($request->brand) {
-                $productsQuery->where('brand_id', $request->brand);
-            }
-
-            if ($request->category) {
-                $productsQuery->where('category_id', $request->category);
-            }
-
-            $products = $productsQuery->latest()->paginate(40);
-
-            return view('customer.partials.filtered-products', compact('products', 'filters'));
-        }
-
         // إذا كان طلب لعرض منتجات فئة محددة مع pagination
         if ($request->filled('load_category')) {
             $categoryId = $request->load_category;
             $page       = $request->page ?? 1;
-
-            $products = Product::query()
+            $products   = Product::query()
                 ->whereNotNull('image_path')
                 ->where('category_id', $categoryId)
             // ->with('brand')
@@ -125,25 +88,39 @@ class CustomerController extends Controller
             return view('customer.partials.category-products', compact('products', 'category'));
         }
 
-        // الافتراضي: عرض الفئات مع 20 منتجات لكل فئة
-        $categories = Category::query()
-            ->with(['products' => function ($query) {
-                $query->whereNotNull('image_path')
-                    ->latest()
-                    ->take(20);
-            }])
-            ->whereHas('products', function ($query) {
-                $query->whereNotNull('image_path');
-            })
-            ->when($request->category, function ($query, $categoryId) {
-                return $query->where('id', $categoryId);
-            })
-            ->orderBy('name')
-            ->get();
+        // بناء الـ Query للفلترة العادية (اسم، سعر، وزن، براند، فئة)
+        $query = Product::query()
+            ->whereNotNull('image_path')
+            ->with('category', 'brand');
 
-        $filters = $request->all();
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        if ($request->filled('price')) {
+            $query->where('price', $request->price);
+        }
+        if ($request->filled('weight')) {
+            $query->where('weight', $request->weight);
+        }
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
 
-        return view('customer.partials.categories-products', compact('categories', 'filters'));
+        $products = $query->latest()->paginate(40);
+
+        // لو كان الطلب AJAX → نعيد الـ HTML الخاص بنتائج الفلترة فقط
+        if ($request->ajax() || $request->wantsJson()) {
+            return view('customer.partials.filtered-products-list', compact('products'))->render();
+        }
+
+        // غير AJAX (نادر) → نعيد الصفحة الكاملة كما كانت سابقاً
+        $allBrands     = Brand::all();
+        $allCategories = Category::all();
+        $filters       = $request->all();
+        return view('customer.product', compact('products', 'allBrands', 'allCategories', 'filters'));
     }
 
     public function show($id)

@@ -337,10 +337,38 @@ class ProductController extends Controller
         }
 
         // الترتيب من الأحدث إلى الأقدم
-        $products = $query->get();
+        $products = $query
+            ->select([
+                'id',
+                'name',
+                'weight',
+                'price',
+                'currency',
+                'image_path',
+                'category_id',
+            ])
+            ->with(['category:id,name'])
+            ->get();
+
+        $formatted = $products->map(function ($product) {
+            return [
+                'id'            => $product->id,
+                'name'          => $product->name,
+                'weight'        => $product->weight,
+                'price'         => $product->price,
+                'currency'      => $product->currency,
+                'image'         => $product->image_path,
+                'category_id'   => $product->category_id,
+                'category_name' => optional($product->category)->name,
+            ];
+        });
+
+        $grouped = $formatted->groupBy('category_name');
 
         return response()->json([
-            'products'   => $products,
+            'count'       => $formatted->count(),
+            'by_category' => $grouped,
+            'products'    => $formatted,
         ]);
     }
 

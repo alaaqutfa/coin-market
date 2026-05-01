@@ -26,14 +26,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 @foreach ($category->products as $product)
                     @php
-                        $whatsappNumber = '96171349793';
-                        $productName = $product->name;
                         $productLink = route('customer.product.show', $product->id);
-                        $message =
-                            "مرحباً، أريد الاستفسار عن المنتج: {$productName}\n" .
-                            "السعر: {$product->price} {$product->symbol}\n" .
-                            "رابط المنتج: {$productLink}";
-                        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . rawurlencode($message);
                     @endphp
 
                     <div
@@ -48,8 +41,7 @@
                             </a>
                             <!-- شارة الوزن -->
                             @if ($product->weight > 0)
-                                <div
-                                    class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                <div class="absolute top-3 left-3 bg-yellow-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                                     {{ $product->weight }}
                                 </div>
                             @endif
@@ -86,18 +78,7 @@
                             </div>
 
                             <!-- الأزرار -->
-                            <div class="flex gap-2">
-                                <a href="{{ $whatsappUrl }}" target="_blank"
-                                    class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-2.5 px-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-                                    <i class="fa-brands fa-whatsapp text-lg"></i>
-                                    <span class="text-sm">واتساب</span>
-                                </a>
-                                <a href="#"
-                                    class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white text-center py-2.5 px-3 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                    <span class="text-sm">السلة</span>
-                                </a>
-                            </div>
+                            @include('customer.partials.action-buttons', ['product' => $product])
                         </div>
                     </div>
                 @endforeach

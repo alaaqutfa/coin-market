@@ -36,23 +36,21 @@
                     </div>
 
                     <!-- الأزرار -->
+                    <div class="flex items-center gap-4">
+                        <label class="text-gray-700 font-semibold">الكمية:</label>
+                        <input type="number" class="product-quantity-input w-24 border rounded-lg p-2 text-center" value="1"
+                            min="1" max="99">
+                    </div>
                     <div class="flex gap-3 space-x-3 rtl:space-x-reverse mt-6">
                         <a href="#"
-                            class="flex justify-center items-center text-center bg-yellow-400 hover:bg-yellow-500 text-white px-5 py-3 rounded-lg font-semibold">
+                            class="add-to-cart-btn flex justify-center items-center text-center bg-yellow-400 hover:bg-yellow-500 text-white px-5 py-3 rounded-lg font-semibold"
+                            data-product-id="{{ $product->id }}" data-quantity="1">
                             <i class="fa-solid fa-cart-plus mr-2"></i> أضف إلى السلة
                         </a>
-                        @php
-                            $message =
-                                "مرحباً، أريد الاستفسار عن المنتج: {$product->name}\n" .
-                                "السعر: {$product->price} {$product->symbol}\n" .
-                                'رابط المنتج: ' .
-                                url()->current();
-                            $whatsappNumber = '96171349793'; // بدون +
-                            $encodedMessage = urlencode($message);
-                            $whatsappUrl = "https://wa.me/{$whatsappNumber}?text={$encodedMessage}";
-                        @endphp
+
                         <a href="{{ $whatsappUrl }}" target="_blank"
-                            class="flex justify-center items-center text-center bg-green-400 hover:bg-green-500 text-white px-5 py-3 rounded-lg font-semibold">
+                            class="whatsapp-order-btn flex justify-center items-center text-center bg-green-400 hover:bg-green-500 text-white px-5 py-3 rounded-lg font-semibold"
+                            data-product-id="{{ $product->id }}" data-quantity="1">
                             <i class="fa-brands fa-whatsapp mr-2"></i> أطلب الآن على واتساب
                         </a>
                     </div>
@@ -60,4 +58,8 @@
             </div>
         </div>
     </div>
+
+
+    <!-- مودال بيانات العميل -->
+    @include('customer.partials.customer-modal')
 @endsection

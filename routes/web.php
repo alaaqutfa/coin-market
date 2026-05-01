@@ -137,6 +137,20 @@ Route::prefix('admin')
             Route::get('/today-paginated', [AttendanceController::class, 'attendanceTodayPaginated'])->name('today.paginated');
             Route::get('/day', [AttendanceController::class, 'getEmployeeDayAttendance'])->name('viewDayAttendance');
         });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Orders Management
+        |--------------------------------------------------------------------------
+        */
+        Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+            Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
+            Route::get('/orders/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
+            Route::put('/orders/{id}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+            Route::get('/orders/{id}/contact', [App\Http\Controllers\Admin\OrderController::class, 'contactCustomer'])->name('admin.orders.contact');
+        });
+        Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
+        Route::post('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('admin.reports.export');
     });
 
 /*
@@ -144,11 +158,39 @@ Route::prefix('admin')
 | Customer-Facing Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', [CustomerController::class, 'home'])->name('customer.home');
-Route::get('/filter', [CustomerController::class, 'filter'])->name('customer.filter');
-Route::get('/products/{id}', [CustomerController::class, 'show'])->name('customer.product.show');
-Route::get('/category/{id}/products', [CustomerController::class, 'categoryProducts'])
-    ->name('customer.category.products');
+Route::prefix('customer')->name('customer.')->group(function () {
+    // Auth routes
+    Route::get('/check-auth', function () {
+        return response()->json(['logged_in' => session()->has('customer_id')]);
+    })->name('checkCustomerAuth');
+    Route::get('/login', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/register', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('/register', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'register'])->name('register.submit');
+    Route::post('/login', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'login'])->name('login.submit');
+    Route::post('/register-ajax', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'registerAjax'])->name('register.ajax');
+    Route::post('/login-ajax', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'loginAjax'])->name('login.ajax');
+    Route::post('/logout', [App\Http\Controllers\Customer\Auth\CustomerAuthController::class, 'logout'])->name('logout');
+    Route::get('/profile', [App\Http\Controllers\Customer\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [App\Http\Controllers\Customer\ProfileController::class,
+        'update'])->name('profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Customer\ProfileController::class,
+        'updatePassword'])->name('profile.password');
+    // Category & Cart & orders
+    Route::get('/', [CustomerController::class, 'home'])->name('home');
+    Route::get('/filter', [CustomerController::class, 'filter'])->name('filter');
+    Route::get('/products/{id}', [CustomerController::class, 'show'])->name('product.show');
+    Route::get('/category/{id}/products', [CustomerController::class, 'categoryProducts'])
+        ->name('category.products');
+    Route::post('/cart/add', [App\Http\Controllers\Customer\CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/order/whatsapp', [App\Http\Controllers\Customer\CartController::class, 'orderViaWhatsApp'])->name('order.whatsapp');
+    Route::get('/cart', [App\Http\Controllers\Customer\CartController::class, 'viewCart'])->name('cart.view');
+    Route::post('/cart/update/{itemId}', [App\Http\Controllers\Customer\CartController::class, 'updateCartItem'])->name('cart.update');
+    Route::delete('/cart/remove/{itemId}', [App\Http\Controllers\Customer\CartController::class, 'removeCartItem'])->name('cart.remove');
+    Route::post('/checkout', [App\Http\Controllers\Customer\CartController::class, 'checkout'])->name('checkout');
+    Route::get('/current', [App\Http\Controllers\Customer\CartController::class, 'getCurrentCustomer'])->name('current');
+    Route::get('/orders', [App\Http\Controllers\Customer\OrderController::class, 'index'])->name('orders');
+    Route::get('/order/{order_number}', [App\Http\Controllers\Customer\OrderController::class, 'show'])->name('order.show');
+});
 
 /*
 |--------------------------------------------------------------------------

@@ -2,17 +2,6 @@
     {{ $products->links() }}
 </div>
 @foreach ($products as $product)
-    @php
-        $whatsappNumber = '96171349793';
-        $productName = $product->name;
-        $productLink = route('customer.product.show', $product->id);
-        $message =
-            "مرحباً، أريد الاستفسار عن المنتج: {$productName}\n" .
-            "السعر: {$product->price} {$product->symbol}\n" .
-            "رابط المنتج: {$productLink}";
-        $whatsappUrl = "https://wa.me/{$whatsappNumber}?text=" . rawurlencode($message);
-    @endphp
-
     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
         <a href="{{ $productLink }}" class="flex justify-center items-center overflow-hidden">
             <img class="h-64 p-8 rounded-t-lg object-contain" src="{{ asset('public/storage/' . $product->image_path) }}"
@@ -41,16 +30,7 @@
                         {{ number_format($product->price, 2, '.', ',') }}
                     @endif {{ $product->symbol ?? '$' }}
                 </span>
-                <div class="flex justify-center items-center gap-2">
-                    <a href="#" title="إضافة إلى السلة"
-                        class="text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <i class="fa-solid fa-cart-plus"></i>
-                    </a>
-                    <a href="{{ $whatsappUrl }}" target="_blank" title="أطلب الآن على واتساب"
-                        class="text-white bg-green-400 hover:bg-green-500 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </a>
-                </div>
+                @include('customer.partials.action-buttons', ['product' => $product])
             </div>
         </div>
     </div>
