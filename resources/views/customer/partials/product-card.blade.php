@@ -1,3 +1,6 @@
+@php
+    $productLink = route('customer.product.show', $product->id);
+@endphp
 <div
     class="group bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
     <!-- صورة المنتج -->

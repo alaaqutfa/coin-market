@@ -1,7 +1,11 @@
 <div dir="ltr" class="links w-full pb-8">
     {{ $products->links() }}
 </div>
+
 @foreach ($products as $product)
+    @php
+        $productLink = route('customer.product.show', $product->id);
+    @endphp
     <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm">
         <a href="{{ $productLink }}" class="flex justify-center items-center overflow-hidden">
             <img class="h-64 p-8 rounded-t-lg object-contain" src="{{ asset('public/storage/' . $product->image_path) }}"
