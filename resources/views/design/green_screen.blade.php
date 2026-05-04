@@ -16,12 +16,13 @@
             --secondary: #333127;
             --text: #222222;
             --bg: #f0f0f0;
+            --bg-green-screen: #00FF00;
         }
 
         body {
             width: 100%;
             height: 100vh;
-            background: green;
+            background: var(--bg-green-screen);
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -122,7 +123,6 @@
         .price-shape {
             width: 100%;
             min-height: 150px;
-            box-shadow: 20px 10px 10px #22222280;
         }
 
         .name {
