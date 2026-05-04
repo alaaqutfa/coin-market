@@ -440,6 +440,27 @@
                         إعدادات التصميم
                     </button>
 
+                    <!-- زر تصدير JSON -->
+                    <div class="relative inline-block text-left">
+                        <button id="exportJsonDropdownBtn" type="button"
+                            class="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-1.5 px-4 rounded-lg inline-flex items-center gap-2">
+                            <i class="fas fa-download ml-2"></i>
+                            تصدير JSON
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <!-- القائمة المنسدلة -->
+                        <div id="exportJsonMenu" class="hidden absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <ul class="py-2 text-sm text-gray-700">
+                                <li>
+                                    <a href="#" onclick="exportJson('basic')" class="block px-4 py-2 hover:bg-gray-100">📋 تصدير JSON أساسي (للمنتجات)</a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="exportJson('ai')" class="block px-4 py-2 hover:bg-gray-100">🤖 تصدير JSON تسويقي (للذكاء الاصطناعي)</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <!-- عداد المنتجات -->
                     <span
                         class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2">
@@ -1534,6 +1555,79 @@
             });
         }
 
+        // ---- دوال تصدير JSON ----
+        // فتح/إغلاق القائمة المنسدلة
+        $('#exportJsonDropdownBtn').on('click', function(e) {
+            e.stopPropagation();
+            $('#exportJsonMenu').toggleClass('hidden');
+        });
+
+        // إغلاق القائمة عند النقر خارجها
+        $(document).on('click', function() {
+            $('#exportJsonMenu').addClass('hidden');
+        });
+
+        // منع إغلاق القائمة عند النقر داخلها
+        $('#exportJsonMenu').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        function exportJson(type) {
+            $('#exportJsonMenu').addClass('hidden');
+
+            // جمع كل قيم الفلاتر الحالية من النموذج
+            let data = {
+                barcode: $("input[name='barcode']").val(),
+                name: $("input[name='name']").val(),
+                price: $("input[name='price']").val(),
+                weight: $("input[name='weight']").val(),
+                category: $("select[name='category']").val(),
+                brand: $("select[name='brand']").val(),
+                have_image: $("input[name='have_image']").val(),
+                no_image: $("input[name='no_image']").val(),
+                date_from: $("input[name='date_from']").val(),
+                date_to: $("input[name='date_to']").val(),
+                barcode_date_from: $("input[name='barcode_date_from']").val(),
+                barcode_date_to: $("input[name='barcode_date_to']").val(),
+                alphabetical: $("input[name='alphabetical']").val(),
+                _token: '{{ csrf_token() }}'
+            };
+
+            // تحديد الرابط حسب النوع
+            let url = type === 'ai'
+                ? "{{ route('products.jsonFilters') }}"
+                : "{{ route('products.filter') }}"; // أو أي مسار آخر مثل json-products
+
+            // إظهار اللودينق
+            $('#loadingOverlay').css('display', 'flex');
+
+            $.get(url, data)
+                .done(function(response) {
+                    // تحويل JSON إلى string منسق
+                    const jsonString = JSON.stringify(response, null, 2);
+                    // إنشاء blob للتحميل
+                    const blob = new Blob([jsonString], {type: 'application/json'});
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    // تسمية الملف حسب النوع والتاريخ
+                    const dateStr = new Date().toISOString().slice(0,10);
+                    const fileName = type === 'ai'
+                        ? `marketing_products_${dateStr}.json`
+                        : `products_${dateStr}.json`;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                    showToast('تم تحميل ملف JSON بنجاح', 'success');
+                })
+                .fail(function(xhr) {
+                    showToast('حدث خطأ أثناء تصدير البيانات', 'error');
+                })
+                .always(function() {
+                    $('#loadingOverlay').hide();
+                });
+        }
 
         $(document).ready(function() {
 

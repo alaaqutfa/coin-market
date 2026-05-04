@@ -7,7 +7,6 @@ use App\Imports\ProductsImport;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-// use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ProductBarcodeLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,9 +16,106 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Browsershot\Browsershot;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
+    private function applyFilters(Builder $query, Request $request): void
+    {
+        // الفلترة حسب الباركود
+        if ($request->filled('barcode')) {
+            $query->where('barcode', 'like', '%' . $request->barcode . '%');
+        }
+
+        // الفلترة حسب الاسم
+        if ($request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+
+        // الفلترة حسب السعر
+        if ($request->filled('price')) {
+            $query->where('price', $request->price);
+        }
+
+        // الفلترة حسب الوزن
+        if ($request->filled('weight')) {
+            $query->where('weight', $request->weight);
+        }
+
+        // الفلترة حسب الفئة
+        if ($request->category == "noCategory") {
+            $query->whereNull('category_id');
+        } else if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // الفلترة حسب العلامة التجارية
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+
+        // مع صورة
+        if ($request->filled('have_image')) {
+            $query->whereNotNull('image_path');
+        }
+
+        // بدون صورة
+        if ($request->filled('no_image')) {
+            $query->whereNull('image_path');
+        }
+
+        // فلترة التاريخ من - إلى (created_at)
+        if ($request->filled('date_from') && $request->filled('date_to')) {
+            $query->whereBetween('created_at', [
+                $request->date_from . ' 00:00:00',
+                $request->date_to . ' 23:59:59',
+            ]);
+        }
+
+        // فلترة تاريخ اليوم
+        elseif ($request->filled('date_today')) {
+            $query->whereDate('created_at', today());
+        }
+
+        // فلترة تاريخ البارحة
+        elseif ($request->filled('date_yesterday')) {
+            $query->whereDate('created_at', today()->subDay());
+        }
+
+        // فلترة آخر أسبوع
+        elseif ($request->filled('date_week')) {
+            $query->whereBetween('created_at', [
+                now()->subWeek()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة آخر شهر
+        elseif ($request->filled('date_month')) {
+            $query->whereBetween('created_at', [
+                now()->subMonth()->startOfDay(),
+                now()->endOfDay(),
+            ]);
+        }
+
+        // فلترة حسب سجلات الباركود
+        if ($request->filled('barcode_date_from') && $request->filled('barcode_date_to')) {
+            $query->whereHas('barcodeLogs', function ($q) use ($request) {
+                $q->whereBetween('created_at', [
+                    $request->barcode_date_from . ' 00:00:00',
+                    $request->barcode_date_to . ' 23:59:59',
+                ]);
+            });
+        }
+
+        // الترتيب
+        if ($request->filled('alphabetical')) {
+            $query->orderBy('name', 'asc');
+        } else {
+            $query->latest();
+        }
+    }
+
     public function index()
     {
         $products = Product::whereNotNull('image_path')->whereNotNull('category_id')->latest()->paginate(50);
@@ -29,207 +125,22 @@ class ProductController extends Controller
     public function list(Request $request)
     {
         $query = Product::query();
+        $this->applyFilters($query, $request);
 
-        // الفلترة حسب الباركود
-        if ($request->barcode) {
-            $query->where('barcode', 'like', '%' . $request->barcode . '%');
-        }
-
-        // الفلترة حسب الاسم
-        if ($request->name) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // الفلترة حسب السعر
-        if (isset($request->price)) {
-            $query->where('price', $request->price);
-        }
-
-        // الفلترة حسب الوزن
-        if (isset($request->weight)) {
-            $query->where('weight', $request->weight);
-        }
-
-        // الفلترة حسب الفئة
-        if ($request->category == "noCategory") {
-            $query->whereNull('category_id');
-        } else if ($request->category) {
-            $query->where('category_id', $request->category);
-        }
-
-        // الفلترة حسب العلامة التجارية
-        if ($request->brand) {
-            $query->where('brand_id', $request->brand);
-        }
-
-        // مع صورة
-        if ($request->have_image) {
-            $query->whereNotNull('image_path');
-        }
-
-        // بدون صورة
-        if ($request->no_image) {
-            $query->whereNull('image_path');
-        }
-
-        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
-        if ($request->date_from && $request->date_to) {
-            $query->whereBetween('created_at', [
-                $request->date_from . ' 00:00:00',
-                $request->date_to . ' 23:59:59',
-            ]);
-        }
-
-        // فلترة تاريخ اليوم
-        elseif ($request->has('date_today') && $request->date_today) {
-            $query->whereDate('created_at', today());
-        }
-
-        // فلترة تاريخ البارحة
-        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
-            $query->whereDate('created_at', today()->subDay());
-        }
-
-        // فلترة آخر أسبوع
-        elseif ($request->has('date_week') && $request->date_week) {
-            $query->whereBetween('created_at', [
-                now()->subWeek()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة آخر شهر
-        elseif ($request->has('date_month') && $request->date_month) {
-            $query->whereBetween('created_at', [
-                now()->subMonth()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة حسب سجلات الباركود - الجزء الجديد
-        if ($request->barcode_date_from && $request->barcode_date_to) {
-            $query->whereHas('barcodeLogs', function ($q) use ($request) {
-                $q->whereBetween('created_at', [
-                    $request->barcode_date_from . ' 00:00:00',
-                    $request->barcode_date_to . ' 23:59:59',
-                ]);
-            });
-        }
-
-        // الترتيب
-        if ($request->has('alphabetical') && $request->alphabetical) {
-            $query->orderBy('name', 'asc');
-        } else {
-            $query->latest();
-        }
-
-        // الترتيب من الأحدث إلى الأقدم
         $filters  = $request->all();
         $products = $query->paginate(60)->appends($filters);
         $products->withPath(url('/admin/products'));
         $categories = Category::all();
         $brands     = Brand::all();
+
         return view('products.view', compact('products', 'filters', 'categories', 'brands'));
     }
 
     public function filter(Request $request)
     {
         $query = Product::query();
+        $this->applyFilters($query, $request);
 
-        // الفلترة حسب الباركود
-        if ($request->barcode) {
-            $query->where('barcode', 'like', '%' . $request->barcode . '%');
-        }
-
-        // الفلترة حسب الاسم
-        if ($request->name) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // الفلترة حسب السعر
-        if (isset($request->price)) {
-            $query->where('price', $request->price);
-        }
-
-// الفلترة حسب الوزن
-        if (isset($request->weight)) {
-            $query->where('weight', $request->weight);
-        }
-
-        // الفلترة حسب الفئة
-        if ($request->category == "noCategory") {
-            $query->whereNull('category_id');
-        } else if ($request->category) {
-            $query->where('category_id', $request->category);
-        }
-
-        // الفلترة حسب العلامة التجارية
-        if ($request->brand) {
-            $query->where('brand_id', $request->brand);
-        }
-
-        // مع صورة
-        if ($request->have_image) {
-            $query->whereNotNull('image_path');
-        }
-
-        // بدون صورة
-        if ($request->no_image) {
-            $query->whereNull('image_path');
-        }
-
-        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
-        if ($request->date_from && $request->date_to) {
-            $query->whereBetween('created_at', [
-                $request->date_from . ' 00:00:00',
-                $request->date_to . ' 23:59:59',
-            ]);
-        }
-
-        // فلترة تاريخ اليوم
-        elseif ($request->has('date_today') && $request->date_today) {
-            $query->whereDate('created_at', today());
-        }
-
-        // فلترة تاريخ البارحة
-        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
-            $query->whereDate('created_at', today()->subDay());
-        }
-
-        // فلترة آخر أسبوع
-        elseif ($request->has('date_week') && $request->date_week) {
-            $query->whereBetween('created_at', [
-                now()->subWeek()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة آخر شهر
-        elseif ($request->has('date_month') && $request->date_month) {
-            $query->whereBetween('created_at', [
-                now()->subMonth()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة حسب سجلات الباركود
-        if ($request->barcode_date_from && $request->barcode_date_to) {
-            $query->whereHas('barcodeLogs', function ($q) use ($request) {
-                $q->whereBetween('created_at', [
-                    $request->barcode_date_from . ' 00:00:00',
-                    $request->barcode_date_to . ' 23:59:59',
-                ]);
-            });
-        }
-
-        // الترتيب
-        if ($request->has('alphabetical') && $request->alphabetical) {
-            $query->orderBy('name', 'asc');
-        } else {
-            $query->latest();
-        }
-
-        // الترتيب من الأحدث إلى الأقدم
         $filters  = $request->all();
         $products = $query->paginate(60)->appends($filters);
         $products->withPath(url('/admin/products'));
@@ -237,6 +148,106 @@ class ProductController extends Controller
         $brands     = Brand::all();
 
         return view('products.partials.products-table', compact('products', 'filters', 'categories', 'brands'))->render();
+    }
+
+    public function jsonFilters(Request $request)
+    {
+        $query = Product::query();
+        $this->applyFilters($query, $request);
+
+        // نستثني المنتجات التي سعرها صفر
+        $query->where('price', '>', 0);
+
+        $products = $query->select([
+                'id', 'barcode', 'name', 'weight', 'price', 'symbol', 'category_id'
+            ])
+            ->with(['category:id,name'])
+            ->get();
+
+        $formatted = $products->map(function ($product) {
+            return [
+                'barcode'       => $product->barcode,
+                'name'          => $product->name,
+                'price'         => $product->price,
+                'currency'      => $product->symbol,
+                'weight'        => $product->weight,
+                'category_id'   => $product->category_id,
+                'category_name' => optional($product->category)->name ?? 'بدون فئة',
+            ];
+        });
+
+        // التجميع حسب الفئة
+        $grouped = $formatted->groupBy('category_name')->map(function ($items, $categoryName) {
+            $firstItem = $items->first();
+            return [
+                'category_id'    => $firstItem['category_id'],
+                'category_name'  => $categoryName,
+                'products_count' => $items->count(),
+                'products'       => $items->map(function ($item) {
+                    // نحذف category_id و category_name من داخل المنتجات لتجنب التكرار
+                    return collect($item)->except(['category_id', 'category_name'])->toArray();
+                })->values()->toArray(),
+            ];
+        })->values()->toArray();
+
+        // بناء سياق تسويقي إضافي ليساعد الذكاء الاصطناعي
+        $categoryNames = collect($grouped)->pluck('category_name')->filter()->toArray();
+        $marketingContext = $this->buildMarketingContext($request, $categoryNames, $formatted->count());
+
+        return response()->json([
+            'count'             => $formatted->count(),
+            'by_category'       => $grouped,
+            'marketing_context' => $marketingContext,
+        ]);
+    }
+
+    private function buildMarketingContext(Request $request, array $categoryNames, int $totalProducts): array
+    {
+        // ملخص الفلاتر
+        $activeFilters = [];
+        if ($request->filled('barcode')) $activeFilters[] = "باركود يحتوي على: " . $request->barcode;
+        if ($request->filled('name')) $activeFilters[] = "اسم منتج يحتوي على: " . $request->name;
+        if ($request->filled('price')) $activeFilters[] = "سعر = " . $request->price;
+        if ($request->filled('weight')) $activeFilters[] = "وزن = " . $request->weight;
+        if ($request->filled('category')) $activeFilters[] = "فئة محددة";
+        if ($request->filled('brand')) $activeFilters[] = "علامة تجارية محددة";
+        if ($request->filled('date_from') || $request->filled('date_to')) $activeFilters[] = "نطاق تاريخي محدد";
+
+        $filtersSummary = !empty($activeFilters)
+            ? "تمت فلترة المنتجات بناءً على: " . implode('، ', $activeFilters)
+            : "جميع المنتجات (بدون فلترة)";
+
+        // اقتراح جمهور مستهدف بسيط بناءً على أسماء الفئات
+        $targetAudience = "عام";
+        if (!empty($categoryNames)) {
+            $targetAudience = "المهتمون بـ: " . implode('، ', $categoryNames);
+        }
+
+        // أفكار رسائل تسويقية ديناميكية
+        $messageIdeas = [
+            "اكتشف مجموعتنا المميزة من " . implode(' و ', array_slice($categoryNames, 0, 2)) . " بأسعار لا تقبل المنافسة!",
+            "عروض حصرية على منتجات مختارة، لفترة محدودة فقط.",
+        ];
+        if (count($categoryNames) > 0) {
+            $messageIdeas[] = "خصم خاص عند شرائك من فئة " . $categoryNames[0] . " اليوم!";
+        }
+
+        return [
+            'filters_summary'              => $filtersSummary,
+            'target_audience_suggestions'  => $targetAudience,
+            'marketing_objectives'         => [
+                "زيادة الوعي بالعلامة التجارية ضمن الفئات: " . implode('، ', $categoryNames),
+                "زيادة المبيعات بنسبة 20% خلال الشهر القادم.",
+                "تعزيز ولاء العملاء من خلال عروض حصرية."
+            ],
+            'channels'                     => [
+                "وسائل التواصل الاجتماعي (فيسبوك، انستغرام، تيك توك)"
+                // "البريد الإلكتروني التسويقي",
+                // "الإعلانات المدفوعة (Google Ads، إعلانات وسائل التواصل)"
+            ],
+            'message_ideas'                => $messageIdeas,
+            'additional_notes'             => "إجمالي المنتجات المختارة: {$totalProducts} منتج. يمكن التركيز على المنتجات الأعلى سعراً لزيادة هامش الربح."
+        ];
     }
 
     public function jsonProducts(Request $request)

@@ -35,7 +35,9 @@ Route::prefix('employee')->group(function () {
     Route::get('/{employee_code}', [EmployeeController::class, 'employeeData'])->name('employee.show');
 });
 
-Route::get('/manager/summary', [EmployeeController::class, 'employeesData'])->name('employee.all')->withoutMiddleware(['auth']);
+Route::get('/manager/summary', [EmployeeController::class, 'employeesData'])
+    ->middleware(['auth', 'admin'])
+    ->name('employee.all');
 
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showAdminLogin'])->name('admin.login');
@@ -76,7 +78,8 @@ Route::prefix('admin')
         */
         Route::get('/products', [ProductController::class, 'list'])->name('products.list');
         Route::get('/filter-products', [ProductController::class, 'filter'])->name('products.filter');
-        Route::get('/json-products', [ProductController::class, 'jsonProducts'])->name('products.filter');
+        Route::get('/json-products', [ProductController::class, 'jsonProducts'])->name('products.json');
+        Route::get('/json-filters', [ProductController::class, 'jsonFilters'])->name('products.jsonFilters');
         Route::post('/products/bulk-store', [ProductController::class, 'bulkStore'])->name('products.bulkStore');
         Route::get('/products/missing', [ProductController::class, 'getMissingProducts'])->name('products.getMissingProducts');
         Route::delete('/product-barcode-log/{id}', [ProductController::class, 'destroyMissing'])->name('product.destroyMissing');
@@ -143,11 +146,11 @@ Route::prefix('admin')
         | Orders Management
         |--------------------------------------------------------------------------
         */
-        Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-            Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
-            Route::get('/orders/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('admin.orders.show');
-            Route::put('/orders/{id}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-            Route::get('/orders/{id}/contact', [App\Http\Controllers\Admin\OrderController::class, 'contactCustomer'])->name('admin.orders.contact');
+        Route::prefix('orders')->name('admin.orders.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('index');
+            Route::get('/{id}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('show');
+            Route::put('/{id}/status', [App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('updateStatus');
+            Route::get('/{id}/contact', [App\Http\Controllers\Admin\OrderController::class, 'contactCustomer'])->name('contact');
         });
         Route::get('/reports', [App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
         Route::post('/reports/export', [App\Http\Controllers\Admin\ReportController::class, 'export'])->name('admin.reports.export');
