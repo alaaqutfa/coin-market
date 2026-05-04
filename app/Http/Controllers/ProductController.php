@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductBarcodeLog;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Browsershot\Browsershot;
-use Illuminate\Database\Eloquent\Builder;
 
 class ProductController extends Controller
 {
@@ -55,12 +55,12 @@ class ProductController extends Controller
         }
 
         // مع صورة
-        if ($request->filled('have_image')) {
+        if ($request->boolean('have_image')) {
             $query->whereNotNull('image_path');
         }
 
         // بدون صورة
-        if ($request->filled('no_image')) {
+        if ($request->boolean('no_image')) {
             $query->whereNull('image_path');
         }
 
@@ -109,7 +109,7 @@ class ProductController extends Controller
         }
 
         // الترتيب
-        if ($request->filled('alphabetical')) {
+        if ($request->boolean('alphabetical')) {
             $query->orderBy('name', 'asc');
         } else {
             $query->latest();
@@ -159,8 +159,8 @@ class ProductController extends Controller
         $query->where('price', '>', 0);
 
         $products = $query->select([
-                'id', 'barcode', 'name', 'weight', 'price', 'symbol', 'category_id'
-            ])
+            'id', 'barcode', 'name', 'weight', 'price', 'symbol', 'category_id',
+        ])
             ->with(['category:id,name'])
             ->get();
 
@@ -191,7 +191,7 @@ class ProductController extends Controller
         })->values()->toArray();
 
         // بناء سياق تسويقي إضافي ليساعد الذكاء الاصطناعي
-        $categoryNames = collect($grouped)->pluck('category_name')->filter()->toArray();
+        $categoryNames    = collect($grouped)->pluck('category_name')->filter()->toArray();
         $marketingContext = $this->buildMarketingContext($request, $categoryNames, $formatted->count());
 
         return response()->json([
@@ -205,21 +205,41 @@ class ProductController extends Controller
     {
         // ملخص الفلاتر
         $activeFilters = [];
-        if ($request->filled('barcode')) $activeFilters[] = "باركود يحتوي على: " . $request->barcode;
-        if ($request->filled('name')) $activeFilters[] = "اسم منتج يحتوي على: " . $request->name;
-        if ($request->filled('price')) $activeFilters[] = "سعر = " . $request->price;
-        if ($request->filled('weight')) $activeFilters[] = "وزن = " . $request->weight;
-        if ($request->filled('category')) $activeFilters[] = "فئة محددة";
-        if ($request->filled('brand')) $activeFilters[] = "علامة تجارية محددة";
-        if ($request->filled('date_from') || $request->filled('date_to')) $activeFilters[] = "نطاق تاريخي محدد";
+        if ($request->filled('barcode')) {
+            $activeFilters[] = "باركود يحتوي على: " . $request->barcode;
+        }
 
-        $filtersSummary = !empty($activeFilters)
+        if ($request->filled('name')) {
+            $activeFilters[] = "اسم منتج يحتوي على: " . $request->name;
+        }
+
+        if ($request->filled('price')) {
+            $activeFilters[] = "سعر = " . $request->price;
+        }
+
+        if ($request->filled('weight')) {
+            $activeFilters[] = "وزن = " . $request->weight;
+        }
+
+        if ($request->filled('category')) {
+            $activeFilters[] = "فئة محددة";
+        }
+
+        if ($request->filled('brand')) {
+            $activeFilters[] = "علامة تجارية محددة";
+        }
+
+        if ($request->filled('date_from') || $request->filled('date_to')) {
+            $activeFilters[] = "نطاق تاريخي محدد";
+        }
+
+        $filtersSummary = ! empty($activeFilters)
             ? "تمت فلترة المنتجات بناءً على: " . implode('، ', $activeFilters)
             : "جميع المنتجات (بدون فلترة)";
 
         // اقتراح جمهور مستهدف بسيط بناءً على أسماء الفئات
         $targetAudience = "عام";
-        if (!empty($categoryNames)) {
+        if (! empty($categoryNames)) {
             $targetAudience = "المهتمون بـ: " . implode('، ', $categoryNames);
         }
 
@@ -233,131 +253,30 @@ class ProductController extends Controller
         }
 
         return [
-            'filters_summary'              => $filtersSummary,
-            'target_audience_suggestions'  => $targetAudience,
-            'marketing_objectives'         => [
+            'filters_summary'             => $filtersSummary,
+            'target_audience_suggestions' => $targetAudience,
+            'marketing_objectives'        => [
                 "زيادة الوعي بالعلامة التجارية ضمن الفئات: " . implode('، ', $categoryNames),
                 "زيادة المبيعات بنسبة 20% خلال الشهر القادم.",
-                "تعزيز ولاء العملاء من خلال عروض حصرية."
+                "تعزيز ولاء العملاء من خلال عروض حصرية.",
             ],
-            'channels'                     => [
-                "وسائل التواصل الاجتماعي (فيسبوك، انستغرام، تيك توك)"
+            'channels'                    => [
+                "وسائل التواصل الاجتماعي (فيسبوك، انستغرام، تيك توك)",
                 // "البريد الإلكتروني التسويقي",
                 // "الإعلانات المدفوعة (Google Ads، إعلانات وسائل التواصل)"
             ],
-            'message_ideas'                => $messageIdeas,
-            'additional_notes'             => "إجمالي المنتجات المختارة: {$totalProducts} منتج. يمكن التركيز على المنتجات الأعلى سعراً لزيادة هامش الربح."
+            'message_ideas'               => $messageIdeas,
+            'additional_notes'            => "إجمالي المنتجات المختارة: {$totalProducts} منتج. يمكن التركيز على المنتجات الأعلى سعراً لزيادة هامش الربح.",
         ];
     }
 
     public function jsonProducts(Request $request)
     {
         $query = Product::query();
+        $this->applyFilters($query, $request); // <-- استخدام الدالة الموحّدة
 
-        // الفلترة حسب الباركود
-        if ($request->barcode) {
-            $query->where('barcode', 'like', '%' . $request->barcode . '%');
-        }
-
-        // الفلترة حسب الاسم
-        if ($request->name) {
-            $query->where('name', 'like', '%' . $request->name . '%');
-        }
-
-        // الفلترة حسب السعر
-        if (isset($request->price)) {
-            $query->where('price', $request->price);
-        }
-
-        // الفلترة حسب الوزن
-        if (isset($request->weight)) {
-            $query->where('weight', $request->weight);
-        }
-
-        // الفلترة حسب الفئة
-        if ($request->category == "noCategory") {
-            $query->whereNull('category_id');
-        } else if ($request->category) {
-            $query->where('category_id', $request->category);
-        }
-
-        // الفلترة حسب العلامة التجارية
-        if ($request->brand) {
-            $query->where('brand_id', $request->brand);
-        }
-
-        // مع صورة
-        if ($request->have_image) {
-            $query->whereNotNull('image_path');
-        }
-
-        // بدون صورة
-        if ($request->no_image) {
-            $query->whereNull('image_path');
-        }
-
-        // فلترة التاريخ حسب النطاق المخصص (من تاريخ - إلى تاريخ)
-        if ($request->date_from && $request->date_to) {
-            $query->whereBetween('created_at', [
-                $request->date_from . ' 00:00:00',
-                $request->date_to . ' 23:59:59',
-            ]);
-        }
-
-        // فلترة تاريخ اليوم
-        elseif ($request->has('date_today') && $request->date_today) {
-            $query->whereDate('created_at', today());
-        }
-
-        // فلترة تاريخ البارحة
-        elseif ($request->has('date_yesterday') && $request->date_yesterday) {
-            $query->whereDate('created_at', today()->subDay());
-        }
-
-        // فلترة آخر أسبوع
-        elseif ($request->has('date_week') && $request->date_week) {
-            $query->whereBetween('created_at', [
-                now()->subWeek()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة آخر شهر
-        elseif ($request->has('date_month') && $request->date_month) {
-            $query->whereBetween('created_at', [
-                now()->subMonth()->startOfDay(),
-                now()->endOfDay(),
-            ]);
-        }
-
-        // فلترة حسب سجلات الباركود
-        if ($request->barcode_date_from && $request->barcode_date_to) {
-            $query->whereHas('barcodeLogs', function ($q) use ($request) {
-                $q->whereBetween('created_at', [
-                    $request->barcode_date_from . ' 00:00:00',
-                    $request->barcode_date_to . ' 23:59:59',
-                ]);
-            });
-        }
-
-        // الترتيب
-        if ($request->has('alphabetical') && $request->alphabetical) {
-            $query->orderBy('name', 'asc');
-        } else {
-            $query->latest();
-        }
-
-        // الترتيب من الأحدث إلى الأقدم
         $products = $query
-            ->select([
-                'id',
-                'name',
-                'weight',
-                'price',
-                'symbol',
-                'image_path',
-                'category_id',
-            ])
+            ->select(['id', 'name', 'weight', 'price', 'symbol', 'image_path', 'category_id'])
             ->with(['category:id,name'])
             ->get();
 
