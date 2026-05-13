@@ -860,10 +860,18 @@ class ProductController extends Controller
     {
         $ids   = $request->input('ids', []);
         $index = $request->input('index', 0);
-        $ids   = json_decode($ids, true) ?? [];
+        $field = $request->input('search_field', 'id');
+
+        $ids = json_decode($ids, true) ?? [];
 
         if (empty($ids)) {
             return response()->json(['error' => 'لم يتم تحديد أي منتجات'], 400);
+        }
+
+        // قائمة بيضاء للحقول المسموح بها منعاً لـ SQL injection
+        $allowedFields = ['id', 'barcode']; // أضف أي عمود آخر تريد البحث به
+        if (!in_array($field, $allowedFields)) {
+            $field = 'id';
         }
         // إذا كان ids نصاً مفصولاً بفواصل، حوله إلى مصفوفة
         if (is_string($ids)) {
@@ -871,7 +879,7 @@ class ProductController extends Controller
             $ids = array_filter($ids); // إزالة القيم الفارغة
         }
 
-        $products = Product::whereIn('id', $ids)
+        $products = Product::whereIn($field, $ids)
             ->whereNotNull('image_path')
             ->with('category')
             ->get();

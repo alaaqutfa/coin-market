@@ -1474,7 +1474,7 @@
 
             groups.forEach((group, index) => {
                 setTimeout(() => {
-                    sendCatalogRequest(index, group);
+                    sendCatalogRequest(index, group, 'id');
                 }, index * 1000);
             });
         }
@@ -1505,13 +1505,13 @@
 
             groups.forEach((group, index) => {
                 setTimeout(() => {
-                    sendCatalogRequest(index, group);
+                    sendCatalogRequest(index, group, 'barcode');
                 }, index * 1000);
             });
         }
 
         // دالة الإرسال (كما هي)
-        function sendCatalogRequest(index, ids) {
+        function sendCatalogRequest(index, ids, field = 'id') {
             let form = $('<form>', {
                 method: 'GET',
                 action: "{{ route('showCatalog') }}",
@@ -1539,7 +1539,13 @@
             form.append($('<input>', {
                 type: 'hidden',
                 name: 'index',
-                value: index + 1 // بدء الترقيم من 1 بدلاً من 0
+                value: index + 1
+            }));
+
+            form.append($('<input>', {
+                type: 'hidden',
+                name: 'search_field',
+                value: field
             }));
 
             $(document.body).append(form);
