@@ -317,8 +317,8 @@
             width: 100%;
             min-height: 125px;
             font-weight: 800;
-            background: rgba(0, 0, 0, 0.05);
             display: inline-block;
+            color: var(--primary);
             padding: 0.2rem 0.8rem;
             border-radius: 60px;
             backdrop-filter: blur(1px);
