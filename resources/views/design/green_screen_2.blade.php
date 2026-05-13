@@ -314,6 +314,8 @@
 
         /* تعزيز وضوح النصوص على الخلفية الخضراء */
         .name {
+            width: 100%;
+            min-height: 125px;
             font-weight: 800;
             background: rgba(0, 0, 0, 0.05);
             display: inline-block;
