@@ -708,6 +708,19 @@
                 </div>
                 <!-- Modal body -->
                 <div class="pt-4 md:pt-6">
+                    <div class="mt-4 border-t border-default-medium pt-4">
+                        <label for="custom_ids" class="block mb-2.5 text-sm font-medium text-heading">
+                            إنشاء تصميم بمعرفات مخصصة
+                        </label>
+                        <textarea id="custom_ids" rows="6" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="1,2,3&#10;5,6,7&#10;10,11"></textarea>
+                        <p class="mt-2 text-xs text-body">كل سطر يمثل مجموعة مستقلة</p>
+                        <button
+                            type="button"
+                            onclick="showCustomCatalog()"
+                            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                            إنشاء تصميم مخصص
+                        </button>
+                    </div>
                     <div class="mb-4">
                         <label for="design_products_count" class="block mb-2.5 text-sm font-medium text-heading">
                             عدد المنتجات في كل تصميم
@@ -1410,6 +1423,30 @@
                 setTimeout(() => {
                     sendCatalogRequest(index,group);
                 }, index * 1000); // تأخير بسيط بين الطلبات
+            });
+        }
+
+        function showCustomCatalog() {
+            const input = $('#custom_ids').val().trim();
+            if (!input) {
+                showToast("أدخل المعرفات أولاً", 'error');
+                return;
+            }
+            // بناء المصفوفات
+            const groups = input.split('\n').map(line => {
+                return line
+                    .split(',')
+                    .map(id => parseInt(id.trim()))
+                    .filter(id => !isNaN(id));
+            });
+            console.log(groups);
+            groups.forEach((group, index) => {
+                if (!group.length) {
+                    return;
+                }
+                setTimeout(() => {
+                    sendCatalogRequest(index, group);
+                }, index * 1000);
             });
         }
 
