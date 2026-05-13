@@ -134,8 +134,8 @@
             align-items: baseline;
             position: absolute;
             bottom: -20px;
-            left: 8%;
-            width: 84%;
+            left: 0%;
+            width: 100%;
             background: var(--primary);
             backdrop-filter: blur(2px);
             border-radius: 100px;
