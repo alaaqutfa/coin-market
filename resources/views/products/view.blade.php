@@ -686,70 +686,86 @@
 
     <!-- Main modal -->
     <div id="catalogModal" tabindex="-1" aria-hidden="true"
-        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative p-4 w-full max-w-md max-h-full">
+        class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full backdrop-blur-sm bg-black/30 transition-all duration-300">
+        <div class="relative p-4 w-full max-w-lg max-h-full">
             <!-- Modal content -->
-            <div class="relative bg-white border border-default rounded-base shadow-sm p-4 md:p-6">
+            <div class="relative bg-white backdrop-blur-md border border-default rounded-2xl shadow-2xl p-6 md:p-7 transition-all">
                 <!-- Modal header -->
-                <div class="flex items-center justify-between border-b border-default pb-4 md:pb-5">
-                    <h3 class="text-lg font-medium text-heading">
+                <div class="flex items-center justify-between border-b border-default pb-5">
+                    <h3 class="text-xl font-semibold text-heading tracking-tight">
                         إعدادات التصميم
                     </h3>
                     <button type="button"
-                        class="text-body bg-transparent hover:bg-neutral-tertiary hover:text-heading rounded-base text-sm w-9 h-9 ms-auto inline-flex justify-center items-center"
+                        class="text-body bg-transparent hover:bg-neutral-tertiary/70 hover:text-heading rounded-full text-sm w-10 h-10 inline-flex justify-center items-center transition-all duration-200 hover:scale-110"
                         data-modal-hide="catalogModal">
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
-                            height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18 17.94 6M18 18 6.06 6" />
+                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
                         </svg>
                         <span class="sr-only">إغلاق</span>
                     </button>
                 </div>
+
                 <!-- Modal body -->
-                <div class="pt-4 md:pt-6">
-                    <div class="mt-4 border-t border-default-medium pt-4">
-                        <label for="custom_ids" class="block mb-2.5 text-sm font-medium text-heading">
-                            إنشاء تصميم بمعرفات مخصصة
-                        </label>
-                        <textarea id="custom_ids" rows="6" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="1,2,3&#10;5,6,7&#10;10,11"></textarea>
-                        <p class="mt-2 text-xs text-body">كل سطر يمثل مجموعة مستقلة</p>
-                        <button
-                            type="button"
-                            onclick="showCustomCatalog()"
-                            class="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-                            إنشاء تصميم مخصص
-                        </button>
+                <div class="pt-5 md:pt-7 space-y-5">
+                    <!-- Row: عدد المنتجات + نوع التصميم -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="design_products_count" class="block mb-2 text-sm font-semibold text-heading">
+                                عدد المنتجات في التصميم
+                            </label>
+                            <input type="number" id="design_products_count"
+                                class="bg-neutral-secondary-medium border-2 border-default-medium text-heading text-sm rounded-xl focus:ring-2 focus:ring-brand/60 focus:border-brand block w-full px-4 py-3 shadow-sm placeholder:text-body transition-all duration-200"
+                                placeholder="0" value="4" min="1" max="6" required />
+                        </div>
+                        <div>
+                            <label for="design_type" class="block mb-2 text-sm font-semibold text-heading">
+                                نوع التصميم
+                            </label>
+                            <select id="design_type" name="design_type"
+                                class="block w-full px-4 py-3 bg-neutral-secondary-medium border-2 border-default-medium text-heading text-sm rounded-xl focus:ring-2 focus:ring-brand/60 focus:border-brand shadow-sm transition-all duration-200">
+                                <option value="post">Post</option>
+                                <option value="reels" selected>Reels</option>
+                                <option value="green_screen_1">Green Screen 1</option>
+                                <option value="green_screen_2">Green Screen 2</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label for="design_products_count" class="block mb-2.5 text-sm font-medium text-heading">
-                            عدد المنتجات في كل تصميم
-                        </label>
-                        <input type="number" id="design_products_count"
-                            class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-                            placeholder="0" value="4" min="1" max="6" required />
-                    </div>
-                    <div>
-                        <label for="design_type" class="block mb-2.5 text-sm font-medium text-heading">
-                            نوع التصميم
-                        </label>
-                        <select id="design_type" name="design_type"
-                            class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
-                            <option value="post">post</option>
-                            <option value="reels" selected>reels</option>
-                            <option value="green_screen_1">1- green screen</option>
-                            <option value="green_screen_2">2- green screen</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-evenly items-center gap-4 mt-4 text-sm font-medium text-body">
+
+                    <!-- أزرار التصميم السريع -->
+                    <div class="flex flex-wrap justify-end items-center gap-3 pt-2">
                         <button type="button" onclick="showCatalog()"
-                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                            إنشاء تصميم
+                            class="bg-yellow-400 text-white px-5 py-2.5 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                            🎨 إنشاء من المنتجات المختارة
                         </button>
-                        <button type="button"
-                            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex justify-center items-center gap-2"
-                            data-modal-hide="catalogModal">
-                            حفظ
+                    </div>
+
+                    <!-- قسم المجموعات المخصصة (تصميم عصري) -->
+                    <div class="border-t border-default-medium pt-5">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="text-sm font-semibold text-heading">
+                                ✨ مجموعات مخصصة
+                            </label>
+                            <button type="button" id="add-group-btn"
+                                class="bg-neutral-secondary-medium hover:bg-neutral-tertiary text-heading text-xs px-3 py-1.5 rounded-lg border border-default-medium flex items-center gap-1 transition-all duration-200 hover:shadow-sm">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                إضافة مجموعة
+                            </button>
+                        </div>
+
+                        <!-- حاوية المجموعات -->
+                        <div id="groups-container" class="space-y-3">
+                            <!-- يتم بناء المجموعات هنا عبر JS -->
+                        </div>
+
+                        <p class="mt-3 text-xs text-body/70">
+                            أدخل معرفات المنتجات مفصولة بفواصل لكل مجموعة.
+                        </p>
+
+                        <button type="button" onclick="showCustomCatalog()"
+                            class="mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 w-full">
+                            📋 إنشاء التصاميم المخصصة
                         </button>
                     </div>
                 </div>
@@ -1392,6 +1408,44 @@
             // مافي return false حتى الرابط يشتغل عادي
         }
 
+        // عند تحميل الصفحة، نضيف مجموعة افتراضية
+        $(document).ready(function() {
+            addGroupInput(); // مجموعة أولى فارغة
+        });
+
+        // إضافة حقل مجموعة جديد
+        $('#add-group-btn').on('click', function() {
+            addGroupInput();
+        });
+
+        // حذف مجموعة
+        $(document).on('click', '.remove-group-btn', function() {
+            const container = $('#groups-container');
+            if (container.children().length > 1) {
+                $(this).closest('.group-item').remove();
+            } else {
+                showToast("يجب الاحتفاظ بمجموعة واحدة على الأقل", 'warning');
+            }
+        });
+
+        // دالة إنشاء هيكل المجموعة
+        function addGroupInput(value = '') {
+            const groupHtml = `
+                <div class="group-item flex items-start gap-2 p-3 bg-neutral-secondary-medium/50 border border-default-medium rounded-xl hover:border-brand/40 transition-all duration-200">
+                    <input type="text"
+                        class="group-ids flex-1 bg-white border-0 text-heading text-sm rounded-lg px-3 py-2.5 focus:ring-1 focus:ring-brand/50 shadow-sm placeholder:text-body/50 transition-all"
+                        placeholder="مثال: 8718951207233, 5283004335056"
+                        value="${value.replace(/"/g, '&quot;')}" />
+                    <button type="button" class="remove-group-btn flex-shrink-0 text-body/60 hover:text-red-500 hover:bg-red-50 rounded-lg p-1.5 transition-all duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+            $('#groups-container').append(groupHtml);
+        }
+
         function showCatalog() {
             let ids = [];
             $('#products-table-body input[type="checkbox"]:checked').each(function() {
@@ -1406,12 +1460,11 @@
                 return;
             }
 
-            // تقسيم الـ IDs إلى مجموعات
             const groups = [];
             const count = parseInt($('#design_products_count').val(), 10);
 
             if (!count || count <= 0) {
-                console.error('قيمة count غير صحيحة:', count);
+                showToast("قيمة عدد المنتجات غير صحيحة", 'error');
                 return;
             }
 
@@ -1419,62 +1472,64 @@
                 groups.push(ids.slice(i, i + count));
             }
 
-            // إرسال كل مجموعة على حدة
             groups.forEach((group, index) => {
-                setTimeout(() => {
-                    sendCatalogRequest(index,group);
-                }, index * 1000); // تأخير بسيط بين الطلبات
-            });
-        }
-
-        function showCustomCatalog() {
-            const input = $('#custom_ids').val().trim();
-            if (!input) {
-                showToast("أدخل المعرفات أولاً", 'error');
-                return;
-            }
-            // بناء المصفوفات
-            const groups = input.split('\n').map(line => {
-                return line
-                    .split(',')
-                    .map(id => parseInt(id.trim()))
-                    .filter(id => !isNaN(id));
-            });
-            console.log(groups);
-            groups.forEach((group, index) => {
-                if (!group.length) {
-                    return;
-                }
                 setTimeout(() => {
                     sendCatalogRequest(index, group);
                 }, index * 1000);
             });
         }
 
-        // دالة منفصلة لإرسال الطلب
-        function sendCatalogRequest(index,ids) {
-            // إنشاء نموذج وإرساله لتحميل الملف
+        function showCustomCatalog() {
+            const groupItems = $('#groups-container .group-item');
+            const groups = [];
+
+            groupItems.each(function() {
+                const rawVal = $(this).find('.group-ids').val().trim();
+                if (rawVal) {
+                    const ids = rawVal
+                        .split(',')
+                        .map(id => parseInt(id.trim()))
+                        .filter(id => !isNaN(id));
+                    if (ids.length > 0) {
+                        groups.push(ids);
+                    }
+                }
+            });
+
+            if (groups.length === 0) {
+                showToast("أدخل معرفات في مجموعة واحدة على الأقل", 'error');
+                return;
+            }
+
+            console.log('المجموعات المخصصة:', groups);
+
+            groups.forEach((group, index) => {
+                setTimeout(() => {
+                    sendCatalogRequest(index, group);
+                }, index * 1000);
+            });
+        }
+
+        // دالة الإرسال (كما هي)
+        function sendCatalogRequest(index, ids) {
             let form = $('<form>', {
                 method: 'GET',
                 action: "{{ route('showCatalog') }}",
                 target: '_blank'
             });
 
-            // إضافة CSRF token
             form.append($('<input>', {
                 type: 'hidden',
                 name: '_token',
                 value: "{{ csrf_token() }}"
             }));
 
-            // إضافة الـ IDs
             form.append($('<input>', {
                 type: 'hidden',
                 name: 'ids',
                 value: JSON.stringify(ids)
             }));
 
-            // إضافة الـ design_type
             form.append($('<input>', {
                 type: 'hidden',
                 name: 'design_type',
@@ -1484,10 +1539,9 @@
             form.append($('<input>', {
                 type: 'hidden',
                 name: 'index',
-                value: index++
+                value: index + 1 // بدء الترقيم من 1 بدلاً من 0
             }));
 
-            // إضافة النموذج إلى الصفحة وإرساله
             $(document.body).append(form);
             form.submit();
             form.remove();
