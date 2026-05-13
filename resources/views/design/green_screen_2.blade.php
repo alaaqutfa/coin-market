@@ -69,7 +69,7 @@
         .products:has(.product:only-child) .product {
             max-width: 550px;
             width: 80%;
-            transform: scale(1.02);
+            transform: scale(1.5);
             transition: transform 0.2s ease;
         }
 
@@ -101,7 +101,7 @@
             position: relative;
             width: 100%;
             height: auto;
-            min-height: 380px;
+            min-height: 500px;
             background: transparent;
             display: flex;
             justify-content: center;
@@ -116,7 +116,7 @@
         .product-image {
             width: 100%;
             height: 100%;
-            max-height: 380px;
+            max-height: 500px;
             object-fit: contain;
             display: block;
             filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.1));
@@ -155,7 +155,7 @@
         /* نص السعر - متناسق وبارز */
         .price {
             color: var(--secondary);
-            font-size: 1.9rem;
+            font-size: 3rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             line-height: 1.2;
@@ -168,7 +168,7 @@
         /* نص الوزن - بنفس الهوية لكن بلمسة عصرية */
         .weight {
             color: var(--secondary);
-            font-size: 1.7rem;
+            font-size: 3rem;
             font-weight: 700;
             background: rgba(30, 31, 28, 0.1);
             padding: 0.2rem 0.9rem;
