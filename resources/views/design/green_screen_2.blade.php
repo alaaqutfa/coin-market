@@ -190,7 +190,7 @@
         /* اسم المنتج: تباين عالي على الخلفية الخضراء مع الحفاظ على الأناقة */
         .name {
             color: #101010;
-            font-size: 1.9rem;
+            font-size: 2.5rem;
             font-weight: 700;
             letter-spacing: -0.3px;
             text-align: center;
