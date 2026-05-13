@@ -737,7 +737,8 @@
                             class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
                             <option value="post">post</option>
                             <option value="reels" selected>reels</option>
-                            <option value="green_screen">green screen</option>
+                            <option value="green_screen_1">1- green screen</option>
+                            <option value="green_screen_2">2- green screen</option>
                         </select>
                     </div>
                     <div class="flex justify-evenly items-center gap-4 mt-4 text-sm font-medium text-body">
